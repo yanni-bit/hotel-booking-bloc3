@@ -1,0 +1,476 @@
+// ============================================================================
+// SCHEMA.PRISMA - Hotel Booking Bloc 3
+// Conversion MySQL → PostgreSQL avec Prisma
+// ============================================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS (conversion des ENUM MySQL)
+// ============================================================================
+
+enum TypeVoyageur {
+  couple
+  famille
+  solo
+  business
+  groupe
+  autre
+}
+
+enum TypePension {
+  none
+  breakfast
+  half_board
+  full_board
+  all_inclusive
+}
+
+enum TypeService {
+  journalier
+  sejour
+  unitaire
+  par_personne
+}
+
+// ============================================================================
+// TABLE: role
+// ============================================================================
+model Role {
+  id_role     Int      @id @default(autoincrement())
+  code_role   String   @unique @db.VarChar(20)
+  nom_role    String   @db.VarChar(50)
+  created_at  DateTime @default(now())
+  
+  utilisateurs Utilisateur[]
+  
+  @@map("role")
+}
+
+// ============================================================================
+// TABLE: statut (réservation)
+// ============================================================================
+model Statut {
+  id_statut          Int      @id @default(autoincrement())
+  nom_statut         String   @db.VarChar(50)
+  description_statut String?  @db.Text
+  couleur            String   @default("gray") @db.VarChar(20)
+  created_at         DateTime @default(now())
+  
+  reservations Reservation[]
+  
+  @@map("statut")
+}
+
+// ============================================================================
+// TABLE: adresse_user
+// ============================================================================
+model AdresseUser {
+  id_adress_user   Int      @id @default(autoincrement())
+  rue_user         String?  @db.VarChar(255)
+  complement_user  String?  @db.VarChar(255)
+  code_postal_user String?  @db.VarChar(10)
+  ville_user       String?  @db.VarChar(100)
+  pays_user        String?  @db.VarChar(100)
+  created_at       DateTime @default(now())
+  
+  utilisateurs Utilisateur[]
+  
+  @@map("adresse_user")
+}
+
+// ============================================================================
+// TABLE: utilisateur
+// ============================================================================
+model Utilisateur {
+  id_user            Int       @id @default(autoincrement())
+  nom_user           String    @db.VarChar(100)
+  prenom_user        String    @db.VarChar(100)
+  email_user         String    @unique @db.VarChar(255)
+  mot_de_passe       String    @db.VarChar(255)
+  tel_user           String?   @db.VarChar(20)
+  date_inscription   DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  id_role            Int
+  actif              Boolean   @default(true)
+  email_verifie      Boolean   @default(false)
+  derniere_connexion DateTime?
+  id_adress_user     Int?
+  
+  // Relations
+  role           Role         @relation(fields: [id_role], references: [id_role])
+  adresse        AdresseUser? @relation(fields: [id_adress_user], references: [id_adress_user], onDelete: SetNull)
+  reservations   Reservation[]
+  avis           Avis[]
+  favoris        Favori[]
+  paiements      Paiement[]
+  password_reset PasswordReset[]
+  
+  @@map("utilisateur")
+}
+
+// ============================================================================
+// TABLE: hotel
+// ============================================================================
+model Hotel {
+  id_hotel          Int       @id @default(autoincrement())
+  hotel_id_api      String?   @db.VarChar(100) /// ID Booking.com
+  nom_hotel         String    @db.VarChar(255)
+  description_hotel String?   @db.Text
+  rue_hotel         String?   @db.VarChar(255)
+  code_postal_hotel String?   @db.VarChar(10)
+  ville_hotel       String    @db.VarChar(100)
+  pays_hotel        String    @db.VarChar(100)
+  tel_hotel         String?   @db.VarChar(20)
+  email_hotel       String?   @db.VarChar(255)
+  site_web_hotel    String?   @db.VarChar(255)
+  img_hotel         String?   @db.VarChar(500) /// Image principale/cover
+  nbre_etoile_hotel Int?      @db.SmallInt
+  note_moy_hotel    Decimal?  @db.Decimal(3, 1)
+  nbre_avis_hotel   Int       @default(0)
+  latitude          Decimal?  @db.Decimal(10, 8)
+  longitude         Decimal?  @db.Decimal(11, 8)
+  date_scraping     DateTime  @default(now())
+  created_at        DateTime  @default(now())
+  
+  // Colonne pour Full-Text Search (générée par trigger)
+  search_vector     Unsupported("tsvector")?
+  
+  // Relations
+  chambres       Chambre[]
+  avis           Avis[]
+  offres         Offre[]
+  reservations   Reservation[]
+  favoris        Favori[]
+  amenities      HotelAmenities?
+  services       HotelServices[]
+  images         ImgHotel[]
+  
+  @@index([ville_hotel])
+  @@index([pays_hotel])
+  @@index([note_moy_hotel(sort: Desc)])
+  @@map("hotel")
+}
+
+// ============================================================================
+// TABLE: hotel_amenities
+// ============================================================================
+model HotelAmenities {
+  id_room_amenities Int     @id @default(autoincrement())
+  id_hotel          Int     @unique
+  parking           Boolean @default(false)
+  restaurant        Boolean @default(false)
+  climatisation     Boolean @default(false)
+  non_fumeur        Boolean @default(false)
+  pet_allowed       Boolean @default(false)
+  wi_fi             Boolean @default(false)
+  television        Boolean @default(false)
+  mini_bar          Boolean @default(false)
+  coffre_fort       Boolean @default(false)
+  piscine           Boolean @default(false)
+  spa               Boolean @default(false)
+  salle_sport       Boolean @default(false)
+  
+  hotel Hotel @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  
+  @@map("hotel_amenities")
+}
+
+// ============================================================================
+// TABLE: chambre
+// ============================================================================
+model Chambre {
+  id_chambre        Int      @id @default(autoincrement())
+  room_id_api       String?  @db.VarChar(100) /// ID Booking.com
+  id_hotel          Int
+  type_room         String   @db.VarChar(100) /// Standard, Deluxe, Suite, etc.
+  cat_room          String?  @db.VarChar(50) /// Catégorie
+  type_lit          String?  @db.VarChar(100) /// 1 lit double, 2 lits simples, etc.
+  nbre_lit          Int?     @db.SmallInt
+  nbre_adults_max   Int
+  nbre_children_max Int      @default(0)
+  surface_m2        Int?
+  vue               String?  @db.VarChar(100) /// Mer, ville, jardin, montagne
+  description_room  String?  @db.Text
+  created_at        DateTime @default(now())
+  
+  // Relations
+  hotel        Hotel         @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  offres       Offre[]
+  reservations Reservation[]
+  images       ImgChambre[]
+  
+  @@index([id_hotel])
+  @@map("chambre")
+}
+
+// ============================================================================
+// TABLE: offre
+// ============================================================================
+model Offre {
+  id_offre                  Int         @id @default(autoincrement())
+  offre_id_api              String?     @db.VarChar(100) /// ID offre Booking.com
+  id_hotel                  Int
+  id_chambre                Int
+  nom_offre                 String      @db.VarChar(100) /// Ex: Flexible, Non remboursable
+  prix_nuit                 Decimal     @db.Decimal(10, 2)
+  devise                    String      @default("EUR") @db.VarChar(3)
+  conditions_annulation     String?     @db.Text
+  delai_annulation_gratuite Int?        /// Nombre de jours avant check-in
+  frais_annulation          Decimal     @default(0) @db.Decimal(10, 2)
+  remboursable              Boolean     @default(true)
+  petit_dejeuner_inclus     Boolean     @default(false)
+  pension                   TypePension @default(none)
+  description_offre         String?     @db.Text
+  date_scraping             DateTime    @default(now())
+  created_at                DateTime    @default(now())
+  
+  // Relations
+  hotel        Hotel         @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  chambre      Chambre       @relation(fields: [id_chambre], references: [id_chambre], onDelete: Cascade)
+  reservations Reservation[]
+  paiements    Paiement[]
+  
+  @@index([id_hotel])
+  @@index([id_chambre])
+  @@map("offre")
+}
+
+// ============================================================================
+// TABLE: avis
+// ============================================================================
+model Avis {
+  id_avis       Int           @id @default(autoincrement())
+  id_hotel      Int
+  id_user       Int?
+  pseudo_user   String        @db.VarChar(100) /// Nom depuis Booking.com
+  note          Decimal       @db.Decimal(3, 1)
+  titre_avis    String?       @db.VarChar(255)
+  commentaire   String?       @db.Text
+  date_avis     DateTime?     @db.Date
+  pays_origine  String?       @db.VarChar(3) /// Code pays FR, UK, DE, etc.
+  type_voyageur TypeVoyageur  @default(autre)
+  langue        String        @default("fr") @db.VarChar(2)
+  date_scraping DateTime      @default(now())
+  
+  // Relations
+  hotel Hotel        @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  user  Utilisateur? @relation(fields: [id_user], references: [id_user], onDelete: SetNull)
+  
+  @@index([id_hotel])
+  @@index([note(sort: Desc)])
+  @@map("avis")
+}
+
+// ============================================================================
+// TABLE: reservation
+// ============================================================================
+model Reservation {
+  id_reservation      Int       @id @default(autoincrement())
+  booking_id_api      String?   @db.VarChar(100) /// Référence Booking.com
+  id_offre            Int
+  id_user             Int
+  id_hotel            Int
+  id_chambre          Int
+  id_paiement         Int?
+  check_in            DateTime  @db.Date
+  check_out           DateTime  @db.Date
+  nbre_nuits          Int
+  nbre_adults         Int
+  nbre_children       Int       @default(0)
+  ages_children       String?   @db.VarChar(50) /// Ex: 5,8,12 ou JSON
+  prix_nuit           Decimal   @db.Decimal(10, 2) /// Prix au moment de la réservation
+  total_price         Decimal   @db.Decimal(10, 2)
+  devise              String    @default("EUR") @db.VarChar(3)
+  special_requests    String?   @db.Text
+  num_confirmation    String?   @db.VarChar(50)
+  provider_reference  String?   @db.VarChar(100)
+  cancel_deadline     DateTime? /// Date limite annulation gratuite
+  id_statut           Int?
+  price               Decimal?  @db.Decimal(10, 2)
+  taxes               Decimal?  @db.Decimal(10, 2)
+  date_reservation    DateTime  @default(now())
+  date_modification   DateTime  @updatedAt
+  
+  // Relations
+  offre    Offre                 @relation(fields: [id_offre], references: [id_offre], onDelete: Restrict)
+  user     Utilisateur           @relation(fields: [id_user], references: [id_user], onDelete: Restrict)
+  hotel    Hotel                 @relation(fields: [id_hotel], references: [id_hotel], onDelete: Restrict)
+  chambre  Chambre               @relation(fields: [id_chambre], references: [id_chambre], onDelete: Restrict)
+  paiement Paiement?             @relation(fields: [id_paiement], references: [id_paiement], onDelete: SetNull)
+  statut   Statut?               @relation(fields: [id_statut], references: [id_statut])
+  services ReservationServices[]
+  
+  @@index([id_user])
+  @@index([id_hotel])
+  @@index([date_reservation(sort: Desc)])
+  @@map("reservation")
+}
+
+// ============================================================================
+// TABLE: paiement
+// ============================================================================
+model Paiement {
+  id_paiement       Int       @id @default(autoincrement())
+  id_offre          Int?
+  id_user           Int
+  montant           Decimal   @db.Decimal(10, 2)
+  devise            String    @default("EUR") @db.VarChar(3)
+  methode_paiement  String?   @db.VarChar(50)
+  statut_paiement   String    @default("pending") @db.VarChar(20)
+  reference_externe String?   @db.VarChar(100)
+  date_paiement     DateTime  @default(now())
+  
+  // Relations
+  offre        Offre?        @relation(fields: [id_offre], references: [id_offre], onDelete: SetNull)
+  user         Utilisateur   @relation(fields: [id_user], references: [id_user], onDelete: Restrict)
+  reservations Reservation[]
+  
+  @@map("paiement")
+}
+
+// ============================================================================
+// TABLE: services_additionnels (catalogue)
+// ============================================================================
+model ServicesAdditionnels {
+  id_service          Int         @id @default(autoincrement())
+  nom_service         String      @db.VarChar(100)
+  description_service String?     @db.Text
+  type_service        TypeService @default(sejour)
+  icone_service       String?     @db.VarChar(50)
+  actif               Boolean     @default(true)
+  created_at          DateTime    @default(now())
+  
+  hotel_services HotelServices[]
+  
+  @@map("services_additionnels")
+}
+
+// ============================================================================
+// TABLE: hotel_services (services proposés par hôtel)
+// ============================================================================
+model HotelServices {
+  id_hotel_service Int      @id @default(autoincrement())
+  id_hotel         Int
+  id_service       Int
+  prix             Decimal  @db.Decimal(10, 2)
+  disponible       Boolean  @default(true)
+  created_at       DateTime @default(now())
+  
+  // Relations
+  hotel   Hotel                @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  service ServicesAdditionnels @relation(fields: [id_service], references: [id_service])
+  
+  reservation_services ReservationServices[]
+  
+  @@unique([id_hotel, id_service])
+  @@map("hotel_services")
+}
+
+// ============================================================================
+// TABLE: reservation_services
+// ============================================================================
+model ReservationServices {
+  id_reservation_service Int      @id @default(autoincrement())
+  id_reservation         Int
+  id_hotel_service       Int
+  quantite               Int      @default(1)
+  prix_unitaire          Decimal  @db.Decimal(10, 2)
+  sous_total             Decimal  @db.Decimal(10, 2)
+  created_at             DateTime @default(now())
+  
+  // Relations
+  reservation   Reservation   @relation(fields: [id_reservation], references: [id_reservation], onDelete: Cascade)
+  hotel_service HotelServices @relation(fields: [id_hotel_service], references: [id_hotel_service])
+  
+  @@map("reservation_services")
+}
+
+// ============================================================================
+// TABLE: favori
+// ============================================================================
+model Favori {
+  id_favori  Int      @id @default(autoincrement())
+  id_user    Int
+  id_hotel   Int
+  created_at DateTime @default(now())
+  
+  // Relations
+  user  Utilisateur @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  hotel Hotel       @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  
+  @@unique([id_user, id_hotel])
+  @@map("favori")
+}
+
+// ============================================================================
+// TABLE: img_hotel
+// ============================================================================
+model ImgHotel {
+  id_img_hotel Int      @id @default(autoincrement())
+  id_hotel     Int
+  url_img      String   @db.VarChar(500)
+  alt_img      String?  @db.VarChar(255)
+  ordre        Int      @default(0)
+  created_at   DateTime @default(now())
+  
+  hotel Hotel @relation(fields: [id_hotel], references: [id_hotel], onDelete: Cascade)
+  
+  @@map("img_hotel")
+}
+
+// ============================================================================
+// TABLE: img_chambre
+// ============================================================================
+model ImgChambre {
+  id_img_chambre Int      @id @default(autoincrement())
+  id_chambre     Int
+  url_img        String   @db.VarChar(500)
+  alt_img        String?  @db.VarChar(255)
+  ordre          Int      @default(0)
+  created_at     DateTime @default(now())
+  
+  chambre Chambre @relation(fields: [id_chambre], references: [id_chambre], onDelete: Cascade)
+  
+  @@map("img_chambre")
+}
+
+// ============================================================================
+// TABLE: messages_contact
+// ============================================================================
+model MessagesContact {
+  id_message   Int      @id @default(autoincrement())
+  nom          String   @db.VarChar(100)
+  email        String   @db.VarChar(255)
+  sujet        String?  @db.VarChar(255)
+  message      String   @db.Text
+  lu           Boolean  @default(false)
+  archive      Boolean  @default(false)
+  date_envoi   DateTime @default(now())
+  
+  @@map("messages_contact")
+}
+
+// ============================================================================
+// TABLE: password_reset
+// ============================================================================
+model PasswordReset {
+  id_reset   Int      @id @default(autoincrement())
+  id_user    Int
+  token      String   @unique @db.VarChar(255)
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+  
+  user Utilisateur @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  
+  @@map("password_reset")
+}
