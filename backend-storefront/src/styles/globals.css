@@ -2,6 +2,68 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* ==========================================================
+   VARIABLES GLOBALES - Importées du Bloc 2 Angular
+   ========================================================== */
+
+:root {
+  /* === Couleurs principales === */
+  --turquoise: #5fc8c2;
+  --turquoise-hover: #3db3aa;
+  --turquoise-light: rgba(95, 200, 194, 0.1);
+  --turquoise-dark: rgba(95, 200, 194, 0.85);
+  --turquoise-clair: #C9FAFF;
+  --turquoise-badge: #90cfd6;
+  
+  /* === Couleurs neutres === */
+  --gris-clair: #f7f7f7;
+  --gris-moyen: #858585;
+  --gris-fonce: #333333;
+  --blanc: #ffffff;
+  --noir: #000000;
+  
+  /* === Couleurs secondaires === */
+  --marron: #d6c8c0;
+  --marron-clair: #E9E6E0;
+  --marron-fonce: #AB9A8F;
+  
+  /* === Couleurs d'interaction === */
+  --link-hover: #00000066;
+  
+  /* === Couleurs d'état === */
+  --vert-validation: #3cb878;
+  --rouge-erreur: #e74c3c;
+  --jaune-attention: #f1c40f;
+
+  /* === Typographie === */
+  --font-principale: "Open Sans", Arial, sans-serif;
+  --font-secondaire: "Montserrat", sans-serif;
+  --font-dyslexique: 'OpenDyslexic', Arial, sans-serif;
+
+  /* === Espacements === */
+  --espace-xs: 4px;
+  --espace-sm: 8px;
+  --espace-md: 16px;
+  --espace-lg: 32px;
+  --espace-xl: 64px;
+
+  /* === Largeurs globales === */
+  --conteneur-max: 1200px;
+}
+
+/* ==========================================================
+   MODE DYSLEXIE - Police OpenDyslexic (WCAG)
+   ========================================================== */
+
+body.dyslexie-mode,
+body.dyslexie-mode * {
+  font-family: var(--font-dyslexique) !important;
+}
+
+.font-dyslexie {
+  font-family: var(--font-dyslexique) !important;
+}
+
 @layer utilities {
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
@@ -109,4 +171,67 @@
   .text-3xl-semi {
     @apply text-[32px] leading-[44px] font-semibold;
   }
+}
+
+/* ==========================================================
+   UTILITAIRES GLOBAUX - Importés du Bloc 2 Angular
+   ========================================================== */
+
+/* === Alignements flexbox === */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Couleurs utilitaires === */
+.couleur-titre {
+  color: var(--gris-moyen);
+}
+
+.couleur-soustitre {
+  color: var(--turquoise);
+}
+
+/* === Titres de section === */
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gris-fonce);
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: var(--gris-moyen);
+  margin-bottom: 0;
+}
+
+/* === Bouton principal turquoise === */
+.btn-turquoise {
+  background-color: var(--turquoise);
+  color: var(--blanc);
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+}
+
+.btn-turquoise:hover {
+  background-color: var(--turquoise-hover);
 }

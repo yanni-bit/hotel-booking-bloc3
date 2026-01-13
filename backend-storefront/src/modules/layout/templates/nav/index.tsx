@@ -1,66 +1,177 @@
-import { Suspense } from "react"
+"use client"
 
-import { listRegions } from "@lib/data/regions"
-import { listLocales } from "@lib/data/locales"
-import { getLocale } from "@lib/data/locale-actions"
-import { StoreRegion } from "@medusajs/types"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CartButton from "@modules/layout/components/cart-button"
-import SideMenu from "@modules/layout/components/side-menu"
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import styles from "./nav.module.css"
 
-export default async function Nav() {
-  const [regions, locales, currentLocale] = await Promise.all([
-    listRegions().then((regions: StoreRegion[]) => regions),
-    listLocales(),
-    getLocale(),
-  ])
+const Nav = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen)
+  }
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      // Rediriger vers la page de recherche
+      window.location.href = `/hotels?search=${encodeURIComponent(searchQuery)}`
+    }
+  }
+
+  const handleSearchKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch()
+    }
+  }
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
-          <div className="flex-1 basis-0 h-full flex items-center">
-            <div className="h-full">
-              <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
+    <>
+      {/* LIEN D'ÉVITEMENT (Accessibilité) */}
+      <a href="#main-content" className={styles.skipLink}>
+        Aller au contenu principal
+      </a>
+
+      {/* HEADER PRINCIPAL */}
+      <header className={styles.baseHeader}>
+        <div className={styles.headerContainer}>
+          <div className={styles.headerTop}>
+
+            {/* LOGO */}
+            <div className={styles.headerLogo}>
+              <Link href="/" className={styles.logoLink}>
+                <img 
+                  src="/images/logo.png" 
+                  alt="Book Your Travel" 
+                  className={styles.logoImg}
+                />
+              </Link>
             </div>
-          </div>
 
-          <div className="flex items-center h-full">
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
-              data-testid="nav-store-link"
-            >
-              Medusa Store
-            </LocalizedClientLink>
-          </div>
-
-          <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
-            <div className="hidden small:flex items-center gap-x-6 h-full">
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/account"
-                data-testid="nav-account-link"
+            {/* BOUTON DYSLEXIE */}
+            <div className={styles.headerDyslexie}>
+              <button 
+                id="toggle-dyslexie" 
+                className={styles.btnDyslexie}
+                aria-label="Activer la police adaptée aux personnes dyslexiques"
+                aria-pressed="false"
+                title="Police pour dyslexie"
               >
-                Account
-              </LocalizedClientLink>
+                <span className={styles.dyslexieIcon}>♿</span>
+                <span className={styles.dyslexieText}>Dyslexie</span>
+              </button>
             </div>
-            <Suspense
-              fallback={
-                <LocalizedClientLink
-                  className="hover:text-ui-fg-base flex gap-2"
-                  href="/cart"
-                  data-testid="nav-cart-link"
+
+            {/* BLOC CONTACT 24/7 */}
+            <div className={styles.headerContact}>
+              <div className={styles.blocContact}>
+                <div className={styles.blocContactIco}>
+                  <span>📞</span>
+                </div>
+                <div className={styles.textContact}>
+                  <div className={styles.blocContactLabel}>Support 24/7</div>
+                  <div className={styles.blocContactNumber}>1-555-555-555</div>
+                </div>
+              </div>
+            </div>
+
+            {/* BLOC RECHERCHE */}
+            <div className={styles.headerSearch}>
+              <div className={styles.blocSearch}>
+                <input
+                  type="search"
+                  className={styles.blocSearchInput}
+                  placeholder="Rechercher..."
+                  aria-label="Rechercher sur le site"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyUp={handleSearchKeyup}
+                />
+                <button 
+                  type="button" 
+                  className={styles.blocSearchBtn}
+                  onClick={handleSearch}
+                  aria-label="Lancer la recherche"
                 >
-                  Cart (0)
-                </LocalizedClientLink>
-              }
-            >
-              <CartButton />
-            </Suspense>
+                  <span className={styles.blocSearchIco}>🔍</span>
+                </button>
+              </div>
+            </div>
+
+            {/* RUBAN TURQUOISE */}
+            <div className={styles.ribbon}>
+              <nav className={styles.ribbonNav}>
+                
+                {/* Connexion */}
+                <div className={styles.ribbonItem}>
+                  <Link href="/account" className={styles.ribbonBtn}>
+                    👤 CONNEXION
+                  </Link>
+                </div>
+
+                {/* Langue */}
+                <div className={styles.ribbonItem}>
+                  <button className={styles.ribbonBtn}>
+                    Français FR ▾
+                  </button>
+                </div>
+
+                {/* Devise */}
+                <div className={styles.ribbonItem}>
+                  <button className={styles.ribbonBtn}>
+                    € EUR ▾
+                  </button>
+                </div>
+
+              </nav>
+            </div>
+
           </div>
-        </nav>
+        </div>
       </header>
-    </div>
+
+      {/* NAVIGATION PRINCIPALE (Barre marron) */}
+      <nav className={styles.navbar}>
+        <div className={styles.navbarContainer}>
+          
+          {/* Bouton hamburger (mobile) */}
+          <span className={styles.navbarBrand}>Menu</span>
+          <button 
+            className={styles.navbarToggler}
+            type="button"
+            onClick={toggleMenu}
+            aria-label="Ouvrir le menu"
+            aria-expanded={menuOpen}
+          >
+            <span className={styles.navbarTogglerIcon}>☰</span>
+          </button>
+
+          {/* Menu de navigation */}
+          <div className={`${styles.navbarCollapse} ${menuOpen ? styles.show : ""}`}>
+            <ul className={styles.navbarNav}>
+              <li className={styles.navItem}>
+                <Link href="/" className={styles.navLink}>
+                  Accueil
+                </Link>
+              </li>
+              <li className={styles.navItem}>
+                <Link href="/hotels" className={styles.navLink}>
+                  Hôtels
+                </Link>
+              </li>
+              <li className={styles.navItem}>
+                <Link href="/contact" className={styles.navLink}>
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </nav>
+    </>
   )
 }
+
+export default Nav
