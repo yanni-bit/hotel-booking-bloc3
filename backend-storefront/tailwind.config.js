@@ -34,6 +34,28 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+        // === COULEURS CUSTOM DU PROJET ===
+        turquoise: {
+          DEFAULT: '#5fc8c2',
+          hover: '#3db3aa',
+          light: 'rgba(95, 200, 194, 0.1)',
+          dark: 'rgba(95, 200, 194, 0.85)',
+          clair: '#C9FAFF',
+          badge: '#90cfd6',
+        },
+        gris: {
+          clair: '#f7f7f7',
+          moyen: '#858585',
+          fonce: '#333333',
+        },
+        marron: {
+          DEFAULT: '#d6c8c0',
+          clair: '#E9E6E0',
+          fonce: '#AB9A8F',
+        },
+        validation: '#3cb878',
+        erreur: '#e74c3c',
+        attention: '#f1c40f',
       },
       borderRadius: {
         none: "0px",

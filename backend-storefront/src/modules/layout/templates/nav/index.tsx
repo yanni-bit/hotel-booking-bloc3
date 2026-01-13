@@ -2,128 +2,102 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import styles from "./nav.module.css"
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
-  }
-
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Rediriger vers la page de recherche
       window.location.href = `/hotels?search=${encodeURIComponent(searchQuery)}`
     }
   }
 
   const handleSearchKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch()
-    }
+    if (e.key === "Enter") handleSearch()
   }
 
   return (
     <>
-      {/* LIEN D'ÉVITEMENT (Accessibilité) */}
-      <a href="#main-content" className={styles.skipLink}>
+      {/* Skip Link */}
+      <a href="#main-content" className="skip-link">
         Aller au contenu principal
       </a>
 
-      {/* HEADER PRINCIPAL */}
-      <header className={styles.baseHeader}>
-        <div className={styles.headerContainer}>
-          <div className={styles.headerTop}>
+      {/* Header */}
+      <header className="header-base">
+        <div className="header-container">
+          <div className="header-grid">
 
-            {/* LOGO */}
-            <div className={styles.headerLogo}>
-              <Link href="/" className={styles.logoLink}>
-                <img 
-                  src="/images/logo.png" 
-                  alt="Book Your Travel" 
-                  className={styles.logoImg}
-                />
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="block">
+                <img src="/images/logo.png" alt="Book Your Travel" className="h-auto max-h-[60px] w-auto max-md:max-h-[50px]" />
               </Link>
             </div>
 
-            {/* BOUTON DYSLEXIE */}
-            <div className={styles.headerDyslexie}>
-              <button 
-                id="toggle-dyslexie" 
-                className={styles.btnDyslexie}
+            {/* Bouton Dyslexie */}
+            <div className="flex items-center justify-center max-lg:hidden max-md:flex max-md:justify-center max-md:self-center">
+              <button
+                id="toggle-dyslexie"
+                className="flex items-center gap-1.5 bg-transparent border border-gray-300 rounded py-2 px-3 cursor-pointer text-sm text-gris-fonce transition-all duration-200 hover:border-turquoise hover:text-turquoise"
                 aria-label="Activer la police adaptée aux personnes dyslexiques"
                 aria-pressed="false"
                 title="Police pour dyslexie"
               >
-                <span className={styles.dyslexieIcon}>♿</span>
-                <span className={styles.dyslexieText}>Dyslexie</span>
+                <span className="text-lg">♿</span>
+                <span className="hidden lg:inline">Dyslexie</span>
               </button>
             </div>
 
-            {/* BLOC CONTACT 24/7 */}
-            <div className={styles.headerContact}>
-              <div className={styles.blocContact}>
-                <div className={styles.blocContactIco}>
+            {/* Contact */}
+            <div className="flex items-center justify-center max-lg:justify-start max-md:justify-start">
+              <div className="flex items-center gap-2.5">
+                <div className="contact-icon">
                   <span>📞</span>
                 </div>
-                <div className={styles.textContact}>
-                  <div className={styles.blocContactLabel}>Support 24/7</div>
-                  <div className={styles.blocContactNumber}>1-555-555-555</div>
+                <div className="text-left">
+                  <div className="text-sm text-gris-moyen max-md:text-xs">Support 24/7</div>
+                  <div className="text-[15px] font-bold text-gris-fonce max-md:text-xs">1-555-555-555</div>
                 </div>
               </div>
             </div>
 
-            {/* BLOC RECHERCHE */}
-            <div className={styles.headerSearch}>
-              <div className={styles.blocSearch}>
+            {/* Recherche */}
+            <div className="flex items-center justify-end max-lg:justify-start max-lg:col-span-2 max-md:justify-start max-md:w-full">
+              <div className="relative w-full max-w-[300px] max-lg:max-w-full">
                 <input
                   type="search"
-                  className={styles.blocSearchInput}
+                  className="search-bar-input"
                   placeholder="Rechercher..."
                   aria-label="Rechercher sur le site"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyUp={handleSearchKeyup}
                 />
-                <button 
-                  type="button" 
-                  className={styles.blocSearchBtn}
+                <button
+                  type="button"
+                  className="absolute right-0 top-0 h-full bg-transparent border-none px-3.5 cursor-pointer flex items-center justify-center group"
                   onClick={handleSearch}
                   aria-label="Lancer la recherche"
                 >
-                  <span className={styles.blocSearchIco}>🔍</span>
+                  <span className="text-lg text-gray-400 transition-colors duration-200 group-hover:text-turquoise">🔍</span>
                 </button>
               </div>
             </div>
 
-            {/* RUBAN TURQUOISE */}
-            <div className={styles.ribbon}>
-              <nav className={styles.ribbonNav}>
-                
-                {/* Connexion */}
-                <div className={styles.ribbonItem}>
-                  <Link href="/account" className={styles.ribbonBtn}>
-                    👤 CONNEXION
-                  </Link>
+            {/* Ruban */}
+            <div className="ribbon ribbon-triangle">
+              <nav className="ribbon-nav">
+                <div className="ribbon-item">
+                  <Link href="/account" className="ribbon-btn">👤 CONNEXION</Link>
                 </div>
-
-                {/* Langue */}
-                <div className={styles.ribbonItem}>
-                  <button className={styles.ribbonBtn}>
-                    Français FR ▾
-                  </button>
+                <div className="ribbon-item">
+                  <button className="ribbon-btn">Français FR ▾</button>
                 </div>
-
-                {/* Devise */}
-                <div className={styles.ribbonItem}>
-                  <button className={styles.ribbonBtn}>
-                    € EUR ▾
-                  </button>
+                <div className="ribbon-item">
+                  <button className="ribbon-btn">€ EUR ▾</button>
                 </div>
-
               </nav>
             </div>
 
@@ -131,43 +105,27 @@ const Nav = () => {
         </div>
       </header>
 
-      {/* NAVIGATION PRINCIPALE (Barre marron) */}
-      <nav className={styles.navbar}>
-        <div className={styles.navbarContainer}>
-          
-          {/* Bouton hamburger (mobile) */}
-          <span className={styles.navbarBrand}>Menu</span>
-          <button 
-            className={styles.navbarToggler}
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="navbar-container">
+          <span className="hidden max-md:block text-white font-bold text-sm uppercase py-3 px-4">Menu</span>
+          <button
+            className="hidden max-md:block bg-transparent border-none py-2.5 px-4 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2"
             type="button"
-            onClick={toggleMenu}
+            onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Ouvrir le menu"
             aria-expanded={menuOpen}
           >
-            <span className={styles.navbarTogglerIcon}>☰</span>
+            <span className="text-white text-2xl">☰</span>
           </button>
 
-          {/* Menu de navigation */}
-          <div className={`${styles.navbarCollapse} ${menuOpen ? styles.show : ""}`}>
-            <ul className={styles.navbarNav}>
-              <li className={styles.navItem}>
-                <Link href="/" className={styles.navLink}>
-                  Accueil
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link href="/hotels" className={styles.navLink}>
-                  Hôtels
-                </Link>
-              </li>
-              <li className={styles.navItem}>
-                <Link href="/contact" className={styles.navLink}>
-                  Contact
-                </Link>
-              </li>
+          <div className={`flex max-md:hidden max-md:absolute max-md:top-full max-md:left-0 max-md:right-0 max-md:bg-turquoise max-md:z-[100] ${menuOpen ? "max-md:!block" : ""}`}>
+            <ul className="flex list-none m-0 p-0 max-md:flex-col">
+              <li><Link href="/" className="navbar-link">Accueil</Link></li>
+              <li><Link href="/hotels" className="navbar-link">Hôtels</Link></li>
+              <li><Link href="/contact" className="navbar-link">Contact</Link></li>
             </ul>
           </div>
-
         </div>
       </nav>
     </>

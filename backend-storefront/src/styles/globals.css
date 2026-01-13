@@ -3,7 +3,7 @@
 @import "tailwindcss/utilities";
 
 /* ==========================================================
-   VARIABLES GLOBALES - Importées du Bloc 2 Angular
+   VARIABLES GLOBALES
    ========================================================== */
 
 :root {
@@ -27,9 +27,6 @@
   --marron-clair: #E9E6E0;
   --marron-fonce: #AB9A8F;
   
-  /* === Couleurs d'interaction === */
-  --link-hover: #00000066;
-  
   /* === Couleurs d'état === */
   --vert-validation: #3cb878;
   --rouge-erreur: #e74c3c;
@@ -39,16 +36,6 @@
   --font-principale: "Open Sans", Arial, sans-serif;
   --font-secondaire: "Montserrat", sans-serif;
   --font-dyslexique: 'OpenDyslexic', Arial, sans-serif;
-
-  /* === Espacements === */
-  --espace-xs: 4px;
-  --espace-sm: 8px;
-  --espace-md: 16px;
-  --espace-lg: 32px;
-  --espace-xl: 64px;
-
-  /* === Largeurs globales === */
-  --conteneur-max: 1200px;
 }
 
 /* ==========================================================
@@ -60,23 +47,18 @@ body.dyslexie-mode * {
   font-family: var(--font-dyslexique) !important;
 }
 
-.font-dyslexie {
-  font-family: var(--font-dyslexique) !important;
-}
+/* ==========================================================
+   UTILITIES
+   ========================================================== */
 
 @layer utilities {
-  /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
-  .no-scrollbar::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   input:focus ~ label,
@@ -111,7 +93,13 @@ body.dyslexie-mode * {
   }
 }
 
+/* ==========================================================
+   COMPONENTS
+   ========================================================== */
+
 @layer components {
+  
+  /* === CLASSES MEDUSA (existantes) === */
   .content-container {
     @apply max-w-[1440px] w-full mx-auto px-6;
   }
@@ -171,67 +159,584 @@ body.dyslexie-mode * {
   .text-3xl-semi {
     @apply text-[32px] leading-[44px] font-semibold;
   }
+
+  /* ==============================================
+     FORMULAIRES
+     ============================================== */
+
+  .form-input {
+    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded 
+           bg-white text-gris-fonce transition-all duration-200 
+           hover:border-gray-400 
+           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+  }
+
+  .form-input-date {
+    @apply w-full py-2 px-2 text-[0.85rem] border border-gray-300 rounded 
+           bg-white text-gris-fonce transition-all duration-200 
+           hover:border-gray-400 
+           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+  }
+
+  .form-input-number {
+    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded 
+           bg-white text-gris-fonce text-center transition-all duration-200 
+           hover:border-gray-400 
+           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+  }
+
+  .form-label {
+    @apply block text-[0.85rem] font-semibold text-gris-fonce mb-1.5;
+  }
+
+  .form-error {
+    @apply text-red-500 text-xs mt-1 font-medium;
+  }
+
+  .form-valid {
+    @apply border-green-500 focus:ring-green-500/20;
+  }
+
+  .form-invalid {
+    @apply border-red-500 focus:ring-red-500/20;
+  }
+
+  /* ==============================================
+     BOUTONS
+     ============================================== */
+
+  .btn-primary {
+    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold 
+           py-2 px-10 rounded transition-colors duration-300 
+           uppercase tracking-wider cursor-pointer border-none;
+  }
+
+  .btn-search {
+    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold 
+           py-2 px-10 rounded-t-[10px] transition-colors duration-300 
+           uppercase tracking-wider cursor-pointer border-none text-base;
+  }
+
+  /* ==============================================
+     HERO / CAROUSEL
+     ============================================== */
+
+  .carousel-container {
+    @apply relative w-full h-[80vh] min-h-[600px] overflow-hidden;
+  }
+
+  .carousel-slide {
+    @apply absolute top-0 left-0 w-full h-full transition-opacity duration-700 ease-in-out;
+  }
+
+  .carousel-nav-btn {
+    @apply absolute top-1/2 -translate-y-1/2 z-20 
+           bg-black/40 hover:bg-black/70 text-white 
+           border-none py-4 px-3 cursor-pointer text-2xl 
+           transition-colors duration-300 rounded 
+           focus:outline-2 focus:outline-turquoise focus:outline-offset-2;
+  }
+
+  .carousel-dot {
+    @apply w-3 h-3 rounded-full cursor-pointer transition-all duration-300 border-2;
+  }
+
+  .carousel-dot-inactive {
+    @apply bg-white/50 border-transparent hover:bg-white/80;
+  }
+
+  .carousel-dot-active {
+    @apply bg-turquoise border-white scale-125;
+  }
+
+  /* ==============================================
+     SEARCH FORM (Hero)
+     ============================================== */
+
+  .search-overlay {
+    @apply absolute bottom-[30px] left-0 right-0 z-[15] px-5 pb-5 flex justify-center;
+  }
+
+  .search-content {
+    @apply bg-white/[0.97] backdrop-blur-sm rounded-t-lg w-full max-w-[1200px] 
+           shadow-[0_-4px_20px_rgba(0,0,0,0.15)] overflow-hidden;
+  }
+
+  .search-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .search-column {
+    @apply border-b md:border-b lg:border-b-0 border-r-0 lg:border-r border-gray-200 last:border-r-0;
+  }
+
+  .search-column-title {
+    @apply bg-gray-100 m-0 py-2.5 px-4 text-[0.95rem] font-semibold 
+           text-gris-fonce border-b border-gray-200;
+  }
+
+  .search-column-number {
+    @apply text-turquoise not-italic font-bold mr-2;
+  }
+
+  .search-column-content {
+    @apply p-4 min-h-[120px];
+  }
+
+  /* ==============================================
+     RADIO BUTTONS
+     ============================================== */
+
+  .radio-label {
+    @apply flex items-center gap-2 text-[0.85rem] cursor-pointer 
+           transition-colors duration-200 text-gris-fonce hover:text-turquoise;
+  }
+
+  .radio-label-disabled {
+    @apply text-gray-400 cursor-not-allowed hover:text-gray-400;
+  }
+
+  .radio-input {
+    @apply w-4 h-4 accent-turquoise cursor-pointer disabled:cursor-not-allowed;
+  }
+
+  /* ==============================================
+     HEADER / NAV
+     ============================================== */
+
+  .header-base {
+    @apply bg-white py-2.5 px-[5%] relative max-w-full;
+  }
+
+  .header-container {
+    @apply max-w-[1700px] mx-auto;
+  }
+
+  .header-grid {
+    @apply grid grid-cols-[2fr_auto_1.5fr_1.5fr] gap-5 items-center pr-40 
+           max-lg:grid-cols-2 max-lg:pr-[150px] max-lg:gap-4 
+           max-md:flex max-md:flex-col max-md:gap-2.5 max-md:pr-0 max-md:items-start;
+  }
+
+  /* ==============================================
+     RUBAN TURQUOISE
+     ============================================== */
+
+  .ribbon {
+    @apply absolute top-0 right-[1.5%] w-[140px] min-h-[150px] 
+           bg-turquoise py-4 px-2.5 text-center z-[1000] 
+           max-lg:w-[120px] max-lg:py-3 max-lg:px-2 
+           max-md:right-[3px] max-md:w-[120px] max-md:min-h-0 max-md:py-2.5 max-md:px-2;
+  }
+
+  .ribbon-nav {
+    @apply flex flex-col gap-0.5;
+  }
+
+  .ribbon-item {
+    @apply border-b border-black/20 last:border-b-0;
+  }
+
+  .ribbon-btn {
+    @apply block w-full bg-transparent border-none text-white text-xs font-semibold 
+           py-2.5 px-1.5 cursor-pointer no-underline transition-colors duration-200 
+           hover:bg-black/10 max-lg:text-[11px] max-lg:py-2 max-lg:px-1;
+  }
+
+  /* ==============================================
+     NAVBAR
+     ============================================== */
+
+  .navbar {
+    @apply bg-marron p-0;
+  }
+
+  .navbar-container {
+    @apply max-w-[1200px] mx-auto flex items-center justify-center relative;
+  }
+
+  .navbar-link {
+    @apply block text-white no-underline py-3 px-6 text-sm font-bold 
+           uppercase tracking-wide transition-colors duration-200 
+           hover:bg-black/10 
+           max-md:text-center max-md:py-4 max-md:px-5 max-md:border-b max-md:border-white/20;
+  }
+
+  /* ==============================================
+     CONTACT
+     ============================================== */
+
+  .contact-icon {
+    @apply w-[46px] h-[46px] min-w-[46px] rounded-full bg-turquoise text-white 
+           flex items-center justify-center text-xl 
+           max-md:w-[38px] max-md:h-[38px] max-md:min-w-[38px] max-md:text-base;
+  }
+
+  /* ==============================================
+     SEARCH BAR (header)
+     ============================================== */
+
+  .search-bar-input {
+    @apply w-full rounded-[25px] py-2.5 pr-[45px] pl-5 border border-gray-300 
+           text-sm h-10 outline-none transition-colors duration-200 
+           focus:border-turquoise focus:shadow-[0_0_0_2px_rgba(95,200,194,0.2)];
+  }
+
+  /* ==============================================
+     SKIP LINK (accessibilité)
+     ============================================== */
+
+  .skip-link {
+    @apply absolute -top-10 left-0 bg-turquoise text-white py-2 px-4 
+           z-[10000] no-underline font-semibold transition-all duration-300 focus:top-0;
+  }
+
+  /* ==============================================
+     SECTIONS COMMUNES
+     ============================================== */
+
+  main {
+    @apply bg-marron-clair;
+  }
+
+  .section-title {
+    @apply text-[32px] font-bold text-gris-fonce mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-base text-gris-moyen mb-0;
+  }
+
+  .section-header {
+    @apply text-center mb-10;
+  }
+
+  .section-separator {
+    @apply border-t border-marron-fonce/30 mx-auto max-w-[1200px];
+  }
+
+  /* ==============================================
+     OFFRES
+     ============================================== */
+
+  .offres-section {
+    @apply bg-marron-clair py-10;
+  }
+
+  .offre-card {
+    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col
+           hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .offre-card-image {
+    @apply relative overflow-hidden h-[200px];
+  }
+
+  .offre-card-image img {
+    @apply w-full h-full object-cover transition-transform duration-300;
+  }
+
+  .offre-card:hover .offre-card-image img {
+    @apply scale-110;
+  }
+
+  .offre-badge {
+    @apply absolute top-4 right-4 bg-turquoise text-white py-1 px-4 rounded-full text-xs font-bold uppercase
+           shadow-[0_2px_8px_rgba(95,200,194,0.4)];
+  }
+
+  .offre-card-body {
+    @apply p-5 flex flex-col flex-1;
+  }
+
+  .offre-card-title {
+    @apply text-lg font-bold text-gris-fonce mb-2 leading-tight;
+  }
+
+  .offre-card-text {
+    @apply text-sm text-gris-moyen mb-5 flex-1;
+  }
+
+  .btn-offre {
+    @apply bg-turquoise text-white border-2 border-turquoise rounded-full py-2 px-6 text-sm font-semibold 
+           uppercase transition-all duration-300 no-underline inline-block text-center
+           hover:-translate-y-0.5 hover:shadow-lg;
+  }
+
+  /* ==============================================
+     DESTINATIONS
+     ============================================== */
+
+  .destinations-section {
+    @apply bg-marron-clair pt-5 pb-10;
+  }
+
+  .destination-card {
+    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col
+           hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .destination-card-image {
+    @apply relative overflow-hidden h-[280px];
+  }
+
+  .destination-card-image img {
+    @apply w-full h-full object-cover transition-transform duration-500;
+  }
+
+  .destination-card:hover .destination-card-image img {
+    @apply scale-110;
+  }
+
+  .destination-overlay {
+    @apply absolute inset-0 flex items-end p-5 transition-all duration-300;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 80%, rgba(0,0,0,0.8) 100%);
+  }
+
+  .destination-card:hover .destination-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 75%, rgba(95,200,194,0.9) 100%);
+  }
+
+  .destination-info {
+    @apply text-white w-full;
+  }
+
+  .destination-name {
+    @apply text-2xl font-bold text-white mb-1 leading-tight;
+  }
+
+  .destination-country {
+    @apply text-sm text-white/90 mb-2;
+  }
+
+  .destination-stats {
+    @apply flex gap-4 text-[13px] text-white/90;
+  }
+
+  .destination-card-footer {
+    @apply py-4 px-5 bg-white border-t border-gray-100;
+  }
+
+  .btn-destination {
+    @apply text-turquoise text-sm font-semibold no-underline inline-flex items-center gap-1 transition-all duration-300
+           hover:text-turquoise-hover hover:gap-2;
+  }
+
+  /* ==============================================
+     CRITÈRES
+     ============================================== */
+
+  .criteres-section {
+    @apply bg-marron-clair py-10;
+  }
+
+  .info-card {
+    @apply h-full border border-gray-200 rounded-[10px] shadow-sm transition-all duration-300
+           hover:-translate-y-1 hover:shadow-md;
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(242,242,242,1) 100%);
+  }
+
+  .info-card-body {
+    @apply p-6 text-left;
+  }
+
+  .info-card-title {
+    @apply text-lg font-bold text-turquoise mb-2 pb-2 border-b border-gray-300;
+  }
+
+  .info-card-text {
+    @apply text-sm text-gris-fonce leading-relaxed whitespace-pre-line;
+  }
+
+  /* ==============================================
+     FOOTER
+     ============================================== */
+
+  .footer-main {
+    @apply bg-white py-0 px-[5%] text-[13px] text-gris-moyen font-bold;
+  }
+
+  .footer-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8;
+  }
+
+  .footer-section {
+    @apply text-left p-3;
+  }
+
+  .footer-title {
+    @apply text-xl text-gris-moyen font-bold mb-3;
+  }
+
+  .footer-text {
+    @apply font-normal text-gris-moyen leading-relaxed;
+  }
+
+  .footer-link {
+    @apply text-gris-moyen no-underline transition-colors duration-300 hover:text-turquoise;
+  }
+
+  .footer-list {
+    @apply list-none p-0 m-0;
+  }
+
+  .footer-list-item {
+    @apply leading-relaxed py-0;
+  }
+
+  /* Réseaux sociaux */
+  .social-icon {
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-full 
+           bg-marron text-white text-lg transition-all duration-300 
+           hover:bg-marron-clair hover:text-turquoise hover:scale-110;
+  }
+
+  /* Newsletter */
+  .newsletter-input {
+    @apply flex-1 py-2 px-3 border border-gray-300 rounded-l text-sm 
+           outline-none focus:border-turquoise;
+  }
+
+  .newsletter-btn {
+    @apply bg-marron text-white px-4 py-2 border-none rounded-r font-semibold 
+           cursor-pointer transition-all duration-300 
+           hover:bg-marron-clair hover:text-turquoise hover:scale-105;
+  }
+
+  /* Barre du bas */
+  .footer-bottom {
+    @apply w-full p-4 text-[13px] text-gris-moyen bg-gris-clair;
+  }
+
+  .footer-bottom-link {
+    @apply text-gris-moyen no-underline font-light transition-colors duration-300 
+           hover:text-turquoise;
+  }
+
+} /* FIN @layer components */
+
+/* ==========================================================
+   TRIANGLES DU RUBAN (pseudo-éléments - hors @layer)
+   ========================================================== */
+
+.ribbon-triangle::before {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 20px 70px 0 0;
+  border-color: #5fc8c2 transparent transparent transparent;
+}
+
+.ribbon-triangle::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 20px 0 0 70px;
+  border-color: #5fc8c2 transparent transparent transparent;
 }
 
 /* ==========================================================
-   UTILITAIRES GLOBAUX - Importés du Bloc 2 Angular
+   FOOTER - Puces turquoise (pseudo-élément)
    ========================================================== */
 
-/* === Alignements flexbox === */
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.footer-list-item::before {
+  content: "•";
+  color: #5fc8c2;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  font-size: 1.5em;
+  position: relative;
+  top: 3px;
 }
 
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ==========================================================
+   RESPONSIVE - Mobile 480px
+   ========================================================== */
+
+@media (max-width: 480px) {
+  .ribbon-triangle::before,
+  .ribbon-triangle::after {
+    display: none;
+  }
+
+  /* Ruban : pleine largeur en haut */
+  .ribbon {
+    position: relative !important;
+    width: 100% !important;
+    right: 0 !important;
+    order: -1;
+    margin-bottom: 10px;
+    min-height: auto !important;
+  }
+
+  /* Ruban : éléments en ligne (horizontal) */
+  .ribbon-nav {
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+
+  /* Ruban : séparateurs verticaux */
+  .ribbon-item {
+    border-bottom: none !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+    padding-right: 10px;
+  }
+
+  .ribbon-item:last-child {
+    border-right: none !important;
+    padding-right: 0;
+  }
 }
 
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
+/* ==========================================================
+   RESPONSIVE - Tablette/Desktop 1024px
+   ========================================================== */
 
-/* === Couleurs utilitaires === */
-.couleur-titre {
-  color: var(--gris-moyen);
-}
+@media (max-width: 1024px) {
+  /* Le carousel reprend une hauteur normale */
+  .carousel-container {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
 
-.couleur-soustitre {
-  color: var(--turquoise);
-}
+  /* Le conteneur des slides */
+  .carousel-container > div:first-child {
+    height: 50vh;
+    min-height: 350px;
+    position: relative;
+  }
 
-/* === Titres de section === */
-.section-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--gris-fonce);
-  margin-bottom: 10px;
-}
+  /* Le formulaire passe en dessous */
+  .search-overlay {
+    position: relative;
+    bottom: auto;
+    padding: 0;
+  }
 
-.section-subtitle {
-  font-size: 16px;
-  color: var(--gris-moyen);
-  margin-bottom: 0;
-}
+  .search-content {
+    border-radius: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
 
-/* === Bouton principal turquoise === */
-.btn-turquoise {
-  background-color: var(--turquoise);
-  color: var(--blanc);
-  border: none;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  text-transform: uppercase;
-}
+  /* Les boutons de navigation restent centrés sur les slides */
+  .carousel-nav-btn {
+    top: 25vh;
+  }
 
-.btn-turquoise:hover {
-  background-color: var(--turquoise-hover);
+  /* Dots positionnés avec top */
+  .carousel-dots {
+    bottom: auto !important;
+    top: calc(50vh - 0px);
+  }
 }

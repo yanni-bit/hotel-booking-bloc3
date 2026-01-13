@@ -1,0 +1,490 @@
+/* ==========================================================
+   HERO CAROUSEL - Styles inspirés du Bloc 2 Angular
+   Variables définies dans globals.css
+   ========================================================== */
+
+/* === CONTENEUR PRINCIPAL === */
+.hotelCarousel {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+/* === SLIDES === */
+.slidesContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hotelSlide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.hotelSlide.active {
+  opacity: 1;
+}
+
+.hotelSlide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* === BOUTONS DE NAVIGATION (flèches) === */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: var(--blanc);
+  border: none;
+  padding: 16px 12px;
+  cursor: pointer;
+  font-size: 24px;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.navBtn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.navBtn:focus {
+  outline: 2px solid var(--turquoise);
+  outline-offset: 2px;
+}
+
+.prev {
+  left: 20px;
+}
+
+.next {
+  right: 20px;
+}
+
+/* === INDICATEURS (dots) === */
+.dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.dot.active {
+  background-color: var(--turquoise);
+  border-color: var(--blanc);
+  transform: scale(1.2);
+}
+
+.dot:focus {
+  outline: 2px solid var(--turquoise);
+  outline-offset: 2px;
+}
+
+/* ==========================================================
+   FORMULAIRE DE RECHERCHE (OVERLAY)
+   ========================================================== */
+
+.searchOverlay {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  padding: 0 20px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchContent {
+  background-color: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  border-radius: 8px 8px 0 0;
+  padding: 0;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* === GRILLE 4 COLONNES === */
+.searchForm {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.searchColumn {
+  padding: 0;
+  border-right: 1px solid #e0e0e0;
+}
+
+.searchColumn:last-child {
+  border-right: none;
+}
+
+/* === TITRE DE COLONNE (01, 02, 03, 04) === */
+.columnTitle {
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gris-fonce);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.columnTitle em {
+  color: var(--turquoise);
+  font-style: normal;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+/* === CONTENU DE COLONNE === */
+.columnContent {
+  padding: 15px;
+  min-height: 120px;
+}
+
+/* === LABELS === */
+.fieldLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gris-fonce);
+  margin-bottom: 6px;
+}
+
+/* === INPUTS & SELECT === */
+.formControl {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: var(--blanc);
+  color: var(--gris-fonce);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formControl:focus {
+  outline: none;
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 3px rgba(95, 200, 194, 0.15);
+}
+
+.formControl:hover {
+  border-color: #bbb;
+}
+
+/* === VALIDATION STATES === */
+.isValid {
+  border-color: #28a745 !important;
+}
+
+.isValid:focus {
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15) !important;
+}
+
+.isInvalid {
+  border-color: #dc3545 !important;
+}
+
+.isInvalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* === COLONNE 1 : RADIO BUTTONS === */
+.radioGroup {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.radioColumns {
+  display: flex;
+  gap: 15px;
+}
+
+.radioCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--gris-fonce);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.radioLabel:hover {
+  color: var(--turquoise);
+}
+
+.radioLabel input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--turquoise);
+  cursor: pointer;
+}
+
+.radioLabel.disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.radioLabel.disabled input {
+  cursor: not-allowed;
+}
+
+.radioLabel.disabled span {
+  text-decoration: line-through;
+}
+
+/* === COLONNE 3 : DATES === */
+.dateRow {
+  display: flex;
+  gap: 10px;
+}
+
+.dateField {
+  flex: 1;
+}
+
+/* === COLONNE 4 : QUI === */
+.whoRow {
+  display: flex;
+  gap: 10px;
+}
+
+.whoField {
+  flex: 1;
+}
+
+.whoField input[type="number"] {
+  text-align: center;
+}
+
+/* === BOUTON RECHERCHER === */
+/* === WRAPPER BOUTON === */
+.searchButtonWrapper {
+  padding: 5px 0 0 0 ;
+  display: flex;
+  justify-content: center;
+}
+
+.searchButton {
+  /* Retirez margin: 0 auto car flexbox gère le centrage */
+  display: block;
+  width: auto; /* ou une largeur fixe comme 200px */
+  background-color: var(--turquoise);
+  color: var(--blanc);
+  border: none;
+  border-radius: 10px 10px 0 0;
+  padding: 7px 38px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.searchButton:hover {
+  background-color: var(--turquoise-hover);
+}
+
+.searchButton:focus {
+  outline: 2px solid var(--gris-fonce);
+  outline-offset: -2px;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+   ========================================================== */
+
+/* Tablettes */
+@media (max-width: 1024px) {
+  .searchForm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .searchColumn:nth-child(2) {
+    border-right: none;
+  }
+  
+  .searchColumn:nth-child(3),
+  .searchColumn:nth-child(4) {
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .searchColumn:nth-child(3) {
+    border-right: 1px solid #e0e0e0;
+  }
+  
+  .dots {
+    bottom: 320px;
+  }
+  
+  .hotelCarousel {
+    min-height: 700px;
+  }
+}
+
+/* Mobiles */
+@media (max-width: 768px) {
+  .hotelCarousel {
+    height: auto;
+    min-height: auto;
+  }
+
+  .slidesContainer {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .searchForm {
+    grid-template-columns: 1fr;
+  }
+  
+  .searchColumn {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .searchColumn:last-child {
+    border-bottom: none;
+  }
+  
+  .columnContent {
+    min-height: auto;
+    padding: 12px 15px;
+  }
+  
+  .radioColumns {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .navBtn {
+    padding: 12px 10px;
+    font-size: 20px;
+  }
+  
+  .prev {
+    left: 10px;
+  }
+  
+  .next {
+    right: 10px;
+  }
+  
+  .dots {
+    position: absolute;
+    bottom: auto;
+    top: calc(50vh - 40px);
+  }
+  
+  .searchOverlay {
+    position: relative;
+    padding: 0;
+  }
+  
+  .searchContent {
+    border-radius: 0;
+  }
+}
+
+/* Petits mobiles */
+@media (max-width: 480px) {
+  .slidesContainer {
+    height: 40vh;
+    min-height: 250px;
+  }
+  
+  .columnTitle {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  
+  .columnContent {
+    padding: 10px 12px;
+  }
+  
+  .dateRow,
+  .whoRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .radioColumns {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .radioCol {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .searchButton {
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+  
+  .dots {
+    top: calc(40vh - 35px);
+  }
+}
