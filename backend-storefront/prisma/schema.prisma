@@ -474,3 +474,18 @@ model PasswordReset {
   
   @@map("password_reset")
 }
+
+// ============================================================================
+// TABLE: destination (Pour les photos de la page d'accueil)
+// ============================================================================
+model Destination {
+  id_destination Int     @id @default(autoincrement())
+  nom_ville      String  @unique @db.VarChar(100)
+  nom_pays       String  @db.VarChar(100)
+  url_image      String  @db.VarChar(500)
+  badge          String? @db.VarChar(20)
+  ordre          Int     @default(0)
+  created_at     DateTime @default(now())
+
+  @@map("destination")
+}

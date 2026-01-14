@@ -1,22 +1,23 @@
-import { Metadata } from "next"
-import Hero from "@modules/home/components/hero"
-import Offres from "@modules/home/components/offres"
-import Destinations from "@modules/home/components/destinations"
-import Criteres from "@modules/home/components/criteres"
-import Separator from "@modules/home/components/separator"
+// app/[countryCode]/(main)/page.tsx
 
-export const metadata: Metadata = {
-  title: "Book Your Travel - Réservation d'hôtels",
-  description: "Réservez votre hôtel parmi les meilleures destinations du monde",
-}
+import Hero from "@modules/home/components/hero/hero"
+import Offres from "@modules/home/components/offres/offres"
+import Destinations from "@modules/home/components/destinations/destinations"
+import Criteres from "@modules/home/components/criteres/criteres"
+import Separator from "@modules/home/components/separator/separator"
+import { getDestinations } from "@lib/hotels" // 1. On importe ta fonction
 
-export default function Home() {
+export default async function Home() {
+  // 2. On récupère les vraies données de PostgreSQL (limité à 8 par exemple)
+  const realDestinations = await getDestinations()
+
   return (
     <>
       <Hero />
       <Offres />
       <Separator />
-      <Destinations />
+      {/* 3. On envoie les données au composant destinations */}
+      <Destinations destinations={realDestinations} /> 
       <Separator />
       <Criteres />
     </>
