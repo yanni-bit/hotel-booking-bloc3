@@ -160,7 +160,7 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
                 Retour à l&apos;accueil
               </Link>
               <Link
-                href={`/${countryCode}/reservations`}
+                href={`/${countryCode}/mes-reservations`}
                 className="inline-flex items-center justify-center px-6 py-3 border border-turquoise text-turquoise font-semibold rounded-lg hover:bg-turquoise/5 transition-colors"
               >
                 <FaCalendarCheck className="mr-2" />

@@ -298,6 +298,6 @@ export async function cancelReservation(reservationId: number, userId: number) {
 
   return prisma.reservation.update({
     where: { id_reservation: reservationId },
-    data: { id_statut: 4 }, // 4 = Annulée
+    data: { id_statut: 3 }, // 3 = Annulée
   });
 }

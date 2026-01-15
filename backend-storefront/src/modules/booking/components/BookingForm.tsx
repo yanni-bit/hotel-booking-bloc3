@@ -25,6 +25,7 @@ import {
   FaGift,
   FaArrowLeft,
 } from "react-icons/fa";
+import { useAuth } from "@modules/auth/components/AuthProvider";
 
 // ============================================================================
 // TYPES
@@ -89,6 +90,7 @@ export default function BookingForm({
   countryCode,
 }: BookingFormProps) {
   const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   // État du formulaire
   const [checkIn, setCheckIn] = useState("");
@@ -248,8 +250,14 @@ export default function BookingForm({
   async function handleSubmit() {
     setError("");
 
-    // TODO: Vérifier si l'utilisateur est connecté
-    const userId = 1; // À remplacer par le vrai ID utilisateur
+    // Vérifier si l'utilisateur est connecté
+    if (!isAuthenticated || !user) {
+      // Rediriger vers login avec return URL
+      router.push(`/${countryCode}/login?redirect=/booking/${offre.id_offre}`);
+      return;
+    }
+
+    const userId = user.id_user;
 
     if (!prenom || !nom || !email || !telephone) {
       setError("Veuillez remplir tous les champs obligatoires");
