@@ -1,7 +1,6 @@
 // src/app/[countryCode]/(main)/hotels/[id]/layout.tsx
 // ============================================================================
 // Layout partagé pour la page détail hôtel
-// Équivalent du <router-outlet> Angular avec hotel-detail.component
 // ============================================================================
 
 import { notFound } from "next/navigation"
@@ -40,12 +39,10 @@ export default async function HotelLayout({ children, params }: HotelLayoutProps
   const { id, countryCode } = await params
   const hotelId = parseInt(id)
 
-  // Validation de l'ID
   if (isNaN(hotelId)) {
     notFound()
   }
 
-  // Récupération des données (UNE SEULE FOIS pour tout le layout)
   const hotel = await getHotelById(hotelId)
 
   if (!hotel) {
@@ -93,13 +90,16 @@ export default async function HotelLayout({ children, params }: HotelLayoutProps
             {/* Système d'onglets */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-6">
               
-              {/* Sidebar onglets + Aide (3/12) */}
+              {/* Sidebar onglets (3/12) */}
               <div className="md:col-span-3">
                 <HotelSidebar hotelId={hotelId} countryCode={countryCode} />
-                <HelpContact />
+                {/* HelpContact DESKTOP uniquement - sous les onglets */}
+                <div className="hidden md:block mt-4">
+                  <HelpContact />
+                </div>
               </div>
               
-              {/* Contenu des onglets (9/12) - Équivalent {children} = router-outlet */}
+              {/* Contenu des onglets (9/12) */}
               <div className="md:col-span-9">
                 {children}
               </div>
@@ -116,6 +116,14 @@ export default async function HotelLayout({ children, params }: HotelLayoutProps
           </div>
           
         </div>
+
+        {/* ========================================
+             HELP CONTACT - MOBILE UNIQUEMENT - TOUT EN BAS
+             ======================================== */}
+        <div className="md:hidden mt-6">
+          <HelpContact />
+        </div>
+
       </div>
     </main>
   )
