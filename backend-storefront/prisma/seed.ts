@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TypeService } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -34,8 +34,54 @@ const imageExtensions: Record<string, string[]> = {
   "Tokyo": ["jpg", "jpg", "webp", "webp", "jpg", "jpg", "jpg", "jpg", "jpg"],
 }
 
+// ============================================================
+// SERVICES ADDITIONNELS (catalogue)
+// ============================================================
+const servicesAdditionnels = [
+  {
+    id_service: 1,
+    nom_service: 'Parking privé',
+    description_service: 'Place de parking sécurisée',
+    type_service: 'journalier' as TypeService,
+    icone_service: 'bi-p-circle',
+    actif: true,
+  },
+  {
+    id_service: 2,
+    nom_service: 'Petit-déjeuner',
+    description_service: 'Buffet continental par personne',
+    type_service: 'par_personne' as TypeService,
+    icone_service: 'bi-cup-hot',
+    actif: true,
+  },
+  {
+    id_service: 3,
+    nom_service: 'Accès spa',
+    description_service: 'Accès illimité au spa et jacuzzi',
+    type_service: 'sejour' as TypeService,
+    icone_service: 'bi-droplet',
+    actif: true,
+  },
+  {
+    id_service: 4,
+    nom_service: 'Transfert aéroport',
+    description_service: "Aller simple depuis/vers l'aéroport",
+    type_service: 'unitaire' as TypeService,
+    icone_service: 'bi-taxi-front',
+    actif: true,
+  },
+  {
+    id_service: 5,
+    nom_service: 'Départ tardif',
+    description_service: "Check-out jusqu'à 18h au lieu de 11h",
+    type_service: 'unitaire' as TypeService,
+    icone_service: 'bi-clock-history',
+    actif: true,
+  },
+]
+
 async function main() {
-  console.log("🚀 Début du seed images...")
+  console.log("🚀 Début du seed...")
 
   // ============================================================
   // 1. CORRIGER LES URLs DES IMAGES HÔTEL (ajouter le / au début)
@@ -70,7 +116,6 @@ async function main() {
   // ============================================================
   console.log("🖼️ Génération des images chambres...")
 
-  // Récupérer toutes les chambres avec leur hôtel
   const chambres = await prisma.chambre.findMany({
     include: {
       hotel: {
@@ -87,7 +132,6 @@ async function main() {
     const folder = villeToFolder[ville]
     
     if (!folder) {
-      // Ville non trouvée, utiliser une image par défaut
       imagesToCreate.push({
         id_chambre: chambre.id_chambre,
         url_img: '/images/default-room.jpg',
@@ -99,9 +143,6 @@ async function main() {
     }
 
     const extensions = imageExtensions[folder] || ["jpg", "jpg", "jpg"]
-    
-    // Générer 2-3 images par chambre en variant les numéros
-    // Utiliser l'ID chambre modulo nombre d'images pour varier
     const startIndex = (chambre.id_chambre % (extensions.length - 2)) + 1
     
     for (let i = 0; i < 3; i++) {
@@ -118,12 +159,75 @@ async function main() {
     }
   }
 
-  // Insérer toutes les images en batch
   await prisma.imgChambre.createMany({
     data: imagesToCreate
   })
 
   console.log(`✅ ${totalImages} images chambres créées pour ${chambres.length} chambres`)
+
+  // ============================================================
+  // 4. CRÉER LES SERVICES ADDITIONNELS (catalogue)
+  // ============================================================
+  console.log("🛎️ Création des services additionnels...")
+
+  // Supprimer les anciens services
+  await prisma.hotelServices.deleteMany()
+  await prisma.servicesAdditionnels.deleteMany()
+
+  // Créer les services du catalogue
+  for (const service of servicesAdditionnels) {
+    await prisma.servicesAdditionnels.create({
+      data: service
+    })
+  }
+  console.log(`✅ ${servicesAdditionnels.length} services additionnels créés`)
+
+  // ============================================================
+  // 5. CRÉER LES HOTEL_SERVICES (services par hôtel)
+  // ============================================================
+  console.log("🏨 Génération des services par hôtel...")
+
+  const hotels = await prisma.hotel.findMany({
+    select: { id_hotel: true }
+  })
+
+  const hotelServicesToCreate: {
+    id_hotel: number
+    id_service: number
+    prix: number
+    disponible: boolean
+  }[] = []
+
+  // Prix de base par service (on variera +/- 20%)
+  const prixBase: Record<number, number> = {
+    1: 20,  // Parking
+    2: 35,  // Petit-déjeuner
+    3: 85,  // Spa
+    4: 65,  // Transfert
+    5: 40,  // Départ tardif
+  }
+
+  for (const hotel of hotels) {
+    for (let idService = 1; idService <= 5; idService++) {
+      // Varier le prix de +/- 50%
+      const basePrix = prixBase[idService]
+      const variation = 0.5 + Math.random() // Entre 0.5 et 1.5
+      const prix = Math.round(basePrix * variation)
+
+      hotelServicesToCreate.push({
+        id_hotel: hotel.id_hotel,
+        id_service: idService,
+        prix: prix,
+        disponible: true,
+      })
+    }
+  }
+
+  await prisma.hotelServices.createMany({
+    data: hotelServicesToCreate
+  })
+
+  console.log(`✅ ${hotelServicesToCreate.length} services hôtel créés (${hotels.length} hôtels × 5 services)`)
 
   // ============================================================
   // RÉSUMÉ
@@ -133,6 +237,8 @@ async function main() {
   console.log("=".repeat(50))
   console.log(`• ${hotelsToFix.length} URLs hôtels corrigées`)
   console.log(`• ${totalImages} images chambres créées`)
+  console.log(`• ${servicesAdditionnels.length} services additionnels créés`)
+  console.log(`• ${hotelServicesToCreate.length} services hôtel créés`)
 }
 
 main()
