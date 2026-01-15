@@ -169,7 +169,6 @@ La documentation complète du projet est disponible dans `Projet_3___Application
 
 Projet réalisé pour :
 - ✅ Validation du **Bloc 3 (Framework)** - Certification Développeur Web
-- 🎯 Préparation au stage chez **NEBBIU** (partenaire Google Cloud, e-commerce B2B)
 
 ## 📄 Licence
 
