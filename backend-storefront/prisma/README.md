@@ -1,14 +1,11 @@
 # 🏨 HotelBooking - Application de Réservation en Ligne
 
-> Application web complète de réservation d'hôtels développée avec Angular et Node.js
+> Application web de réservation d'hôtels développée avec Medusa.js et Next.js
 
-![Status](https://img.shields.io/badge/status-en%20développement-yellow)
-![Angular](https://img.shields.io/badge/Angular-18+-red)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
 
 ## 📋 Description
 
-HotelBooking est une plateforme moderne de réservation d'hôtels permettant aux utilisateurs de rechercher, comparer et réserver des hébergements. L'application comprend également un panneau d'administration complet pour la gestion des hôtels, réservations et utilisateurs.
+HotelBooking est une plateforme moderne de réservation d'hôtels construite sur une architecture headless. Elle utilise Medusa.js comme backend e-commerce et Next.js pour le frontend.
 
 ## ✨ Fonctionnalités
 
@@ -19,87 +16,69 @@ HotelBooking est une plateforme moderne de réservation d'hôtels permettant aux
 - 💳 Processus de réservation et paiement
 - 👤 Gestion du profil utilisateur
 - 📱 Interface responsive (mobile/desktop)
+- 💱 Support multi-devises
 
 ### Côté Administration
-- 📊 Dashboard administrateur
+- 📊 Dashboard Medusa Admin
 - 🏨 Gestion des hôtels et chambres
 - 📅 Suivi des réservations
 - 👥 Gestion des utilisateurs
 - 💬 Gestion des avis et messages
-- 🛎️ Configuration des services
 
 ## 🛠️ Stack Technique
 
 ### Frontend
-- **Framework** : Angular 18+
-- **Styles** : SCSS
-- **Architecture** : Components modulaires
+- **Framework** : Next.js 14+
+- **Langage** : TypeScript
+- **Styles** : SCSS / Tailwind CSS
+- **State Management** : React Hooks
 
 ### Backend
-- **Runtime** : Node.js
-- **Framework** : Express.js
-- **Base de données** : MongoDB
-
-## 📁 Structure du Projet
-
-```
-├── 📂 Frontend (Angular)
-│   ├── Components (*.ts, *.html, *.scss)
-│   ├── Services (auth_service, contact_service, currency_service)
-│   ├── Models (hotel, reservation, avis, chambre)
-│   └── Routes (app_routes.ts)
-│
-├── 📂 Backend (Node.js)
-│   ├── Models (Hotel.js, User.js, Reservation.js, etc.)
-│   ├── Routes (authRoutes, hotelRoutes, reservationRoutes, etc.)
-│   └── server.js
-│
-└── 📂 Assets
-    └── Maquettes et documentation PDF
-```
+- **Plateforme** : Medusa.js 2.0+
+- **Base de données** : PostgreSQL
+- **Cache** : Redis
 
 ## 🚀 Installation
 
 ### Prérequis
 - Node.js 18+
 - npm ou yarn
-- MongoDB
-- Angular CLI
+- PostgreSQL
+- Redis
 
-### Installation du Frontend
-```bash
-cd frontend
-npm install
-ng serve
-```
-
-### Installation du Backend
+### Backend (Medusa)
 ```bash
 cd backend
 npm install
-npm start
+npx medusa migrations run
+npm run dev
+```
+
+### Frontend (Next.js)
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
 ## ⚙️ Configuration
 
-Créer un fichier `.env` à la racine du backend :
+### Backend `.env`
 ```env
-PORT=3000
-MONGODB_URI=your_mongodb_connection_string
+DATABASE_URL=postgres://...
+REDIS_URL=redis://localhost:6379
 JWT_SECRET=your_jwt_secret
+COOKIE_SECRET=your_cookie_secret
 ```
 
-## 🖼️ Aperçu
-
-*Screenshots à venir*
+### Frontend `.env.local`
+```env
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+```
 
 ## 📝 Documentation
 
 La documentation complète du projet est disponible dans le fichier `Projet_3___Application_Web_de_Re_servation_en_Ligne.pdf`
-
-## 🤝 Contribution
-
-Ce projet est actuellement en développement. Les contributions seront les bienvenues une fois la version stable publiée.
 
 ## 📄 Licence
 
@@ -107,4 +86,4 @@ Ce projet est actuellement en développement. Les contributions seront les bienv
 
 ---
 
-⚠️ **Note** : Ce projet est en cours de développement actif. Certaines fonctionnalités peuvent être incomplètes ou sujettes à modifications.
+⚠️ **Note** : Ce projet est en cours de développement actif.
