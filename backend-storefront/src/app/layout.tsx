@@ -1,7 +1,7 @@
 import { getBaseURL } from "@lib/util/env"
 import { Metadata } from "next"
 import "styles/globals.css"
-import Footer from "@modules/layout/templates/footer/footer"
+import { AuthProvider } from "@modules/auth/components/AuthProvider"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light">
+    <html lang="fr" data-mode="light">
       <body>
-        <main className="relative">{props.children}</main>
+        <AuthProvider>
+          <main className="relative">{props.children}</main>
+        </AuthProvider>
       </body>
     </html>
   )

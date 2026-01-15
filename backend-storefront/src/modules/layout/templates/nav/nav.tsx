@@ -1,11 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
+import { useAuth } from "@modules/auth/components/AuthProvider"
+import { FiUser, FiLogOut, FiCalendar, FiSettings, FiChevronDown } from "react-icons/fi"
 
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
+
+  // Fermer le menu utilisateur si clic en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -15,6 +32,12 @@ const Nav = () => {
 
   const handleSearchKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSearch()
+  }
+
+  const handleLogout = async () => {
+    await logout()
+    setUserMenuOpen(false)
+    window.location.href = "/fr"
   }
 
   return (
@@ -89,9 +112,79 @@ const Nav = () => {
             {/* Ruban */}
             <div className="ribbon ribbon-triangle">
               <nav className="ribbon-nav">
-                <div className="ribbon-item">
-                  <Link href="/account" className="ribbon-btn">👤 CONNEXION</Link>
+                
+                {/* Bouton Auth dynamique */}
+                <div className="ribbon-item relative" ref={userMenuRef}>
+                  {isLoading ? (
+                    <span className="ribbon-btn opacity-50">...</span>
+                  ) : isAuthenticated && user ? (
+                    <>
+                      <button
+                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+                        className="ribbon-btn flex items-center gap-1"
+                      >
+                        <FiUser className="w-4 h-4" />
+                        <span className="max-w-[100px] truncate">{user.prenom}</span>
+                        <FiChevronDown className={`w-3 h-3 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                      </button>
+                      
+                      {/* Menu déroulant */}
+                      {userMenuOpen && (
+                        <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <p className="text-sm font-medium text-gray-900 truncate">{user.prenom} {user.nom}</p>
+                            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                          </div>
+                          
+                          <Link
+                            href="/fr/profil"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <FiUser className="w-4 h-4" />
+                            Mon profil
+                          </Link>
+                          
+                          <Link
+                            href="/fr/mes-reservations"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            <FiCalendar className="w-4 h-4" />
+                            Mes réservations
+                          </Link>
+                          
+                          {user.role === "admin" && (
+                            <Link
+                              href="/fr/admin"
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                              onClick={() => setUserMenuOpen(false)}
+                            >
+                              <FiSettings className="w-4 h-4" />
+                              Administration
+                            </Link>
+                          )}
+                          
+                          <div className="border-t border-gray-100 mt-2 pt-2">
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                            >
+                              <FiLogOut className="w-4 h-4" />
+                              Déconnexion
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link href="/fr/login" className="ribbon-btn flex items-center gap-1">
+                      <FiUser className="w-4 h-4" />
+                      CONNEXION
+                    </Link>
+                  )}
                 </div>
+
                 <div className="ribbon-item">
                   <button className="ribbon-btn">Français FR ▾</button>
                 </div>
