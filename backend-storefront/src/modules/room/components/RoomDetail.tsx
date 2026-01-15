@@ -42,7 +42,7 @@ export default function RoomDetail({ chambre, hotelId, countryCode }: RoomDetail
 
   return (
     <div className="bg-ui-bg-subtle min-h-[60vh] py-0">
-      <div className="content-container">
+      <div className="content-container px-0">
 
         {/* GRILLE RESPONSIVE avec flex pour order mobile */}
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6">

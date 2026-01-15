@@ -104,7 +104,9 @@ export default function BookingForm({
   const [specialRequests, setSpecialRequests] = useState("");
 
   // Services
-  const [servicesSelectionnes, setServicesSelectionnes] = useState<ServiceSelection[]>([]);
+  const [servicesSelectionnes, setServicesSelectionnes] = useState<
+    ServiceSelection[]
+  >([]);
 
   // UI State
   const [submitting, setSubmitting] = useState(false);
@@ -294,12 +296,12 @@ export default function BookingForm({
 
       console.log("✅ Réservation créée:", result.data);
 
-      router.push(
-        `/${countryCode}/payment/${offre.id_offre}?reservationId=${result.data.id_reservation}`
-      );
+      router.push(`/${countryCode}/payment/${result.data.id_reservation}`);
     } catch (err) {
       console.error("❌ Erreur:", err);
-      setError(err instanceof Error ? err.message : "Erreur lors de la réservation");
+      setError(
+        err instanceof Error ? err.message : "Erreur lors de la réservation"
+      );
       setSubmitting(false);
     }
   }
@@ -310,19 +312,21 @@ export default function BookingForm({
   return (
     <main className="pb-5 booking-page bg-gray-50 min-h-screen">
       <div className="content-container py-6">
-        
         {/* BREADCRUMB */}
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="flex items-center space-x-2 text-sm">
             <li>
-              <Link href={`/${countryCode}`} className="text-turquoise hover:underline">
+              <Link
+                href={`/${countryCode}`}
+                className="text-turquoise hover:underline"
+              >
                 Accueil
               </Link>
             </li>
             <li className="text-gray-400">/</li>
             <li>
-              <Link 
-                href={`/${countryCode}/hotels?city=${offre.hotel.ville_hotel}`} 
+              <Link
+                href={`/${countryCode}/hotels?city=${offre.hotel.ville_hotel}`}
                 className="text-turquoise hover:underline"
               >
                 {offre.hotel.ville_hotel}
@@ -330,8 +334,8 @@ export default function BookingForm({
             </li>
             <li className="text-gray-400">/</li>
             <li>
-              <Link 
-                href={`/${countryCode}/hotels/${offre.hotel.id_hotel}/description`} 
+              <Link
+                href={`/${countryCode}/hotels/${offre.hotel.id_hotel}/description`}
                 className="text-turquoise hover:underline"
               >
                 {offre.hotel.nom_hotel}
@@ -356,12 +360,10 @@ export default function BookingForm({
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
           {/* ============================================================ */}
           {/* FORMULAIRE (2/3) */}
           {/* ============================================================ */}
           <div className="lg:col-span-2 space-y-6">
-            
             {/* DATES ET VOYAGEURS */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-semibold text-turquoise mb-4 flex items-center">
@@ -544,7 +546,8 @@ export default function BookingForm({
                           checked={
                             service.inclus ||
                             servicesSelectionnes.some(
-                              (s) => s.id_hotel_service === service.id_hotel_service
+                              (s) =>
+                                s.id_hotel_service === service.id_hotel_service
                             )
                           }
                           onChange={(e) =>
@@ -601,7 +604,9 @@ export default function BookingForm({
                 />
               </div>
 
-              <h3 className="font-bold text-gray-800">{offre.hotel.nom_hotel}</h3>
+              <h3 className="font-bold text-gray-800">
+                {offre.hotel.nom_hotel}
+              </h3>
               <p className="text-sm text-gray-500 mb-3">
                 <FaMapMarkerAlt className="inline mr-1" />
                 {offre.hotel.ville_hotel}, {offre.hotel.pays_hotel}
@@ -654,14 +659,18 @@ export default function BookingForm({
 
                 {servicesSelectionnes.length > 0 && (
                   <div className="pt-2 border-t">
-                    <p className="text-sm font-medium mb-2">Services additionnels</p>
+                    <p className="text-sm font-medium mb-2">
+                      Services additionnels
+                    </p>
                     {servicesSelectionnes.map((service) => (
                       <div
                         key={service.id_hotel_service}
                         className="flex justify-between text-sm text-gray-600"
                       >
                         <span>{service.nom_service}</span>
-                        <span>{calculateServicePrice(service).toFixed(2)} €</span>
+                        <span>
+                          {calculateServicePrice(service).toFixed(2)} €
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -737,7 +746,6 @@ export default function BookingForm({
             Retour aux offres
           </Link>
         </div>
-
       </div>
     </main>
   );
