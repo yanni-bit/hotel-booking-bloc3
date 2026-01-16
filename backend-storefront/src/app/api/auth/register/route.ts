@@ -15,6 +15,7 @@ import {
   createToken,
   setAuthCookie,
 } from "@lib/auth";
+import { sendWelcomeEmail } from "@lib/email";
 
 // ============================================================================
 // VALIDATION
@@ -83,7 +84,16 @@ export async function POST(request: NextRequest) {
     // 5. Définir le cookie d'authentification
     await setAuthCookie(token);
 
-    // 6. Retourner l'utilisateur (sans le mot de passe)
+    // 6. Envoyer l'email de bienvenue (en arrière-plan, ne bloque pas la réponse)
+    sendWelcomeEmail(user.email_user, user.prenom_user).then((sent) => {
+      if (sent) {
+        console.log("✅ Email de bienvenue envoyé à:", user.email_user);
+      } else {
+        console.error("❌ Échec envoi email de bienvenue à:", user.email_user);
+      }
+    });
+
+    // 7. Retourner l'utilisateur (sans le mot de passe)
     return NextResponse.json({
       success: true,
       message: "Inscription réussie",

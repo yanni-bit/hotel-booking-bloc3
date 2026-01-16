@@ -16,6 +16,8 @@ import {
   updateConfirmationNumber,
 } from "@lib/payments";
 import { getStripeServer } from "@lib/stripe";
+import { sendReservationConfirmationEmail } from "@lib/email";
+import prisma from "@lib/prisma";
 
 // ============================================================================
 // POST /api/reservations/[id]/confirm
@@ -113,6 +115,70 @@ export async function POST(
     await updateConfirmationNumber(reservationId, confirmationNumber);
 
     console.log("✅ Réservation confirmée:", reservationId, confirmationNumber);
+
+    // 5. Récupérer les informations complètes pour l'email
+    const reservationComplete = await prisma.reservation.findUnique({
+      where: { id_reservation: reservationId },
+      include: {
+        user: {
+          select: {
+            email_user: true,
+            prenom_user: true,
+          },
+        },
+        offre: {
+          include: {
+            chambre: {
+              include: {
+                hotel: {
+                  select: {
+                    nom_hotel: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 6. Envoyer l'email de confirmation (en arrière-plan)
+    if (reservationComplete && reservationComplete.user) {
+      const checkInDate = new Date(reservationComplete.check_in).toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const checkOutDate = new Date(reservationComplete.check_out).toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      sendReservationConfirmationEmail(
+        reservationComplete.user.email_user,
+        reservationComplete.user.prenom_user,
+        {
+          numConfirmation: confirmationNumber,
+          hotelName: reservationComplete.offre?.chambre?.hotel?.nom_hotel || "Hôtel",
+          roomType: reservationComplete.offre?.chambre?.type_room || "Chambre",
+          checkIn: checkInDate,
+          checkOut: checkOutDate,
+          nights: reservationComplete.nbre_nuits,
+          adults: reservationComplete.nbre_adults,
+          children: reservationComplete.nbre_children,
+          totalPrice: Number(reservationComplete.total_price),
+        }
+      ).then((sent) => {
+        if (sent) {
+          console.log("✅ Email de confirmation envoyé à:", reservationComplete.user?.email_user);
+        } else {
+          console.error("❌ Échec envoi email de confirmation à:", reservationComplete.user?.email_user);
+        }
+      });
+    }
 
     return NextResponse.json({
       success: true,
