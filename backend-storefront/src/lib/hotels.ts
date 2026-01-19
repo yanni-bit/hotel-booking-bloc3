@@ -111,8 +111,7 @@ export async function getPopularHotels(limit = 6) {
     include: {
       amenities: true,
       offres: {
-        where: { date_fin: { gte: new Date() } },
-        orderBy: { prix_actuel: "asc" },
+        orderBy: { prix_nuit: "asc" },
         take: 1,
       },
     },
@@ -144,12 +143,12 @@ interface HotelCountRow {
 
 export async function getDestinations() {
   const configDestinations = (await prisma.destination.findMany({
-    orderBy: { ordre: 'asc' },
+    orderBy: { ordre: "asc" },
   })) as DestinationRow[];
 
   // On précise le type ici pour plus de clarté
   const hotelCounts = (await prisma.hotel.groupBy({
-    by: ['ville_hotel'],
+    by: ["ville_hotel"],
     _count: { id_hotel: true },
   })) as unknown as HotelCountRow[];
 
@@ -177,11 +176,8 @@ export async function getDestinations() {
  */
 export async function getOffres(limit = 6) {
   return prisma.offre.findMany({
-    where: {
-      date_fin: { gte: new Date() },
-      reduction: { gt: 0 },
-    },
-    orderBy: { reduction: "desc" },
+    where: {},
+    orderBy: { prix_nuit: "asc" },
     take: limit,
     include: {
       hotel: {
@@ -284,8 +280,7 @@ export async function searchHotels(params: {
       include: {
         amenities: true,
         offres: {
-          where: { date_fin: { gte: new Date() } },
-          orderBy: { prix_actuel: "asc" },
+          orderBy: { prix_nuit: "asc" },
           take: 1,
         },
         _count: { select: { avis: true } },
