@@ -450,6 +450,7 @@ model MessagesContact {
   id_message   Int      @id @default(autoincrement())
   nom          String   @db.VarChar(100)
   email        String   @db.VarChar(255)
+  telephone    String?  @db.VarChar(20)
   sujet        String?  @db.VarChar(255)
   message      String   @db.Text
   lu           Boolean  @default(false)

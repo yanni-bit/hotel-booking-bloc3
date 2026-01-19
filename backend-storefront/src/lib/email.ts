@@ -464,11 +464,19 @@ export async function sendReservationConfirmationEmail(
           </div>
           <div class="detail-row">
             <span class="detail-label">🌙 Durée</span>
-            <span class="detail-value">${reservation.nights} nuit${reservation.nights > 1 ? "s" : ""}</span>
+            <span class="detail-value">${reservation.nights} nuit${
+    reservation.nights > 1 ? "s" : ""
+  }</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">👥 Voyageurs</span>
-            <span class="detail-value">${reservation.adults} adulte${reservation.adults > 1 ? "s" : ""}${reservation.children > 0 ? `, ${reservation.children} enfant${reservation.children > 1 ? "s" : ""}` : ""}</span>
+            <span class="detail-value">${reservation.adults} adulte${
+    reservation.adults > 1 ? "s" : ""
+  }${
+    reservation.children > 0
+      ? `, ${reservation.children} enfant${reservation.children > 1 ? "s" : ""}`
+      : ""
+  }</span>
           </div>
           
           <div class="total-row">
@@ -506,7 +514,9 @@ export async function sendReservationConfirmationEmail(
     Arrivée : ${reservation.checkIn}
     Départ : ${reservation.checkOut}
     Durée : ${reservation.nights} nuit(s)
-    Voyageurs : ${reservation.adults} adulte(s)${reservation.children > 0 ? `, ${reservation.children} enfant(s)` : ""}
+    Voyageurs : ${reservation.adults} adulte(s)${
+    reservation.children > 0 ? `, ${reservation.children} enfant(s)` : ""
+  }
     
     Total payé : ${reservation.totalPrice.toFixed(2)} €
 
@@ -797,7 +807,9 @@ export async function sendReservationCancellationEmail(
           </div>
           <div class="detail-row">
             <span class="detail-label">🌙 Durée</span>
-            <span class="detail-value">${reservation.nights} nuit${reservation.nights > 1 ? "s" : ""}</span>
+            <span class="detail-value">${reservation.nights} nuit${
+    reservation.nights > 1 ? "s" : ""
+  }</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">N° confirmation</span>
@@ -851,6 +863,205 @@ export async function sendReservationCancellationEmail(
     Rechercher un nouvel hôtel : ${baseUrl}/fr/hotels
 
     Hotel Booking
+  `;
+
+  return sendEmail({ to, subject, html, text });
+}
+
+// ============================================================================
+// EMAIL DE CONFIRMATION MESSAGE CONTACT
+// ============================================================================
+export async function sendContactConfirmationEmail(
+  to: string,
+  nom: string,
+  sujet: string,
+  message: string
+): Promise<boolean> {
+  const subject = "Nous avons bien reçu votre message - Hotel Booking";
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+
+  // Traduire le sujet
+  const sujetLabels: Record<string, string> = {
+    reservation: "Réservation",
+    information: "Demande d'information",
+    reclamation: "Réclamation",
+    autre: "Autre",
+  };
+  const sujetLabel = sujetLabels[sujet] || sujet;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #06b6d4, #0891b2);
+          color: white;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px 10px 0 0;
+        }
+        .content {
+          background: #f9f9f9;
+          padding: 30px;
+          border: 1px solid #ddd;
+          border-top: none;
+        }
+        .message-box {
+          background: white;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        }
+        .message-box h3 {
+          margin-top: 0;
+          color: #06b6d4;
+        }
+        .message-content {
+          background: #f3f4f6;
+          padding: 15px;
+          border-radius: 8px;
+          border-left: 4px solid #06b6d4;
+          margin-top: 15px;
+          white-space: pre-wrap;
+        }
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          border-bottom: 1px solid #eee;
+        }
+        .detail-row:last-child {
+          border-bottom: none;
+        }
+        .detail-label {
+          color: #666;
+        }
+        .detail-value {
+          font-weight: bold;
+        }
+        .button {
+          display: inline-block;
+          background: #06b6d4;
+          color: white !important;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin: 20px 0;
+          font-weight: bold;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+          font-size: 12px;
+          border: 1px solid #ddd;
+          border-top: none;
+          border-radius: 0 0 10px 10px;
+        }
+        .info-box {
+          background: #ecfdf5;
+          border: 1px solid #10b981;
+          border-radius: 10px;
+          padding: 15px;
+          margin: 20px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>✉️ Message bien reçu !</h1>
+        <p>Nous reviendrons vers vous rapidement</p>
+      </div>
+      
+      <div class="content">
+        <p>Bonjour <strong>${nom}</strong>,</p>
+        
+        <p>Nous avons bien reçu votre message et nous vous en remercions.</p>
+        
+        <div class="info-box">
+          <strong>⏱️ Délai de réponse :</strong>
+          <p style="margin: 10px 0 0 0;">
+            Notre équipe s'engage à vous répondre dans un délai de <strong>24 à 48 heures</strong> ouvrées.
+          </p>
+        </div>
+        
+        <div class="message-box">
+          <h3>📋 Récapitulatif de votre message</h3>
+          
+          <table style="width: 100%; border-collapse: collapse;">
+  <tr>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; color: #666;">Sujet</td>
+    <td style="padding: 8px 0; border-bottom: 1px solid #eee; font-weight: bold; text-align: left;">${sujetLabel}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px 0; color: #666;">Date d'envoi</td>
+    <td style="padding: 8px 0; font-weight: bold; text-align: left;">${new Date().toLocaleDateString(
+      "fr-FR",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}</td>
+  </tr>
+</table>
+          
+          <div class="message-content">${message}</div>
+        </div>
+        
+        <p>En attendant, n'hésitez pas à consulter notre FAQ ou à explorer nos hôtels :</p>
+        
+        <p style="text-align: center;">
+          <a href="${baseUrl}/fr/hotels" class="button">Découvrir nos hôtels</a>
+        </p>
+        
+        <p>Merci pour votre confiance !</p>
+        
+        <p>L'équipe Hotel Booking</p>
+      </div>
+      
+      <div class="footer">
+        <p>© ${new Date().getFullYear()} Hotel Booking - Tous droits réservés</p>
+        <p>Cet email est une confirmation automatique. Merci de ne pas y répondre directement.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+    Bonjour ${nom},
+
+    Nous avons bien reçu votre message et nous vous en remercions.
+
+    DÉLAI DE RÉPONSE :
+    Notre équipe s'engage à vous répondre dans un délai de 24 à 48 heures ouvrées.
+
+    RÉCAPITULATIF DE VOTRE MESSAGE :
+    Sujet : ${sujetLabel}
+    Date d'envoi : ${new Date().toLocaleDateString("fr-FR")}
+
+    Votre message :
+    ${message}
+
+    En attendant, découvrez nos hôtels : ${baseUrl}/fr/hotels
+
+    Merci pour votre confiance !
+    L'équipe Hotel Booking
   `;
 
   return sendEmail({ to, subject, html, text });
