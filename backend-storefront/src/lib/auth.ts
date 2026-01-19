@@ -25,6 +25,17 @@ const TOKEN_EXPIRY = "7d"; // 7 jours
 const SALT_ROUNDS = 12;
 
 // ============================================================================
+// CONSTANTES RÔLES (évite les "magic numbers")
+// Différence Angular → Next.js : Pareil dans les deux cas
+// En Angular on aurait un enum ou des constantes dans un fichier séparé
+// ============================================================================
+export const ROLES = {
+  ADMIN: 1,
+  PRESTATAIRE: 2,
+  CLIENT: 3,
+} as const;
+
+// ============================================================================
 // TYPES
 // ============================================================================
 export interface UserPayload extends JWTPayload {
@@ -256,7 +267,7 @@ export async function createUser(data: RegisterData): Promise<AuthUser> {
       nom_user: data.nom,
       prenom_user: data.prenom,
       tel_user: data.tel || null,
-      id_role: 2, // 2 = client (1 = admin)
+      id_role: ROLES.CLIENT, // ✅ CORRIGÉ : Utilise la constante CLIENT (3)
       actif: true,
       email_verifie: false,
     },

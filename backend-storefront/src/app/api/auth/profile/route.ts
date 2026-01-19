@@ -1,8 +1,9 @@
-// src/app/api/user/profile/route.ts
+// src/app/api/auth/profile/route.ts
 // ============================================================================
 // API Profil Utilisateur - Hotel Booking Bloc 3
 // GET : Récupérer les infos du profil
 // PUT : Mettre à jour les infos du profil
+// DELETE : Supprimer le compte (soft delete)
 //
 // Différence Angular → Next.js :
 // - Angular : AuthService.updateProfile() appelle Express backend
@@ -10,8 +11,9 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@lib/auth";
+import { getCurrentUser, verifyPassword, getUserPasswordHash, removeAuthCookie } from "@lib/auth";
 import prisma from "@lib/prisma";
+import { sendAccountDeletionEmail } from "@lib/email";
 
 // ============================================================================
 // GET - Récupérer le profil complet (avec adresse)
@@ -90,7 +92,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Erreur GET /api/user/profile:", error);
+    console.error("Erreur GET /api/auth/profile:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
       { status: 500 }
@@ -198,9 +200,161 @@ export async function PUT(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Erreur PUT /api/user/profile:", error);
+    console.error("Erreur PUT /api/auth/profile:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
+      { status: 500 }
+    );
+  }
+}
+
+// ============================================================================
+// DELETE - Supprimer le compte (soft delete)
+// 
+// Différence Angular → Next.js :
+// - Angular : Service avec HttpClient.delete() vers Express
+// - Next.js : API Route DELETE intégrée
+//
+// Stratégie "Soft Delete" :
+// - Désactive le compte (actif = false)
+// - Anonymise les données personnelles
+// - Libère l'email pour réutilisation
+// - Conserve les réservations/avis (liés au compte anonymisé)
+// ============================================================================
+export async function DELETE(request: NextRequest) {
+  try {
+    // Vérifier l'authentification
+    const currentUser = await getCurrentUser();
+    
+    if (!currentUser) {
+      return NextResponse.json(
+        { success: false, error: "Non authentifié" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { password } = body;
+
+    // Validation : mot de passe requis pour sécurité
+    if (!password) {
+      return NextResponse.json(
+        { success: false, error: "Le mot de passe est requis pour confirmer la suppression" },
+        { status: 400 }
+      );
+    }
+
+    // Vérifier le mot de passe actuel
+    const passwordHash = await getUserPasswordHash(currentUser.email);
+    if (!passwordHash) {
+      return NextResponse.json(
+        { success: false, error: "Utilisateur non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    const isPasswordValid = await verifyPassword(password, passwordHash);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { success: false, error: "Mot de passe incorrect" },
+        { status: 401 }
+      );
+    }
+
+    // Récupérer les infos utilisateur avant suppression (pour l'email)
+    const user = await prisma.utilisateur.findUnique({
+      where: { id_user: currentUser.id_user },
+      select: {
+        id_user: true,
+        email_user: true,
+        prenom_user: true,
+        id_adress_user: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Utilisateur non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    // Sauvegarder l'email et prénom pour l'envoi de confirmation
+    const originalEmail = user.email_user;
+    const originalPrenom = user.prenom_user;
+
+    // ========================================================================
+    // SOFT DELETE : Anonymiser les données
+    // ========================================================================
+    const timestamp = Date.now();
+    const anonymizedEmail = `deleted_${user.id_user}_${timestamp}@supprime.local`;
+    
+    // Générer un hash aléatoire pour le mot de passe (impossible de se reconnecter)
+    const randomPassword = crypto.randomUUID() + crypto.randomUUID();
+    const { hashPassword } = await import("@lib/auth");
+    const hashedRandomPassword = await hashPassword(randomPassword);
+
+    // Transaction pour garantir la cohérence
+    await prisma.$transaction(async (tx) => {
+      // 1. Supprimer l'adresse si elle existe
+      if (user.id_adress_user) {
+        // D'abord délier l'adresse de l'utilisateur
+        await tx.utilisateur.update({
+          where: { id_user: user.id_user },
+          data: { id_adress_user: null },
+        });
+        
+        // Puis supprimer l'adresse
+        await tx.adresseUser.delete({
+          where: { id_adress_user: user.id_adress_user },
+        });
+      }
+
+      // 2. Supprimer les tokens de reset password
+      await tx.passwordReset.deleteMany({
+        where: { id_user: user.id_user },
+      });
+
+      // 3. Supprimer les favoris
+      await tx.favori.deleteMany({
+        where: { id_user: user.id_user },
+      });
+
+      // 4. Anonymiser l'utilisateur
+      await tx.utilisateur.update({
+        where: { id_user: user.id_user },
+        data: {
+          nom_user: "Compte",
+          prenom_user: "supprimé",
+          email_user: anonymizedEmail,
+          mot_de_passe: hashedRandomPassword,
+          tel_user: null,
+          actif: false,
+          email_verifie: false,
+        },
+      });
+    });
+
+    // Supprimer le cookie d'authentification (déconnexion)
+    await removeAuthCookie();
+
+    // Envoyer l'email de confirmation (en arrière-plan)
+    sendAccountDeletionEmail(originalEmail, originalPrenom).then((sent) => {
+      if (sent) {
+        console.log("✅ Email de suppression de compte envoyé à:", originalEmail);
+      } else {
+        console.error("❌ Échec envoi email de suppression à:", originalEmail);
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Votre compte a été supprimé avec succès",
+    });
+  } catch (error) {
+    console.error("Erreur DELETE /api/auth/profile:", error);
+    return NextResponse.json(
+      { success: false, error: "Erreur lors de la suppression du compte" },
       { status: 500 }
     );
   }

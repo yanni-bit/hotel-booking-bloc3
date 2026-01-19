@@ -521,3 +521,337 @@ export async function sendReservationConfirmationEmail(
 
   return sendEmail({ to, subject, html, text });
 }
+
+// ============================================================================
+// EMAIL DE CONFIRMATION DE SUPPRESSION DE COMPTE
+// ============================================================================
+export async function sendAccountDeletionEmail(
+  to: string,
+  prenom: string
+): Promise<boolean> {
+  const subject = "Confirmation de suppression de compte - Hotel Booking";
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #dc2626, #b91c1c);
+          color: white;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px 10px 0 0;
+        }
+        .content {
+          background: #f9f9f9;
+          padding: 30px;
+          border: 1px solid #ddd;
+          border-top: none;
+        }
+        .info-box {
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        }
+        .info-box ul {
+          margin: 10px 0 0 0;
+          padding-left: 20px;
+        }
+        .info-box li {
+          padding: 5px 0;
+        }
+        .button {
+          display: inline-block;
+          background: #06b6d4;
+          color: white !important;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin: 20px 0;
+          font-weight: bold;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+          font-size: 12px;
+          border: 1px solid #ddd;
+          border-top: none;
+          border-radius: 0 0 10px 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>👋 Au revoir ${prenom}</h1>
+        <p>Votre compte a été supprimé</p>
+      </div>
+      
+      <div class="content">
+        <p>Bonjour <strong>${prenom}</strong>,</p>
+        
+        <p>Nous vous confirmons que votre compte Hotel Booking a bien été supprimé conformément à votre demande.</p>
+        
+        <div class="info-box">
+          <strong>📋 Ce qui a été fait :</strong>
+          <ul>
+            <li>Vos informations personnelles ont été effacées</li>
+            <li>Votre adresse email a été libérée</li>
+            <li>Vos données de connexion ont été supprimées</li>
+          </ul>
+        </div>
+        
+        <p>Si vous avez des réservations passées, celles-ci restent conservées dans notre système à des fins comptables, mais ne sont plus associées à vos informations personnelles.</p>
+        
+        <p>Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous êtes toujours le bienvenu pour créer un nouveau compte :</p>
+        
+        <p style="text-align: center;">
+          <a href="${baseUrl}/fr/register" class="button">Créer un nouveau compte</a>
+        </p>
+        
+        <p>Merci d'avoir utilisé Hotel Booking. Nous espérons vous revoir bientôt !</p>
+      </div>
+      
+      <div class="footer">
+        <p>© ${new Date().getFullYear()} Hotel Booking - Tous droits réservés</p>
+        <p>Cet email a été envoyé automatiquement suite à la suppression de votre compte.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+    Bonjour ${prenom},
+
+    Nous vous confirmons que votre compte Hotel Booking a bien été supprimé conformément à votre demande.
+
+    Ce qui a été fait :
+    - Vos informations personnelles ont été effacées
+    - Votre adresse email a été libérée
+    - Vos données de connexion ont été supprimées
+
+    Si vous avez des réservations passées, celles-ci restent conservées dans notre système à des fins comptables, mais ne sont plus associées à vos informations personnelles.
+
+    Si vous changez d'avis, vous pouvez créer un nouveau compte : ${baseUrl}/fr/register
+
+    Merci d'avoir utilisé Hotel Booking. Nous espérons vous revoir bientôt !
+
+    Hotel Booking
+  `;
+
+  return sendEmail({ to, subject, html, text });
+}
+
+// ============================================================================
+// EMAIL DE CONFIRMATION D'ANNULATION DE RÉSERVATION
+// ============================================================================
+export async function sendReservationCancellationEmail(
+  to: string,
+  prenom: string,
+  reservation: {
+    numConfirmation: string;
+    hotelName: string;
+    roomType: string;
+    checkIn: string;
+    checkOut: string;
+    nights: number;
+    totalPrice: number;
+  }
+): Promise<boolean> {
+  const subject = `Confirmation d'annulation #${reservation.numConfirmation} - Hotel Booking`;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #f97316, #ea580c);
+          color: white;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px 10px 0 0;
+        }
+        .content {
+          background: #f9f9f9;
+          padding: 30px;
+          border: 1px solid #ddd;
+          border-top: none;
+        }
+        .reservation-box {
+          background: white;
+          border: 2px solid #f97316;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        }
+        .reservation-box h3 {
+          margin-top: 0;
+          color: #ea580c;
+          text-decoration: line-through;
+        }
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          border-bottom: 1px solid #eee;
+        }
+        .detail-row:last-child {
+          border-bottom: none;
+        }
+        .detail-label {
+          color: #666;
+        }
+        .detail-value {
+          font-weight: bold;
+          color: #999;
+        }
+        .cancelled-badge {
+          background: #fee2e2;
+          color: #dc2626;
+          padding: 10px 20px;
+          border-radius: 5px;
+          display: inline-block;
+          font-weight: bold;
+          margin: 15px 0;
+        }
+        .button {
+          display: inline-block;
+          background: #06b6d4;
+          color: white !important;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin: 20px 0;
+          font-weight: bold;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+          font-size: 12px;
+          border: 1px solid #ddd;
+          border-top: none;
+          border-radius: 0 0 10px 10px;
+        }
+        .info-box {
+          background: #fef3c7;
+          border: 1px solid #fbbf24;
+          border-radius: 10px;
+          padding: 15px;
+          margin: 20px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>❌ Réservation annulée</h1>
+        <p>Confirmation d'annulation</p>
+      </div>
+      
+      <div class="content">
+        <p>Bonjour <strong>${prenom}</strong>,</p>
+        
+        <p>Nous confirmons l'annulation de votre réservation. Voici le récapitulatif :</p>
+        
+        <div style="text-align: center;">
+          <span class="cancelled-badge">ANNULÉE</span>
+        </div>
+        
+        <div class="reservation-box">
+          <h3>📍 ${reservation.hotelName}</h3>
+          <p style="color: #999; margin-top: 0;">${reservation.roomType}</p>
+          
+          <div class="detail-row">
+            <span class="detail-label">📅 Arrivée prévue</span>
+            <span class="detail-value">${reservation.checkIn}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">📅 Départ prévu</span>
+            <span class="detail-value">${reservation.checkOut}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">🌙 Durée</span>
+            <span class="detail-value">${reservation.nights} nuit${reservation.nights > 1 ? "s" : ""}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">N° confirmation</span>
+            <span class="detail-value">${reservation.numConfirmation}</span>
+          </div>
+        </div>
+        
+        <div class="info-box">
+          <strong>💳 Remboursement :</strong>
+          <p style="margin: 10px 0 0 0;">
+            Si votre réservation était prépayée et éligible au remboursement, 
+            celui-ci sera effectué sous 5 à 10 jours ouvrés sur votre moyen de paiement initial.
+          </p>
+        </div>
+        
+        <p>Nous espérons vous revoir bientôt pour une prochaine réservation !</p>
+        
+        <p style="text-align: center;">
+          <a href="${baseUrl}/fr/hotels" class="button">Rechercher un nouvel hôtel</a>
+        </p>
+      </div>
+      
+      <div class="footer">
+        <p>© ${new Date().getFullYear()} Hotel Booking - Tous droits réservés</p>
+        <p>Besoin d'aide ? Contactez-nous à support@hotelbooking.com</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+    Bonjour ${prenom},
+
+    Nous confirmons l'annulation de votre réservation.
+
+    RÉSERVATION ANNULÉE
+    
+    Numéro de confirmation : ${reservation.numConfirmation}
+    Hôtel : ${reservation.hotelName}
+    Chambre : ${reservation.roomType}
+    Arrivée prévue : ${reservation.checkIn}
+    Départ prévu : ${reservation.checkOut}
+    Durée : ${reservation.nights} nuit(s)
+
+    REMBOURSEMENT :
+    Si votre réservation était prépayée et éligible au remboursement, 
+    celui-ci sera effectué sous 5 à 10 jours ouvrés sur votre moyen de paiement initial.
+
+    Nous espérons vous revoir bientôt !
+
+    Rechercher un nouvel hôtel : ${baseUrl}/fr/hotels
+
+    Hotel Booking
+  `;
+
+  return sendEmail({ to, subject, html, text });
+}

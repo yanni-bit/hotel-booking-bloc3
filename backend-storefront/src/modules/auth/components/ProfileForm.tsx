@@ -11,11 +11,15 @@
 //
 // - Angular : *ngIf="editMode" pour affichage conditionnel
 // - React : {editMode && <div>...</div>} ou ternaire
+//
+// - Angular : MatDialog.open(DeleteAccountDialogComponent) pour modal
+// - React : useState(showDeleteModal) + rendu conditionnel
 // ============================================================================
 
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
 import { 
   FiEdit2, 
@@ -28,7 +32,9 @@ import {
   FiUser,
   FiMail,
   FiPhone,
-  FiMapPin
+  FiMapPin,
+  FiAlertTriangle,
+  FiTrash2
 } from "react-icons/fi";
 
 // ============================================================================
@@ -76,8 +82,11 @@ interface FullProfile {
 // COMPOSANT
 // ============================================================================
 export default function ProfileForm() {
+  // Hook Router pour redirection après suppression
+  const router = useRouter();
+  
   // Hook Auth (équivalent Angular: constructor(public authService: AuthService))
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
 
   // États du profil complet (chargé depuis l'API)
   const [profile, setProfile] = useState<FullProfile | null>(null);
@@ -116,6 +125,17 @@ export default function ProfileForm() {
   // États de soumission
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // ============================================================================
+  // ÉTATS POUR LA SUPPRESSION DE COMPTE
+  // Équivalent Angular: showDeleteDialog, deletePassword, deleteConfirmed
+  // Différence : En Angular on utiliserait MatDialog, ici on gère avec useState
+  // ============================================================================
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [showDeletePassword, setShowDeletePassword] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // ============================================================================
   // CHARGEMENT DU PROFIL
@@ -293,6 +313,71 @@ export default function ProfileForm() {
   };
 
   // ============================================================================
+  // SUPPRESSION DE COMPTE
+  // Différence Angular → React :
+  // - Angular : MatDialog retourne un Observable, on subscribe pour le résultat
+  // - React : État local showDeleteModal, on gère tout dans le composant
+  // ============================================================================
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+    setDeletePassword("");
+    setDeleteConfirmed(false);
+    setMessage(null);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeletePassword("");
+    setDeleteConfirmed(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    // Validation
+    if (!deletePassword) {
+      setMessage({ type: "error", text: "Veuillez saisir votre mot de passe" });
+      return;
+    }
+
+    if (!deleteConfirmed) {
+      setMessage({ type: "error", text: "Veuillez confirmer que vous comprenez les conséquences" });
+      return;
+    }
+
+    setDeleting(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/auth/profile", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: deletePassword }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Fermer la modal
+        closeDeleteModal();
+        
+        // Déconnecter l'utilisateur côté client
+        if (logout) {
+          await logout();
+        }
+        
+        // Rediriger vers la page d'accueil avec un message
+        router.push("/fr?deleted=1");
+      } else {
+        setMessage({ type: "error", text: data.error || "Erreur lors de la suppression" });
+      }
+    } catch (error) {
+      console.error("Erreur suppression compte:", error);
+      setMessage({ type: "error", text: "Erreur lors de la suppression du compte" });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // ============================================================================
   // HANDLERS INPUT
   // Équivalent Angular: [(ngModel)] two-way binding
   // React: value + onChange (one-way binding explicite)
@@ -342,7 +427,7 @@ export default function ProfileForm() {
   return (
     <div className="space-y-6">
       {/* Message de succès/erreur */}
-      {message && (
+      {message && !showDeleteModal && (
         <div
           className={`p-4 rounded-lg ${
             message.type === "success"
@@ -732,6 +817,160 @@ export default function ProfileForm() {
           )}
         </div>
       </div>
+
+      {/* ================================================================== */}
+      {/* CARD ZONE DE DANGER - SUPPRESSION DE COMPTE */}
+      {/* Différence Angular → React : */}
+      {/* - Angular : Bouton déclenche MatDialog.open(DeleteAccountDialogComponent) */}
+      {/* - React : Bouton déclenche setShowDeleteModal(true), modal rendue conditionnellement */}
+      {/* ================================================================== */}
+      <div className="bg-white rounded-xl shadow-sm border-2 border-red-200 overflow-hidden">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center gap-2 mb-4">
+            <FiAlertTriangle className="w-5 h-5 text-red-600" />
+            <h2 className="text-lg font-semibold text-red-600">
+              Zone de danger
+            </h2>
+          </div>
+
+          {/* Description */}
+          <p className="text-gray-600 mb-4">
+            La suppression de votre compte est irréversible. Toutes vos données personnelles 
+            seront effacées. Vos réservations passées seront conservées de manière anonyme.
+          </p>
+
+          {/* Bouton supprimer */}
+          <button
+            onClick={openDeleteModal}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <FiTrash2 className="w-4 h-4" />
+            Supprimer mon compte
+          </button>
+        </div>
+      </div>
+
+      {/* ================================================================== */}
+      {/* MODAL DE CONFIRMATION DE SUPPRESSION */}
+      {/* Différence Angular → React : */}
+      {/* - Angular : Composant séparé injecté via MatDialog */}
+      {/* - React : Rendu conditionnel dans le même composant */}
+      {/* ================================================================== */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-black/50"
+            onClick={closeDeleteModal}
+          />
+          
+          {/* Modal */}
+          <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <FiAlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Supprimer votre compte ?
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Cette action est irréversible
+                </p>
+              </div>
+            </div>
+
+            {/* Message d'erreur dans la modal */}
+            {message && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-700 border border-red-200 text-sm">
+                {message.text}
+              </div>
+            )}
+
+            {/* Avertissement */}
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-red-700">
+                <strong>Attention :</strong> En supprimant votre compte, vous perdrez :
+              </p>
+              <ul className="text-sm text-red-700 mt-2 space-y-1 list-disc list-inside">
+                <li>Vos informations personnelles</li>
+                <li>Votre historique de connexion</li>
+                <li>Vos favoris et préférences</li>
+              </ul>
+            </div>
+
+            {/* Champ mot de passe */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Confirmez avec votre mot de passe
+              </label>
+              <div className="relative">
+                <input
+                  type={showDeletePassword ? "text" : "password"}
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder="Votre mot de passe actuel"
+                  className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowDeletePassword(!showDeletePassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors"
+                >
+                  {showDeletePassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Checkbox confirmation */}
+            <div className="mb-6">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={deleteConfirmed}
+                  onChange={(e) => setDeleteConfirmed(e.target.checked)}
+                  className="mt-1 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                />
+                <span className="text-sm text-gray-700">
+                  Je comprends que cette action est <strong>irréversible</strong> et 
+                  que toutes mes données personnelles seront supprimées.
+                </span>
+              </label>
+            </div>
+
+            {/* Boutons */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting || !deletePassword || !deleteConfirmed}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {deleting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Suppression...
+                  </>
+                ) : (
+                  <>
+                    <FiTrash2 className="w-4 h-4" />
+                    Supprimer définitivement
+                  </>
+                )}
+              </button>
+              <button
+                onClick={closeDeleteModal}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
