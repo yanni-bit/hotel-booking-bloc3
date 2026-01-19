@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 
 const slides = [
   { image: "/images/slide-1.jpg", alt: "Hôtel de luxe 1" },
   { image: "/images/slide-2.jpg", alt: "Hôtel de luxe 2" },
   { image: "/images/slide-3.jpg", alt: "Hôtel de luxe 3" },
-]
+];
 
 const bookingTypes = [
   { id: "hotel", label: "Hôtel", enabled: true },
@@ -16,117 +16,178 @@ const bookingTypes = [
   { id: "studio", label: "Studio", enabled: false },
   { id: "croisiere", label: "Croisière", enabled: false },
   { id: "voiture", label: "Voiture", enabled: false },
-]
+];
 
-const cities = [
-  "Paris", "Amsterdam", "St Petersburg", "Prague",
-  "Londres", "Rome", "Barcelone", "Vienne",
-]
+// Type pour les destinations (format retourné par l'API)
+interface Destination {
+  ville: string;
+  pays: string;
+  count: number;
+  image: string;
+  badge: string | null;
+}
 
 const Hero = () => {
-  const router = useRouter()
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [bookingType, setBookingType] = useState("hotel")
-  const [selectedCity, setSelectedCity] = useState("")
-  const [checkinDate, setCheckinDate] = useState("")
-  const [checkoutDate, setCheckoutDate] = useState("")
-  const [rooms, setRooms] = useState(1)
-  const [adults, setAdults] = useState(2)
-  const [children, setChildren] = useState(0)
+  const router = useRouter();
+  const { countryCode } = useParams();
 
-  const [errors, setErrors] = useState({ city: "", checkin: "", checkout: "", adults: "" })
-  const [touched, setTouched] = useState({ city: false, checkin: false, checkout: false, adults: false })
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [bookingType, setBookingType] = useState("hotel");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [checkinDate, setCheckinDate] = useState("");
+  const [checkoutDate, setCheckoutDate] = useState("");
+  const [rooms, setRooms] = useState(1);
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
 
-  const today = new Date().toISOString().split("T")[0]
+  // État pour les villes chargées depuis l'API
+  const [cities, setCities] = useState<Destination[]>([]);
+  const [loadingCities, setLoadingCities] = useState(true);
 
+  const [errors, setErrors] = useState({
+    city: "",
+    checkin: "",
+    checkout: "",
+    adults: "",
+  });
+  const [touched, setTouched] = useState({
+    city: false,
+    checkin: false,
+    checkout: false,
+    adults: false,
+  });
+
+  const today = new Date().toISOString().split("T")[0];
+
+  // Charger les villes depuis l'API
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch("/api/destinations");
+        if (response.ok) {
+          const data = await response.json();
+          setCities(data);
+        }
+      } catch (error) {
+        console.error("Erreur chargement des villes:", error);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    fetchCities();
+  }, []);
+
+  // Auto-slide
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Validation
-  const validateCity = (value: string) => !value ? "Veuillez sélectionner une destination" : ""
+  const validateCity = (value: string) =>
+    !value ? "Veuillez sélectionner une destination" : "";
   const validateCheckin = (value: string) => {
-    if (!value) return "Veuillez sélectionner une date d'arrivée"
-    if (value < today) return "La date ne peut pas être dans le passé"
-    return ""
-  }
+    if (!value) return "Veuillez sélectionner une date d'arrivée";
+    if (value < today) return "La date ne peut pas être dans le passé";
+    return "";
+  };
   const validateCheckout = (checkin: string, checkout: string) => {
-    if (!checkout) return "Veuillez sélectionner une date de départ"
-    if (checkin && checkout <= checkin) return "La date de départ doit être après l'arrivée"
-    return ""
-  }
+    if (!checkout) return "Veuillez sélectionner une date de départ";
+    if (checkin && checkout <= checkin)
+      return "La date de départ doit être après l'arrivée";
+    return "";
+  };
   const validateAdults = (value: number) => {
-    if (!value || value < 1) return "Minimum 1 adulte requis"
-    if (value > 20) return "Maximum 20 adultes"
-    return ""
-  }
+    if (!value || value < 1) return "Minimum 1 adulte requis";
+    if (value > 20) return "Maximum 20 adultes";
+    return "";
+  };
 
   // Handlers
   const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value
-    setSelectedCity(value)
-    setTouched((prev) => ({ ...prev, city: true }))
-    setErrors((prev) => ({ ...prev, city: validateCity(value) }))
-  }
+    const value = e.target.value;
+    setSelectedCity(value);
+    setTouched((prev) => ({ ...prev, city: true }));
+    setErrors((prev) => ({ ...prev, city: validateCity(value) }));
+  };
 
   const handleCheckinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setCheckinDate(value)
-    setTouched((prev) => ({ ...prev, checkin: true }))
+    const value = e.target.value;
+    setCheckinDate(value);
+    setTouched((prev) => ({ ...prev, checkin: true }));
     setErrors((prev) => ({
       ...prev,
       checkin: validateCheckin(value),
       checkout: validateCheckout(value, checkoutDate),
-    }))
-  }
+    }));
+  };
 
   const handleCheckoutChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setCheckoutDate(value)
-    setTouched((prev) => ({ ...prev, checkout: true }))
-    setErrors((prev) => ({ ...prev, checkout: validateCheckout(checkinDate, value) }))
-  }
+    const value = e.target.value;
+    setCheckoutDate(value);
+    setTouched((prev) => ({ ...prev, checkout: true }));
+    setErrors((prev) => ({
+      ...prev,
+      checkout: validateCheckout(checkinDate, value),
+    }));
+  };
 
   const handleAdultsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = Math.max(1, Math.min(20, parseInt(e.target.value) || 1))
-    setAdults(value)
-    setTouched((prev) => ({ ...prev, adults: true }))
-    setErrors((prev) => ({ ...prev, adults: validateAdults(value) }))
-  }
+    let value = Math.max(1, Math.min(20, parseInt(e.target.value) || 1));
+    setAdults(value);
+    setTouched((prev) => ({ ...prev, adults: true }));
+    setErrors((prev) => ({ ...prev, adults: validateAdults(value) }));
+  };
 
   const handleRoomsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRooms(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))
-  }
+    setRooms(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)));
+  };
 
   const handleChildrenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChildren(Math.max(0, Math.min(10, parseInt(e.target.value) || 0)))
-  }
+    setChildren(Math.max(0, Math.min(10, parseInt(e.target.value) || 0)));
+  };
 
   const handleSearch = () => {
-    setTouched({ city: true, checkin: true, checkout: true, adults: true })
+    // Marquer tous les champs comme touchés
+    setTouched({ city: true, checkin: true, checkout: true, adults: true });
+
+    // Valider tous les champs
     const newErrors = {
       city: validateCity(selectedCity),
       checkin: validateCheckin(checkinDate),
       checkout: validateCheckout(checkinDate, checkoutDate),
       adults: validateAdults(adults),
-    }
-    setErrors(newErrors)
-    if (Object.values(newErrors).some((e) => e !== "")) return
-    console.log("✅ Recherche:", { bookingType, selectedCity, checkinDate, checkoutDate, rooms, adults, children })
-  }
+    };
+    setErrors(newErrors);
 
-  // Navigation
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length)
-  const previousSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
-  const goToSlide = (index: number) => setCurrentSlide(index)
+    // Si erreurs, on arrête
+    if (Object.values(newErrors).some((e) => e !== "")) return;
+
+    // Construire les query params
+    const params = new URLSearchParams();
+    params.set("city", selectedCity);
+    if (checkinDate) params.set("checkin", checkinDate);
+    if (checkoutDate) params.set("checkout", checkoutDate);
+    if (rooms) params.set("rooms", String(rooms));
+    if (adults) params.set("adults", String(adults));
+    if (children) params.set("children", String(children));
+
+    // Rediriger vers la page hotels
+    router.push(`/${countryCode}/hotels?${params.toString()}`);
+  };
+
+  // Navigation carousel
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const previousSlide = () =>
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const goToSlide = (index: number) => setCurrentSlide(index);
 
   const getValidationClass = (field: keyof typeof errors) => {
-    if (!touched[field]) return ""
-    return errors[field] ? "form-invalid" : "form-valid"
-  }
+    if (!touched[field]) return "";
+    return errors[field] ? "form-invalid" : "form-valid";
+  };
 
   return (
     <div className="carousel-container">
@@ -135,18 +196,32 @@ const Hero = () => {
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`carousel-slide ${currentSlide === index ? "opacity-100" : "opacity-0"}`}
+            className={`carousel-slide ${
+              currentSlide === index ? "opacity-100" : "opacity-0"
+            }`}
           >
-            <img src={slide.image} alt={slide.alt} className="w-full h-full object-cover" />
+            <img
+              src={slide.image}
+              alt={slide.alt}
+              className="w-full h-full object-cover"
+            />
           </div>
         ))}
       </div>
 
       {/* Navigation */}
-      <button className="carousel-nav-btn left-5" onClick={previousSlide} aria-label="Image précédente">
+      <button
+        className="carousel-nav-btn left-5"
+        onClick={previousSlide}
+        aria-label="Image précédente"
+      >
         &#10094;
       </button>
-      <button className="carousel-nav-btn right-5" onClick={nextSlide} aria-label="Image suivante">
+      <button
+        className="carousel-nav-btn right-5"
+        onClick={nextSlide}
+        aria-label="Image suivante"
+      >
         &#10095;
       </button>
 
@@ -155,7 +230,11 @@ const Hero = () => {
         {slides.map((_, index) => (
           <span
             key={index}
-            className={`carousel-dot ${currentSlide === index ? "carousel-dot-active" : "carousel-dot-inactive"}`}
+            className={`carousel-dot ${
+              currentSlide === index
+                ? "carousel-dot-active"
+                : "carousel-dot-inactive"
+            }`}
             onClick={() => goToSlide(index)}
             role="button"
             tabIndex={0}
@@ -169,7 +248,6 @@ const Hero = () => {
       <div className="search-overlay">
         <div className="search-content">
           <div className="search-grid">
-            
             {/* COLONNE 1 : QUOI ? */}
             <div className="search-column">
               <h5 className="search-column-title">
@@ -184,7 +262,9 @@ const Hero = () => {
                         {bookingTypes.slice(start, start + 3).map((type) => (
                           <label
                             key={type.id}
-                            className={`radio-label ${!type.enabled ? "radio-label-disabled" : ""}`}
+                            className={`radio-label ${
+                              !type.enabled ? "radio-label-disabled" : ""
+                            }`}
                           >
                             <input
                               type="radio"
@@ -195,7 +275,11 @@ const Hero = () => {
                               disabled={!type.enabled}
                               className="radio-input"
                             />
-                            <span className={!type.enabled ? "line-through" : ""}>{type.label}</span>
+                            <span
+                              className={!type.enabled ? "line-through" : ""}
+                            >
+                              {type.label}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -211,20 +295,29 @@ const Hero = () => {
                 <em className="search-column-number">02</em> Où ?
               </h5>
               <div className="search-column-content">
-                <label htmlFor="destination" className="form-label">Votre destination</label>
+                <label htmlFor="destination" className="form-label">
+                  Votre destination
+                </label>
                 <select
                   id="destination"
                   className={`form-input ${getValidationClass("city")}`}
                   value={selectedCity}
                   onChange={handleCityChange}
                   onBlur={() => setTouched((prev) => ({ ...prev, city: true }))}
+                  disabled={loadingCities}
                 >
-                  <option value="">Sélectionnez une ville</option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>{city}</option>
+                  <option value="">
+                    {loadingCities ? "Chargement..." : "Sélectionnez une ville"}
+                  </option>
+                  {cities.map((destination: Destination) => (
+                    <option key={destination.ville} value={destination.ville}>
+                      {destination.ville}
+                    </option>
                   ))}
                 </select>
-                {touched.city && errors.city && <div className="form-error">{errors.city}</div>}
+                {touched.city && errors.city && (
+                  <div className="form-error">{errors.city}</div>
+                )}
               </div>
             </div>
 
@@ -236,30 +329,46 @@ const Hero = () => {
               <div className="search-column-content">
                 <div className="flex gap-1.5">
                   <div className="flex-1 min-w-0">
-                    <label htmlFor="checkin" className="form-label">Arrivée</label>
+                    <label htmlFor="checkin" className="form-label">
+                      Arrivée
+                    </label>
                     <input
                       type="date"
                       id="checkin"
-                      className={`form-input-date ${getValidationClass("checkin")}`}
+                      className={`form-input-date ${getValidationClass(
+                        "checkin"
+                      )}`}
                       value={checkinDate}
                       min={today}
                       onChange={handleCheckinChange}
-                      onBlur={() => setTouched((prev) => ({ ...prev, checkin: true }))}
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, checkin: true }))
+                      }
                     />
-                    {touched.checkin && errors.checkin && <div className="form-error">{errors.checkin}</div>}
+                    {touched.checkin && errors.checkin && (
+                      <div className="form-error">{errors.checkin}</div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <label htmlFor="checkout" className="form-label">Départ</label>
+                    <label htmlFor="checkout" className="form-label">
+                      Départ
+                    </label>
                     <input
                       type="date"
                       id="checkout"
-                      className={`form-input-date ${getValidationClass("checkout")}`}
+                      className={`form-input-date ${getValidationClass(
+                        "checkout"
+                      )}`}
                       value={checkoutDate}
                       min={checkinDate || today}
                       onChange={handleCheckoutChange}
-                      onBlur={() => setTouched((prev) => ({ ...prev, checkout: true }))}
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, checkout: true }))
+                      }
                     />
-                    {touched.checkout && errors.checkout && <div className="form-error">{errors.checkout}</div>}
+                    {touched.checkout && errors.checkout && (
+                      <div className="form-error">{errors.checkout}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -273,28 +382,56 @@ const Hero = () => {
               <div className="search-column-content">
                 <div className="flex gap-2.5">
                   <div className="flex-1">
-                    <label htmlFor="rooms" className="form-label">Chambres</label>
-                    <input type="number" id="rooms" className="form-input-number" value={rooms} min={1} max={10} onChange={handleRoomsChange} />
+                    <label htmlFor="rooms" className="form-label">
+                      Chambres
+                    </label>
+                    <input
+                      type="number"
+                      id="rooms"
+                      className="form-input-number"
+                      value={rooms}
+                      min={1}
+                      max={10}
+                      onChange={handleRoomsChange}
+                    />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="adults" className="form-label">Adultes</label>
+                    <label htmlFor="adults" className="form-label">
+                      Adultes
+                    </label>
                     <input
                       type="number"
                       id="adults"
-                      className={`form-input-number ${getValidationClass("adults")}`}
+                      className={`form-input-number ${getValidationClass(
+                        "adults"
+                      )}`}
                       value={adults}
                       min={1}
                       max={20}
                       onChange={handleAdultsChange}
-                      onBlur={() => setTouched((prev) => ({ ...prev, adults: true }))}
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, adults: true }))
+                      }
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="children" className="form-label">Enfants</label>
-                    <input type="number" id="children" className="form-input-number" value={children} min={0} max={10} onChange={handleChildrenChange} />
+                    <label htmlFor="children" className="form-label">
+                      Enfants
+                    </label>
+                    <input
+                      type="number"
+                      id="children"
+                      className="form-input-number"
+                      value={children}
+                      min={0}
+                      max={10}
+                      onChange={handleChildrenChange}
+                    />
                   </div>
                 </div>
-                {touched.adults && errors.adults && <div className="form-error">{errors.adults}</div>}
+                {touched.adults && errors.adults && (
+                  <div className="form-error">{errors.adults}</div>
+                )}
               </div>
             </div>
           </div>
@@ -308,7 +445,7 @@ const Hero = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;
