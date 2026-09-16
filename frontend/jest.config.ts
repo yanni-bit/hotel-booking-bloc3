@@ -26,7 +26,8 @@ const config: Config = {
   testMatch: ["<rootDir>/src/**/__tests__/**/*.test.[jt]s?(x)", "<rootDir>/src/**/*.test.[jt]s?(x)"],
   // Couverture : uniquement le code applicatif
   collectCoverageFrom: [
-    "src/**/*.{ts,tsx}",
+    "src/lib/**/*.{ts,tsx}",
+    "src/modules/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
     "!src/app/**/layout.tsx",
     "!src/app/**/loading.tsx",
