@@ -10,7 +10,7 @@ const villeToFolder: Record<string, string> = {
   "Prague": "Prague",
   "Tahiti": "Tahiti",
   "Zanzibar": "Zanzibar",
-  "Male": "Maldives",
+  "Maldives": "Maldives",
   "Cancun": "Cancun",
   "Dubai": "Dubai",
   "Bali": "Bali",
@@ -34,9 +34,7 @@ const imageExtensions: Record<string, string[]> = {
   "Tokyo": ["jpg", "jpg", "webp", "webp", "jpg", "jpg", "jpg", "jpg", "jpg"],
 }
 
-// ============================================================
 // SERVICES ADDITIONNELS (catalogue)
-// ============================================================
 const servicesAdditionnels = [
   {
     id_service: 1,
@@ -80,13 +78,54 @@ const servicesAdditionnels = [
   },
 ]
 
+// ============================================================
+// DESTINATIONS (page d'accueil) — nom_ville doit être identique
+// à hotel.ville_hotel : le composant compte les hôtels par ville.
+// ============================================================
+const destinations = [
+  { nom_ville: "Paris",         url_image: "/images/paris.jpg",            ordre: 1 },
+  { nom_ville: "Tokyo",         url_image: "/images/tokyo.jpg",            ordre: 2 },
+  { nom_ville: "New York",      url_image: "/images/new-york.webp",        ordre: 3 },
+  { nom_ville: "Dubai",         url_image: "/images/dubai.jpg",            ordre: 4 },
+  { nom_ville: "Bali",          url_image: "/images/bali.jpg",             ordre: 5 },
+  { nom_ville: "Maldives",     url_image: "/images/maldives.jpg",         ordre: 6 },
+  { nom_ville: "Cancun",        url_image: "/images/cancun.jpg",           ordre: 7 },
+  { nom_ville: "Tahiti",        url_image: "/images/tahiti.jpg",           ordre: 8 },
+  { nom_ville: "Zanzibar",      url_image: "/images/zanzibar.webp",        ordre: 9 },
+  { nom_ville: "Amsterdam",     url_image: "/images/amsterdam.jpg",        ordre: 10 },
+  { nom_ville: "Prague",        url_image: "/images/prague.jpg",           ordre: 11 },
+  { nom_ville: "St Petersburg", url_image: "/images/saint-petersburg.jpg", ordre: 12 },
+]
+
 async function main() {
   console.log("🚀 Début du seed...")
 
   // ============================================================
-  // 1. CORRIGER LES URLs DES IMAGES HÔTEL (ajouter le / au début)
+  // 0. DESTINATIONS (upsert : relançable sans doublon)
   // ============================================================
-  console.log("📸 Correction des URLs img_hotel...")
+  console.log("🌍 Destinations...")
+  let destinationsCreees = 0
+  for (const dest of destinations) {
+    // Le pays est lu depuis les hôtels de la ville (source de vérité)
+    const hotelDeLaVille = await prisma.hotel.findFirst({
+      where: { ville_hotel: dest.nom_ville },
+      select: { pays_hotel: true },
+    })
+    if (!hotelDeLaVille) {
+      console.warn(`   ⚠️ Aucun hôtel pour "${dest.nom_ville}", destination ignorée`)
+      continue
+    }
+    await prisma.destination.upsert({
+      where: { nom_ville: dest.nom_ville },
+      update: { nom_pays: hotelDeLaVille.pays_hotel, url_image: dest.url_image, ordre: dest.ordre },
+      create: { ...dest, nom_pays: hotelDeLaVille.pays_hotel },
+    })
+    destinationsCreees++
+  }
+  console.log(`✅ ${destinationsCreees} destinations en place`)
+
+    // 1. CORRIGER LES URLs DES IMAGES HÔTEL (ajouter le / au début)
+    console.log("📸 Correction des URLs img_hotel...")
   
   const hotelsToFix = await prisma.hotel.findMany({
     where: {
@@ -105,16 +144,12 @@ async function main() {
   }
   console.log(`✅ ${hotelsToFix.length} URLs hôtels corrigées`)
 
-  // ============================================================
-  // 2. SUPPRIMER LES ANCIENNES IMAGES CHAMBRE
-  // ============================================================
-  console.log("🗑️ Nettoyage des anciennes images chambres...")
+    // 2. SUPPRIMER LES ANCIENNES IMAGES CHAMBRE
+    console.log("🗑️ Nettoyage des anciennes images chambres...")
   await prisma.imgChambre.deleteMany()
 
-  // ============================================================
-  // 3. GÉNÉRER LES IMAGES POUR CHAQUE CHAMBRE
-  // ============================================================
-  console.log("🖼️ Génération des images chambres...")
+    // 3. GÉNÉRER LES IMAGES POUR CHAQUE CHAMBRE
+    console.log("🖼️ Génération des images chambres...")
 
   const chambres = await prisma.chambre.findMany({
     include: {
@@ -165,14 +200,15 @@ async function main() {
 
   console.log(`✅ ${totalImages} images chambres créées pour ${chambres.length} chambres`)
 
-  // ============================================================
-  // 4. CRÉER LES SERVICES ADDITIONNELS (catalogue)
-  // ============================================================
-  console.log("🛎️ Création des services additionnels...")
+    // 4. CRÉER LES SERVICES ADDITIONNELS (catalogue)
+    console.log("🛎️ Services additionnels...")
 
-  // Supprimer les anciens services
-  await prisma.hotelServices.deleteMany()
-  await prisma.servicesAdditionnels.deleteMany()
+  // Si le catalogue existe déjà (import SQL), on ne touche à rien :
+  // hotel_services est référencé par reservation_services (clé étrangère).
+  const nbServicesExistants = await prisma.servicesAdditionnels.count()
+  if (nbServicesExistants > 0) {
+    console.log(`⏭️ ${nbServicesExistants} services déjà présents, étapes 4-5 ignorées`)
+  } else {
 
   // Créer les services du catalogue
   for (const service of servicesAdditionnels) {
@@ -182,10 +218,8 @@ async function main() {
   }
   console.log(`✅ ${servicesAdditionnels.length} services additionnels créés`)
 
-  // ============================================================
-  // 5. CRÉER LES HOTEL_SERVICES (services par hôtel)
-  // ============================================================
-  console.log("🏨 Génération des services par hôtel...")
+    // 5. CRÉER LES HOTEL_SERVICES (services par hôtel)
+    console.log("🏨 Génération des services par hôtel...")
 
   const hotels = await prisma.hotel.findMany({
     select: { id_hotel: true }
@@ -228,17 +262,16 @@ async function main() {
   })
 
   console.log(`✅ ${hotelServicesToCreate.length} services hôtel créés (${hotels.length} hôtels × 5 services)`)
+  } // fin étapes 4-5
 
-  // ============================================================
-  // RÉSUMÉ
-  // ============================================================
-  console.log("\n" + "=".repeat(50))
+    // RÉSUMÉ
+    console.log("\n" + "=".repeat(50))
   console.log("✅ SEED TERMINÉ AVEC SUCCÈS")
   console.log("=".repeat(50))
   console.log(`• ${hotelsToFix.length} URLs hôtels corrigées`)
   console.log(`• ${totalImages} images chambres créées`)
-  console.log(`• ${servicesAdditionnels.length} services additionnels créés`)
-  console.log(`• ${hotelServicesToCreate.length} services hôtel créés`)
+  console.log(`• ${destinationsCreees} destinations`)
+  console.log(`• services additionnels : ${nbServicesExistants > 0 ? "déjà présents" : servicesAdditionnels.length + " créés"}`)
 }
 
 main()
