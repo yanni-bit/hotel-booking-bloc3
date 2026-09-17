@@ -117,25 +117,14 @@ export async function getChambreWithOffersById(
 }
 
 /**
- * Version fetch pour appel API (si besoin côté client)
+ * Alias conservé pour compatibilité avec les pages existantes.
+ * Anciennement un fetch HTTP vers /api/chambres/:id (dépendait de
+ * NEXT_PUBLIC_API_URL, absent en production → "Chambre non trouvée").
+ * Un Server Component n'a aucune raison d'appeler sa propre API par HTTP :
+ * on lit Prisma directement.
  */
 export async function getChambreWithOffers(
   chambreId: number
 ): Promise<Chambre | null> {
-  try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const response = await fetch(`${API_URL}/api/chambres/${chambreId}`, {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data.success ? data.data : null;
-  } catch (error) {
-    console.error("Erreur getChambreWithOffers:", error);
-    return null;
-  }
+  return getChambreWithOffersById(chambreId);
 }
