@@ -10,7 +10,7 @@
 \set ON_ERROR_STOP on
 SET client_encoding TO 'UTF8';
 BEGIN;
-SET session_replication_role = 'replica';  -- désactive FK + triggers pendant l'import
+ALTER TABLE avis DISABLE TRIGGER USER;  -- suspend le trigger de comptage des avis (les INSERT respectent déjà l'ordre des FK)
 TRUNCATE TABLE password_reset, messages_contact, img_chambre, img_hotel, favori, avis, reservation_services, reservation, paiement, hotel_services, offre, chambre, hotel_amenities, hotel, utilisateur, services_additionnels, adresse_user, statut, role RESTART IDENTITY CASCADE;
 
 -- role (3 lignes)
@@ -4754,7 +4754,7 @@ INSERT INTO password_reset (id_reset, id_user, token, expires_at, used, created_
 (1, 4, 'a016b9880233cf317dfa9955b17e405ec753dbbacc3b3e1045cbeea3227b38a9', '2026-01-12 11:49:34', TRUE, '2026-01-12 09:49:33'),
 (2, 4, 'c28d241bce3e5c33bb9dcd3b5bda4024859f53faa51ccb7147337d0942ce509c', '2026-01-12 11:52:48', TRUE, '2026-01-12 09:52:48');
 
-SET session_replication_role = 'origin';
+ALTER TABLE avis ENABLE TRIGGER USER;
 
 -- Resynchronisation des séquences (les IDs ont été insérés explicitement)
 SELECT setval(pg_get_serial_sequence('role','id_role'), COALESCE((SELECT MAX(id_role) FROM role),0)+1, false);
