@@ -11,6 +11,12 @@ import Link from "next/link";
 import { FiMail, FiLock, FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "./AuthProvider";
 
+// Comptes de démonstration (projet d'examen) : pré-remplissent le formulaire
+const DEMO_ACCOUNTS = [
+  { label: "Client", email: "demo.client@bookyourtravel.fr", password: "Demo2026!" },
+  { label: "Administrateur", email: "demo.admin@bookyourtravel.fr", password: "Demo2026!" },
+] as const;
+
 export default function LoginForm() {
   const router = useRouter();
   const { login } = useAuth();
@@ -41,6 +47,13 @@ export default function LoginForm() {
     }
 
     setIsLoading(false);
+  };
+
+  // Pré-remplit les identifiants d'un compte de démonstration
+  const fillDemo = (account: (typeof DEMO_ACCOUNTS)[number]) => {
+    setEmail(account.email);
+    setPassword(account.password);
+    setError("");
   };
 
   return (
@@ -143,6 +156,31 @@ export default function LoginForm() {
           Créer un compte
         </Link>
       </p>
+
+      {/* Comptes de démonstration (projet d'examen) */}
+      <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4 text-sm">
+        <p className="font-medium text-cyan-800 mb-2">
+          🎓 Mode démonstration — comptes de test
+        </p>
+        <ul className="space-y-2">
+          {DEMO_ACCOUNTS.map((account) => (
+            <li key={account.email} className="flex items-center justify-between gap-3">
+              <span className="text-gray-700">
+                <span className="font-medium">{account.label}</span>
+                <span className="block text-xs text-gray-500">{account.email}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => fillDemo(account)}
+                className="shrink-0 px-3 py-1 rounded-md border border-cyan-300 bg-white text-cyan-700 text-xs font-medium hover:bg-cyan-100 transition-colors"
+              >
+                Remplir
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-xs text-gray-500">Mot de passe des deux comptes : {DEMO_ACCOUNTS[0].password}</p>
+      </div>
     </form>
   );
 }
