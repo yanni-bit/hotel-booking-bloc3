@@ -5,22 +5,22 @@ import Link from "next/link"
 import { FaFacebookF, FaYoutube, FaLinkedinIn, FaPinterestP, FaVimeoV } from "react-icons/fa"
 import { FaXTwitter } from "react-icons/fa6"
 
+// Site de démonstration : tous les liens pointent vers des pages existantes.
+// Les rubriques "Support" renvoient aux sections (ancres) de la page À propos.
 const supportLinks = [
-  { href: "/faq", label: "FAQ" },
-  { href: "/how-to-book", label: "Comment réserver" },
-  { href: "/payment-options", label: "Options de paiement" },
-  { href: "/booking-tips", label: "Conseils de réservation" },
+  { href: "/fr/a-propos", label: "À propos du projet" },
+  { href: "/fr/a-propos#tester", label: "Comment tester" },
+  { href: "/fr/a-propos#faq", label: "FAQ" },
+  { href: "/fr/a-propos#mentions", label: "Mentions légales" },
 ]
 
 const legalLinks = [
-  { href: "/about", label: "À propos" },
-  { href: "/contact", label: "Contact" },
-  { href: "/partners", label: "Partenaires" },
-  { href: "/customer-service", label: "Service client" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/careers", label: "Carrières" },
-  { href: "/terms", label: "CGV" },
-  { href: "/privacy", label: "Confidentialité" },
+  { href: "/fr/a-propos", label: "À propos" },
+  { href: "/fr/contact", label: "Contact" },
+  { href: "/fr/hotels", label: "Hôtels" },
+  { href: "/fr/a-propos#faq", label: "FAQ" },
+  { href: "/fr/a-propos#mentions", label: "Mentions légales" },
+  { href: "/fr/a-propos#mentions", label: "Confidentialité" },
 ]
 
 const Footer = () => {
