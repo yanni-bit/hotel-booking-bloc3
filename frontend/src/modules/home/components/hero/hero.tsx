@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 
 const slides = [
   { image: "/images/slide-1.jpg", alt: "Hôtel de luxe 1" },
@@ -200,10 +201,15 @@ const Hero = () => {
               currentSlide === index ? "opacity-100" : "opacity-0"
             }`}
           >
-            <img
+            {/* next/image : formats modernes (WebP/AVIF), tailles adaptées,
+                lazy loading ; la 1ère slide est l'élément LCP → priority */}
+            <Image
               src={slide.image}
               alt={slide.alt}
-              className="w-full h-full object-cover"
+              fill
+              sizes="100vw"
+              priority={index === 0}
+              className="object-cover"
             />
           </div>
         ))}
@@ -228,19 +234,24 @@ const Hero = () => {
       {/* Dots */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2.5 carousel-dots">
         {slides.map((_, index) => (
-          <span
+          /* Vrai <button> (clavier + lecteur d'écran natifs) avec une zone
+             cliquable de 24px minimum autour du point (accessibilité) */
+          <button
             key={index}
-            className={`carousel-dot ${
-              currentSlide === index
-                ? "carousel-dot-active"
-                : "carousel-dot-inactive"
-            }`}
+            type="button"
+            className="p-1.5 flex items-center justify-center"
             onClick={() => goToSlide(index)}
-            role="button"
-            tabIndex={0}
             aria-label={`Aller à l'image ${index + 1}`}
-            onKeyDown={(e) => e.key === "Enter" && goToSlide(index)}
-          />
+            aria-current={currentSlide === index ? "true" : undefined}
+          >
+            <span
+              className={`carousel-dot ${
+                currentSlide === index
+                  ? "carousel-dot-active"
+                  : "carousel-dot-inactive"
+              }`}
+            />
+          </button>
         ))}
       </div>
 

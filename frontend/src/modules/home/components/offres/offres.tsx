@@ -2,6 +2,7 @@
 
 "use client"
 
+import Image from "next/image";
 import Link from "next/link"
 import { useParams } from "next/navigation"
 
@@ -58,7 +59,12 @@ const Offres = () => {
           {offres.map((offre: typeof offres[number]) => (
             <div key={offre.id} className="offre-card">
               <div className="offre-card-image">
-                <img src={offre.image} alt={offre.title} />
+                <Image
+                  src={offre.image}
+                  alt={offre.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
                 <span className="offre-badge">{offre.badge}</span>
               </div>
               <div className="offre-card-body">

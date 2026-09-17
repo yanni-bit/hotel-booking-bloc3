@@ -32,11 +32,10 @@ export async function GET() {
     // 1. Récupérer le payload du token
     const payload = await getCurrentUser();
     
+    // Pas de session : réponse 200 avec user null. Un visiteur anonyme n'est
+    // pas une erreur (un 401 ici polluait la console et le score Lighthouse).
     if (!payload) {
-      return NextResponse.json(
-        { success: false, error: "Non authentifié" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, user: null });
     }
 
     // 2. Récupérer les infos fraîches depuis la BDD

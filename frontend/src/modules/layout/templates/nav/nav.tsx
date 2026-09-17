@@ -64,7 +64,7 @@ const Nav = () => {
               <button
                 id="toggle-dyslexie"
                 className="flex items-center gap-1.5 bg-transparent border border-gray-300 rounded py-2 px-3 cursor-pointer text-sm text-gris-fonce transition-all duration-200 hover:border-turquoise hover:text-turquoise"
-                aria-label="Activer la police adaptée aux personnes dyslexiques"
+                aria-label="Dyslexie : activer la police adaptée aux personnes dyslexiques"
                 aria-pressed="false"
                 title="Police pour dyslexie"
               >

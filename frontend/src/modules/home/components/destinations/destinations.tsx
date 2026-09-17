@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image";
 import Link from "next/link"
 import { FaBuilding } from "react-icons/fa"
 
@@ -29,7 +30,12 @@ const Destinations = ({ destinations }: DestinationProps) => {
           {destinations?.map((dest, index) => (
             <div key={index} className="destination-card">
               <div className="destination-card-image">
-                <img src={dest.image || "/images/placeholder.jpg"} alt={dest.ville} />
+                <Image
+                  src={dest.image || "/images/placeholder.jpg"}
+                  alt={dest.ville}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
                 <div className="destination-overlay">
                   <div className="destination-info">
                     <h3 className="destination-name">{dest.ville}</h3>

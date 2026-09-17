@@ -17,7 +17,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="fr">
       <body>
         <AuthProvider>
-          <main className="relative">{props.children}</main>
+          {/* id + tabIndex : cible du lien d'évitement (.skip-link) du header */}
+          <main id="main-content" tabIndex={-1} className="relative outline-none">
+            {props.children}
+          </main>
         </AuthProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-@import "tailwindcss/base";
+﻿@import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
@@ -17,7 +17,7 @@
   
   /* === Couleurs neutres === */
   --gris-clair: #f7f7f7;
-  --gris-moyen: #858585;
+  --gris-moyen: #6b6b6b; /* 5.6:1 sur blanc (RGAA : 4.5 min), ex-#858585 à 3.5:1 */
   --gris-fonce: #333333;
   --blanc: #ffffff;
   --noir: #000000;

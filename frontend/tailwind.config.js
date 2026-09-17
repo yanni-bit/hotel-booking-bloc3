@@ -31,7 +31,7 @@ module.exports = {
         },
         gris: {
           clair: "#f7f7f7",
-          moyen: "#858585",
+          moyen: "#6b6b6b",
           fonce: "#333333",
         },
         marron: {
