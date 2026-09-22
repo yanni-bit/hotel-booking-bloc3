@@ -584,15 +584,15 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 </div>
 
                 {/* ========== CONDITIONS ========== */}
-                <div className="flex items-start mb-6">
+                <div className="flex items-center mb-6">
                   <input
                     type="checkbox"
                     id="acceptConditions"
                     checked={acceptConditions}
                     onChange={(e) => setAcceptConditions(e.target.checked)}
-                    className="mt-1 w-5 h-5 text-turquoise rounded focus:ring-turquoise cursor-pointer"
+                    className="w-5 h-5 text-turquoise rounded focus:ring-turquoise cursor-pointer shrink-0"
                   />
-                  <label htmlFor="acceptConditions" className="ml-3 text-sm text-gray-600 cursor-pointer">
+                  <label htmlFor="acceptConditions" className="ml-3 text-[20px] text-gray-600 cursor-pointer">
                     J&apos;accepte les{" "}
                     <a href="#" className="text-turquoise hover:underline">
                       conditions générales de vente
