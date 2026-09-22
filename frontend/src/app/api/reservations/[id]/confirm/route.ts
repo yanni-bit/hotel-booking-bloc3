@@ -1,7 +1,15 @@
 // src/app/api/reservations/[id]/confirm/route.ts
 // ============================================================================
 // API Route pour confirmer une réservation après paiement Stripe
-// 
+//
+// Cette route transforme un paiement en réservation confirmée : c'est le
+// point le plus sensible du parcours. Quatre contrôles y sont appliqués :
+//   1. l'appelant est authentifié ;
+//   2. la réservation lui appartient ;
+//   3. le PaymentIntent a bien réussi, porte le bon montant et référence
+//      cette réservation précise (metadata.reservation_id) ;
+//   4. ce PaymentIntent n'a pas déjà servi pour un autre paiement (anti-rejeu).
+//
 // Différence Angular → Next.js :
 // - Angular : this.reservationService.updateReservationStatus(id, 2)
 // - Next.js : POST /api/reservations/[id]/confirm avec paymentIntentId
@@ -17,6 +25,7 @@ import {
 } from "@lib/payments";
 import { getStripeServer } from "@lib/stripe";
 import { sendReservationConfirmationEmail } from "@lib/email";
+import { getCurrentUser } from "@lib/auth";
 import prisma from "@lib/prisma";
 
 // ============================================================================
@@ -27,6 +36,18 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // ------------------------------------------------------------------
+    // 1. AUTHENTIFICATION
+    // ------------------------------------------------------------------
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Authentification requise" },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const reservationId = Number(id);
 
@@ -40,7 +61,7 @@ export async function POST(
     const body = await request.json();
     const { paymentIntentId } = body;
 
-    if (!paymentIntentId) {
+    if (!paymentIntentId || typeof paymentIntentId !== "string") {
       return NextResponse.json(
         { error: "paymentIntentId requis" },
         { status: 400 }
@@ -57,6 +78,16 @@ export async function POST(
       );
     }
 
+    // ------------------------------------------------------------------
+    // 2. CONTRÔLE DE PROPRIÉTÉ
+    // ------------------------------------------------------------------
+    if (reservation.id_user !== user.id_user) {
+      return NextResponse.json(
+        { error: "Accès refusé à cette réservation" },
+        { status: 403 }
+      );
+    }
+
     // Vérifier que la réservation n'est pas déjà confirmée
     if (reservation.id_statut === 2) {
       return NextResponse.json(
@@ -65,30 +96,76 @@ export async function POST(
       );
     }
 
-    // Vérifier le PaymentIntent côté Stripe
+    // ------------------------------------------------------------------
+    // 3. ANTI-REJEU
+    // Un même PaymentIntent ne peut pas confirmer deux réservations.
+    // ------------------------------------------------------------------
+    const paiementExistant = await prisma.paiement.findFirst({
+      where: { reference_externe: paymentIntentId },
+      select: { id_paiement: true },
+    });
+
+    if (paiementExistant) {
+      return NextResponse.json(
+        { error: "Ce paiement a déjà été utilisé" },
+        { status: 409 }
+      );
+    }
+
+    // ------------------------------------------------------------------
+    // 4. VÉRIFICATION DU PAIEMENT CÔTÉ STRIPE
+    // Stripe est la source de vérité : statut, montant et rattachement.
+    // ------------------------------------------------------------------
     const stripe = getStripeServer();
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
     if (paymentIntent.status !== "succeeded") {
       return NextResponse.json(
-        { 
+        {
           error: "Le paiement n'a pas été confirmé par Stripe",
-          status: paymentIntent.status 
+          status: paymentIntent.status,
         },
         { status: 400 }
       );
     }
 
-    // Vérifier que le montant correspond
-    const expectedAmount = Math.round(reservation.total_price * 100);
+    // Le PaymentIntent doit référencer CETTE réservation
+    const metadataReservationId = paymentIntent.metadata?.reservation_id;
+
+    if (metadataReservationId !== String(reservationId)) {
+      console.error(
+        `⚠️ PaymentIntent ${paymentIntentId} rattaché à la réservation ${metadataReservationId}, pas ${reservationId}`
+      );
+      return NextResponse.json(
+        { error: "Ce paiement ne correspond pas à cette réservation" },
+        { status: 400 }
+      );
+    }
+
+    // Le montant encaissé doit correspondre au montant dû : bloquant.
+    const expectedAmount = Math.round(Number(reservation.total_price) * 100);
+
     if (paymentIntent.amount !== expectedAmount) {
       console.error(
         `⚠️ Montant différent: attendu ${expectedAmount}, reçu ${paymentIntent.amount}`
       );
-      // On continue quand même mais on log l'erreur
+      return NextResponse.json(
+        { error: "Le montant payé ne correspond pas au montant de la réservation" },
+        { status: 400 }
+      );
     }
 
-    // 1. Créer l'enregistrement de paiement dans la BDD
+    // La devise aussi
+    if (paymentIntent.currency !== reservation.devise.toLowerCase()) {
+      return NextResponse.json(
+        { error: "Devise du paiement incohérente" },
+        { status: 400 }
+      );
+    }
+
+    // ------------------------------------------------------------------
+    // 5. ENREGISTREMENT
+    // ------------------------------------------------------------------
     const paiement = await createPayment({
       id_user: reservation.id_user,
       id_offre: reservation.id_offre,
@@ -101,22 +178,21 @@ export async function POST(
 
     console.log("✅ Paiement créé:", paiement.id_paiement);
 
-    // 2. Générer le numéro de confirmation
     const confirmationNumber = generateConfirmationNumber();
 
-    // 3. Mettre à jour la réservation
     await confirmReservation(
       reservationId,
       paiement.id_paiement,
       paymentIntentId
     );
 
-    // 4. Ajouter le numéro de confirmation
     await updateConfirmationNumber(reservationId, confirmationNumber);
 
     console.log("✅ Réservation confirmée:", reservationId, confirmationNumber);
 
-    // 5. Récupérer les informations complètes pour l'email
+    // ------------------------------------------------------------------
+    // 6. EMAIL DE CONFIRMATION (en arrière-plan)
+    // ------------------------------------------------------------------
     const reservationComplete = await prisma.reservation.findUnique({
       where: { id_reservation: reservationId },
       include: {
@@ -142,15 +218,18 @@ export async function POST(
       },
     });
 
-    // 6. Envoyer l'email de confirmation (en arrière-plan)
     if (reservationComplete && reservationComplete.user) {
-      const checkInDate = new Date(reservationComplete.check_in).toLocaleDateString("fr-FR", {
+      const checkInDate = new Date(
+        reservationComplete.check_in
+      ).toLocaleDateString("fr-FR", {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
       });
-      const checkOutDate = new Date(reservationComplete.check_out).toLocaleDateString("fr-FR", {
+      const checkOutDate = new Date(
+        reservationComplete.check_out
+      ).toLocaleDateString("fr-FR", {
         weekday: "long",
         year: "numeric",
         month: "long",
@@ -162,7 +241,8 @@ export async function POST(
         reservationComplete.user.prenom_user,
         {
           numConfirmation: confirmationNumber,
-          hotelName: reservationComplete.offre?.chambre?.hotel?.nom_hotel || "Hôtel",
+          hotelName:
+            reservationComplete.offre?.chambre?.hotel?.nom_hotel || "Hôtel",
           roomType: reservationComplete.offre?.chambre?.type_room || "Chambre",
           checkIn: checkInDate,
           checkOut: checkOutDate,
@@ -173,9 +253,15 @@ export async function POST(
         }
       ).then((sent) => {
         if (sent) {
-          console.log("✅ Email de confirmation envoyé à:", reservationComplete.user?.email_user);
+          console.log(
+            "✅ Email de confirmation envoyé à:",
+            reservationComplete.user?.email_user
+          );
         } else {
-          console.error("❌ Échec envoi email de confirmation à:", reservationComplete.user?.email_user);
+          console.error(
+            "❌ Échec envoi email de confirmation à:",
+            reservationComplete.user?.email_user
+          );
         }
       });
     }
@@ -193,10 +279,7 @@ export async function POST(
     console.error("❌ Erreur confirmation réservation:", error);
 
     if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json(
