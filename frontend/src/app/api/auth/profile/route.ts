@@ -341,9 +341,9 @@ export async function DELETE(request: NextRequest) {
     // Envoyer l'email de confirmation (en arrière-plan)
     sendAccountDeletionEmail(originalEmail, originalPrenom).then((sent) => {
       if (sent) {
-        console.log("✅ Email de suppression de compte envoyé à:", originalEmail);
+        console.log("Email de suppression de compte envoyé à:", originalEmail);
       } else {
-        console.error("❌ Échec envoi email de suppression à:", originalEmail);
+        console.error("Échec envoi email de suppression à:", originalEmail);
       }
     });
 

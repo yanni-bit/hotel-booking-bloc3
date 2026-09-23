@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       data: offre,
     });
   } catch (error) {
-    console.error("❌ Erreur récupération offre:", error);
+    console.error("Erreur récupération offre:", error);
     return NextResponse.json(
       { error: "Erreur lors de la récupération de l'offre" },
       { status: 500 }

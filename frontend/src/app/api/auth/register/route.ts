@@ -87,9 +87,9 @@ export async function POST(request: NextRequest) {
     // 6. Envoyer l'email de bienvenue (en arrière-plan, ne bloque pas la réponse)
     sendWelcomeEmail(user.email_user, user.prenom_user).then((sent) => {
       if (sent) {
-        console.log("✅ Email de bienvenue envoyé à:", user.email_user);
+        console.log("Email de bienvenue envoyé à:", user.email_user);
       } else {
-        console.error("❌ Échec envoi email de bienvenue à:", user.email_user);
+        console.error("Échec envoi email de bienvenue à:", user.email_user);
       }
     });
 

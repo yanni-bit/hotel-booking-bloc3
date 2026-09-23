@@ -27,7 +27,7 @@ export function getStripe(): Promise<StripeClient | null> {
     const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
     if (!publishableKey) {
-      console.error("❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY non définie");
+      console.error("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY non définie");
       return Promise.resolve(null);
     }
 
@@ -56,7 +56,7 @@ export function getStripeServer(): Stripe {
     const secretKey = process.env.STRIPE_SECRET_KEY;
 
     if (!secretKey) {
-      throw new Error("❌ STRIPE_SECRET_KEY non définie");
+      throw new Error("STRIPE_SECRET_KEY non définie");
     }
 
     stripeServer = new Stripe(secretKey, {

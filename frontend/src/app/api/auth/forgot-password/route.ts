@@ -95,11 +95,11 @@ export async function POST(request: NextRequest) {
 
     // Afficher dans la console (pour le développement)
     console.log("\n========================================");
-    console.log("🔐 DEMANDE DE RÉINITIALISATION MOT DE PASSE");
+    console.log("DEMANDE DE RÉINITIALISATION MOT DE PASSE");
     console.log("========================================");
-    console.log(`📧 Email: ${email}`);
-    console.log(`👤 Utilisateur: ${user.prenom_user} ${user.nom_user}`);
-    console.log(`🔗 Lien de réinitialisation:`);
+    console.log(`Email: ${email}`);
+    console.log(`Utilisateur: ${user.prenom_user} ${user.nom_user}`);
+    console.log(`Lien de réinitialisation:`);
     console.log(`   ${resetLink}`);
     console.log(`⏰ Expire à: ${expiresAt.toLocaleString("fr-FR")}`);
     console.log("========================================\n");
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (!emailSent) {
-      console.error("❌ Échec envoi email, mais token créé");
+      console.error("Échec envoi email, mais token créé");
       // On ne retourne pas d'erreur pour ne pas révéler si l'email existe
     }
 

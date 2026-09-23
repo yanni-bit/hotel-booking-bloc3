@@ -41,7 +41,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       data: formattedServices,
     });
   } catch (error) {
-    console.error("❌ Erreur récupération services:", error);
+    console.error("Erreur récupération services:", error);
     return NextResponse.json(
       { error: "Erreur lors de la récupération des services" },
       { status: 500 }

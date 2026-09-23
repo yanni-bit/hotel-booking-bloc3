@@ -267,7 +267,7 @@ export async function createUser(data: RegisterData): Promise<AuthUser> {
       nom_user: data.nom,
       prenom_user: data.prenom,
       tel_user: data.tel || null,
-      id_role: ROLES.CLIENT, // ✅ CORRIGÉ : Utilise la constante CLIENT (3)
+      id_role: ROLES.CLIENT, // toute inscription crée un compte client
       actif: true,
       email_verifie: false,
     },

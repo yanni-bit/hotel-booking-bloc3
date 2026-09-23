@@ -156,7 +156,7 @@ export async function GET(
       data: formattedReservation,
     });
   } catch (error) {
-    console.error("❌ Erreur récupération réservation:", error);
+    console.error("Erreur récupération réservation:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
       { status: 500 }

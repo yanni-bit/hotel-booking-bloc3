@@ -59,7 +59,7 @@ export async function GET() {
       data: formattedReservations,
     });
   } catch (error) {
-    console.error("❌ Erreur récupération réservations:", error);
+    console.error("Erreur récupération réservations:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
       { status: 500 }

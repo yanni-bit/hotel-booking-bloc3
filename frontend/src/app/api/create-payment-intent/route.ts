@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       payment_method_types: ["card"],
     });
 
-    console.log("✅ PaymentIntent créé:", paymentIntent.id);
+    console.log("PaymentIntent créé:", paymentIntent.id);
 
     // Retourner le clientSecret au frontend
     // C'est ce secret qui permet à Stripe Elements de finaliser le paiement
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
       currency: reservation.devise,
     });
   } catch (error) {
-    console.error("❌ Erreur création PaymentIntent:", error);
+    console.error("Erreur création PaymentIntent:", error);
 
     // Gérer les erreurs Stripe spécifiques
     if (error instanceof Error) {

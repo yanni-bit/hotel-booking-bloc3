@@ -134,7 +134,7 @@ export async function POST(
 
     if (metadataReservationId !== String(reservationId)) {
       console.error(
-        `⚠️ PaymentIntent ${paymentIntentId} rattaché à la réservation ${metadataReservationId}, pas ${reservationId}`
+`PaymentIntent ${paymentIntentId} rattaché à la réservation ${metadataReservationId}, pas ${reservationId}`
       );
       return NextResponse.json(
         { error: "Ce paiement ne correspond pas à cette réservation" },
@@ -147,7 +147,7 @@ export async function POST(
 
     if (paymentIntent.amount !== expectedAmount) {
       console.error(
-        `⚠️ Montant différent: attendu ${expectedAmount}, reçu ${paymentIntent.amount}`
+`Montant différent: attendu ${expectedAmount}, reçu ${paymentIntent.amount}`
       );
       return NextResponse.json(
         { error: "Le montant payé ne correspond pas au montant de la réservation" },
@@ -176,7 +176,7 @@ export async function POST(
       statut_paiement: "succeeded",
     });
 
-    console.log("✅ Paiement créé:", paiement.id_paiement);
+    console.log("Paiement créé:", paiement.id_paiement);
 
     const confirmationNumber = generateConfirmationNumber();
 
@@ -188,7 +188,7 @@ export async function POST(
 
     await updateConfirmationNumber(reservationId, confirmationNumber);
 
-    console.log("✅ Réservation confirmée:", reservationId, confirmationNumber);
+    console.log("Réservation confirmée:", reservationId, confirmationNumber);
 
     // ------------------------------------------------------------------
     // 6. EMAIL DE CONFIRMATION (en arrière-plan)
@@ -254,12 +254,12 @@ export async function POST(
       ).then((sent) => {
         if (sent) {
           console.log(
-            "✅ Email de confirmation envoyé à:",
+"Email de confirmation envoyé à:",
             reservationComplete.user?.email_user
           );
         } else {
           console.error(
-            "❌ Échec envoi email de confirmation à:",
+"Échec envoi email de confirmation à:",
             reservationComplete.user?.email_user
           );
         }
@@ -276,7 +276,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error("❌ Erreur confirmation réservation:", error);
+    console.error("Erreur confirmation réservation:", error);
 
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

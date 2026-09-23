@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
 
     const reservation = await createReservation(donnees);
 
-    console.log("✅ Réservation créée:", reservation.num_confirmation);
+    console.log("Réservation créée:", reservation.num_confirmation);
 
     return NextResponse.json({
       success: true,
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("❌ Erreur création réservation:", error);
+    console.error("Erreur création réservation:", error);
     return NextResponse.json(
       { error: "Erreur lors de la création de la réservation" },
       { status: 500 }

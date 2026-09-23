@@ -89,10 +89,10 @@ export async function POST(request: NextRequest) {
     ]);
 
     console.log("\n========================================");
-    console.log("✅ MOT DE PASSE RÉINITIALISÉ");
+    console.log("MOT DE PASSE RÉINITIALISÉ");
     console.log("========================================");
-    console.log(`👤 Utilisateur: ${resetRecord.user.prenom_user} ${resetRecord.user.nom_user}`);
-    console.log(`🕐 Date: ${new Date().toLocaleString("fr-FR")}`);
+    console.log(`Utilisateur: ${resetRecord.user.prenom_user} ${resetRecord.user.nom_user}`);
+    console.log(`Date: ${new Date().toLocaleString("fr-FR")}`);
     console.log("========================================\n");
 
     return NextResponse.json({

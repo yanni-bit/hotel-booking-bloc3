@@ -102,7 +102,7 @@ export async function POST(
     // Annuler la réservation
     await cancelReservation(reservationId, user.id_user);
 
-    console.log("✅ Réservation annulée:", reservationId);
+    console.log("Réservation annulée:", reservationId);
 
     // ========================================================================
     // Envoyer l'email de confirmation d'annulation (en arrière-plan)
@@ -124,9 +124,9 @@ export async function POST(
         emailData
       ).then((sent) => {
         if (sent) {
-          console.log("✅ Email d'annulation envoyé à:", reservationDetails.user.email_user);
+          console.log("Email d'annulation envoyé à:", reservationDetails.user.email_user);
         } else {
-          console.error("❌ Échec envoi email d'annulation à:", reservationDetails.user.email_user);
+          console.error("Échec envoi email d'annulation à:", reservationDetails.user.email_user);
         }
       });
     }
@@ -136,7 +136,7 @@ export async function POST(
       message: "Réservation annulée avec succès",
     });
   } catch (error) {
-    console.error("❌ Erreur annulation:", error);
+    console.error("Erreur annulation:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de l'annulation" },
       { status: 500 }

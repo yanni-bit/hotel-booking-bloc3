@@ -36,7 +36,7 @@ export async function GET(
       data: chambre,
     });
   } catch (error) {
-    console.error("❌ Erreur récupération chambre:", error);
+    console.error("Erreur récupération chambre:", error);
     return NextResponse.json(
       { success: false, message: "Erreur serveur" },
       { status: 500 }

@@ -7,7 +7,7 @@
 // ┌─────────────────────────────────────────────────────────────────┐
 // │ Angular (Bloc 2)              │ React + Stripe (Bloc 3)        │
 // ├─────────────────────────────────────────────────────────────────┤
-// │ <select> Type de carte        │ Auto-détecté par Stripe 🎉     │
+// │ <select> Type de carte        │ Auto-détecté par Stripe      │
 // │ <input> Numéro + Luhn         │ <CardNumberElement />          │
 // │ <input> Nom sur carte         │ <input> classique              │
 // │ <input> MM/YY + validation    │ <CardExpiryElement />          │
@@ -196,7 +196,7 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
         setClientSecret(data.clientSecret);
         setLoading(false);
       } catch (err) {
-        console.error("❌ Erreur:", err);
+        console.error("Erreur:", err);
         setError(err instanceof Error ? err.message : "Erreur de chargement");
         setLoading(false);
       }
@@ -273,7 +273,7 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
         throw new Error("Le paiement n'a pas abouti");
       }
 
-      console.log("✅ Paiement Stripe réussi:", paymentIntent.id);
+      console.log("Paiement Stripe réussi:", paymentIntent.id);
 
       // 3. Confirmer la réservation côté serveur
       const confirmResponse = await fetch(
@@ -293,12 +293,12 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
         throw new Error(confirmData.error || "Erreur de confirmation");
       }
 
-      console.log("✅ Réservation confirmée:", confirmData.data);
+      console.log("Réservation confirmée:", confirmData.data);
 
       // 4. Rediriger vers la page de confirmation
       router.push(`/${countryCode}/confirmation/${reservation.id_reservation}`);
     } catch (err) {
-      console.error("❌ Erreur paiement:", err);
+      console.error("Erreur paiement:", err);
       setError(err instanceof Error ? err.message : "Erreur de paiement");
       setSubmitting(false);
     }

@@ -302,11 +302,11 @@ export default function BookingForm({
         throw new Error(result.error || "Erreur lors de la réservation");
       }
 
-      console.log("✅ Réservation créée:", result.data);
+      console.log("Réservation créée:", result.data);
 
       router.push(`/${countryCode}/payment/${result.data.id_reservation}`);
     } catch (err) {
-      console.error("❌ Erreur:", err);
+      console.error("Erreur:", err);
       setError(
         err instanceof Error ? err.message : "Erreur lors de la réservation"
       );

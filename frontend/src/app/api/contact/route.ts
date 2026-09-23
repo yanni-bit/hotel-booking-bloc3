@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    console.log('✅ Message contact enregistré:', newMessage.id_message)
+    console.log('Message contact enregistré:', newMessage.id_message)
 
     // Envoyer email de confirmation
     await sendContactConfirmationEmail(
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('❌ Erreur API contact:', error)
+    console.error('Erreur API contact:', error)
     return NextResponse.json(
       { success: false, message: 'Erreur serveur' },
       { status: 500 }
