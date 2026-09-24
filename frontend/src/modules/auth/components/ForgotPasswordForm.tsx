@@ -2,10 +2,6 @@
 // ============================================================================
 // Formulaire Mot de Passe Oublié - Hotel Booking Bloc 3
 //
-// Différence Angular → React :
-// - Angular : [(ngModel)]="email", (ngSubmit)="onSubmit()"
-// - React : useState + onChange + onSubmit
-//
 // - Angular : @if (successMessage) { ... }
 // - React : {successMessage && <div>...</div>}
 //

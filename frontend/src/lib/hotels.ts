@@ -12,13 +12,6 @@ import prisma from "./prisma";
 export type HotelWithDetails = Awaited<ReturnType<typeof getHotelById>>;
 export type HotelCard = Awaited<ReturnType<typeof getPopularHotels>>[number];
 
-// Type pour les destinations groupées
-type DestinationGroup = {
-  ville_hotel: string;
-  pays_hotel: string;
-  _count: { id_hotel: number };
-};
-
 // ============================================================================
 // HOTELS
 // ============================================================================

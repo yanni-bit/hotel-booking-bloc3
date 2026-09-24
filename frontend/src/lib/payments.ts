@@ -72,10 +72,6 @@ export interface ReservationWithDetails {
 // ============================================================================
 /**
  * Récupère une réservation avec tous ses détails
- * 
- * Différence Angular → Next.js :
- * - Angular : this.reservationService.getReservationById(id).subscribe()
- * - Next.js : await getReservationById(id) (async/await directement)
  */
 export async function getReservationById(
   id: number
@@ -182,10 +178,6 @@ export async function createPayment(data: CreatePaymentData) {
  * - id_statut = 2 (Confirmée)
  * - id_paiement = référence vers le paiement
  * - booking_id_api = PaymentIntent ID Stripe
- * 
- * Différence Angular → Next.js :
- * - Angular : this.reservationService.updateReservationStatus(id, 2).subscribe()
- * - Next.js : await confirmReservation(id, paymentId, stripeId)
  */
 export async function confirmReservation(
   reservationId: number,

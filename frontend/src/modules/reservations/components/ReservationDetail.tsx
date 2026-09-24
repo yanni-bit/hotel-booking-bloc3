@@ -1,10 +1,6 @@
 // src/modules/reservations/components/ReservationDetail.tsx
 // ============================================================================
 // Détail d'une réservation - Client Component
-// 
-// Différence Angular → React :
-// - Angular : (click)="cancelReservation()" avec subscribe
-// - React : onClick={() => handleCancel()} avec async/await
 // ============================================================================
 
 "use client";
@@ -15,7 +11,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   FaHome,
-  FaClipboardList,
   FaReceipt,
   FaBuilding,
   FaCalendarCheck,

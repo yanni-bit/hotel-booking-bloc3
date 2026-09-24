@@ -2,10 +2,6 @@
 // ============================================================================
 // Service d'envoi d'email - Hotel Booking Bloc 3
 // Utilise Nodemailer avec Gmail SMTP
-//
-// Différence Angular → Next.js :
-// - Angular : Service séparé côté backend Express
-// - Next.js : Fonction utilitaire appelée depuis les API Routes
 // ============================================================================
 
 import nodemailer from "nodemailer";

@@ -2,10 +2,6 @@
 // ============================================================================
 // API Forgot Password - Hotel Booking Bloc 3
 // POST : Envoie un email avec le lien de réinitialisation
-//
-// Différence Angular → Next.js :
-// - Angular : AuthService.forgotPassword() avec Observable
-// - Next.js : API Route avec async/await + envoi email serveur
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

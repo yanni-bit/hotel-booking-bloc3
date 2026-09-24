@@ -1,10 +1,6 @@
 // src/app/[countryCode]/(main)/reservations/[id]/page.tsx
 // ============================================================================
 // Page détail réservation - Server Component
-// 
-// Différence Angular → Next.js :
-// - Angular : Route guard + this.route.params.subscribe()
-// - Next.js : Vérification auth dans Server Component + redirect()
 // ============================================================================
 
 import { redirect, notFound } from "next/navigation";

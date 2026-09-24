@@ -3,11 +3,6 @@
 // Tests unitaires : StatutBadge
 // Un composant pur : props en entrée, HTML en sortie. On vérifie le texte
 // affiché et la classe de couleur choisie selon statut.couleur.
-//
-// Différence Angular → React :
-// - Angular : TestBed.configureTestingModule + fixture.detectChanges()
-// - React Testing Library : render() puis requêtes sur le DOM comme un
-//   utilisateur (par texte visible), sans passer par l'instance du composant
 // ============================================================================
 
 import { render, screen } from "@testing-library/react"

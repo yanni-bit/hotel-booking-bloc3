@@ -2,10 +2,6 @@
 // ============================================================================
 // API Reset Password - Hotel Booking Bloc 3
 // POST : Réinitialise le mot de passe avec le token
-//
-// Différence Angular → Next.js :
-// - Angular : AuthService.resetPassword() avec Observable
-// - Next.js : API Route avec async/await + transaction Prisma
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

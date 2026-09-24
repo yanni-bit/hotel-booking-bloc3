@@ -2,11 +2,6 @@
 // ============================================================================
 // Admin : fiche hôtel avec édition en place et suppression.
 // Portage de l'ancienne page Medusa vers React/Tailwind.
-//
-// Différence Angular → Next.js :
-// - Angular : Reactive Forms (FormGroup, patchValue) ; React : un objet
-//   formData dans useState, mis à jour champ par champ (updateField)
-// - Angular : Router.navigate ; React : useRouter().push
 // ============================================================================
 
 "use client"

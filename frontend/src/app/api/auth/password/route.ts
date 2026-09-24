@@ -2,10 +2,6 @@
 // ============================================================================
 // API Changement Mot de Passe - Hotel Booking Bloc 3
 // PUT : Changer le mot de passe (ancien + nouveau)
-//
-// Différence Angular → Next.js :
-// - Angular : AuthService.changePassword() avec Observable
-// - Next.js : API Route avec async/await
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

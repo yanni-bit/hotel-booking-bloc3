@@ -167,10 +167,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 // ============================================================================
 /**
  * Hook pour accéder au contexte Auth
- * 
- * Différence Angular → React :
- * - Angular : constructor(private authService: AuthService)
- * - React : const { user, login } = useAuth()
  */
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);

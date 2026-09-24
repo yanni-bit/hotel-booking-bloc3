@@ -2,10 +2,6 @@
 // ============================================================================
 // API Inscription - Hotel Booking Bloc 3
 // POST /api/auth/register
-// 
-// Différence Angular → Next.js :
-// - Angular : POST vers backend Express séparé
-// - Next.js : API Route intégrée dans le même projet
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

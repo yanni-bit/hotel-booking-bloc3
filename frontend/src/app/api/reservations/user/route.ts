@@ -2,10 +2,6 @@
 // ============================================================================
 // API Route: GET /api/reservations/user
 // Récupère les réservations de l'utilisateur connecté
-//
-// Différence Angular → Next.js :
-// - Angular : this.reservationService.getUserReservations(user.id_user)
-// - Next.js : fetch('/api/reservations/user') avec cookie HttpOnly automatique
 // ============================================================================
 
 import { NextResponse } from "next/server";

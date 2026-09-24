@@ -2,10 +2,6 @@
 // ============================================================================
 // Formulaire Profil - Hotel Booking Bloc 3
 //
-// Différence Angular → React :
-// - Angular : @Component class avec propriétés, [(ngModel)], (ngSubmit)
-// - React : Function component avec useState, value + onChange, onSubmit
-//
 // - Angular : ChangeDetectorRef.markForCheck() pour OnPush
 // - React : Automatique avec setState (re-render)
 //
@@ -86,7 +82,7 @@ export default function ProfileForm() {
   const router = useRouter();
   
   // Hook Auth (équivalent Angular: constructor(public authService: AuthService))
-  const { user, refreshUser, logout } = useAuth();
+  const { refreshUser, logout } = useAuth();
 
   // États du profil complet (chargé depuis l'API)
   const [profile, setProfile] = useState<FullProfile | null>(null);
@@ -314,9 +310,6 @@ export default function ProfileForm() {
 
   // ============================================================================
   // SUPPRESSION DE COMPTE
-  // Différence Angular → React :
-  // - Angular : MatDialog retourne un Observable, on subscribe pour le résultat
-  // - React : État local showDeleteModal, on gère tout dans le composant
   // ============================================================================
   const openDeleteModal = () => {
     setShowDeleteModal(true);
@@ -820,9 +813,6 @@ export default function ProfileForm() {
 
       {/* ================================================================== */}
       {/* CARD ZONE DE DANGER - SUPPRESSION DE COMPTE */}
-      {/* Différence Angular → React : */}
-      {/* - Angular : Bouton déclenche MatDialog.open(DeleteAccountDialogComponent) */}
-      {/* - React : Bouton déclenche setShowDeleteModal(true), modal rendue conditionnellement */}
       {/* ================================================================== */}
       <div className="bg-white rounded-xl shadow-sm border-2 border-red-200 overflow-hidden">
         <div className="p-6">
@@ -853,9 +843,6 @@ export default function ProfileForm() {
 
       {/* ================================================================== */}
       {/* MODAL DE CONFIRMATION DE SUPPRESSION */}
-      {/* Différence Angular → React : */}
-      {/* - Angular : Composant séparé injecté via MatDialog */}
-      {/* - React : Rendu conditionnel dans le même composant */}
       {/* ================================================================== */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

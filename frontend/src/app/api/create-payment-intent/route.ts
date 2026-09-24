@@ -5,10 +5,6 @@
 // Sécurité : une réservation ne peut être payée que par son propriétaire.
 // Le middleware ne couvrant pas /api (voir son matcher), la vérification de
 // session se fait ici, comme dans toutes les routes sensibles du projet.
-//
-// Différence Angular → Next.js :
-// - Angular : Service backend séparé (Express/Node.js)
-// - Next.js : API Route intégrée dans le même projet
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

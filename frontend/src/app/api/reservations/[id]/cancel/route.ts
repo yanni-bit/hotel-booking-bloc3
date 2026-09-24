@@ -2,10 +2,6 @@
 // ============================================================================
 // API Route: POST /api/reservations/[id]/cancel
 // Annule une réservation et envoie un email de confirmation
-// 
-// Différence Angular → Next.js :
-// - Angular : this.reservationService.cancelReservation(id, userId).subscribe()
-// - Next.js : fetch(`/api/reservations/${id}/cancel`, { method: 'POST' })
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

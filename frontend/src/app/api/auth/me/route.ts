@@ -2,10 +2,6 @@
 // ============================================================================
 // API Utilisateur courant - Hotel Booking Bloc 3
 // GET /api/auth/me
-// 
-// Différence Angular → Next.js :
-// - Angular : Interceptor ajoute le token à chaque requête
-// - Next.js : Cookie HttpOnly envoyé automatiquement
 // ============================================================================
 
 import { NextResponse } from "next/server";

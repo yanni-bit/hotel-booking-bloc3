@@ -5,11 +5,6 @@
 // Ce composant dépend de deux choses externes qu'on remplace par des doublures :
 // - next/navigation (useRouter, useParams) → jest.mock
 // - fetch global → jest.fn() qui renvoie des données contrôlées
-//
-// Différence Angular → React :
-// - Angular : HttpTestingController pour intercepter HttpClient
-// - Ici : on remplace directement global.fetch, puis on attend que le DOM
-//   se mette à jour avec waitFor / findBy* (les hooks sont asynchrones)
 // ============================================================================
 
 import { render, screen, waitFor } from "@testing-library/react"

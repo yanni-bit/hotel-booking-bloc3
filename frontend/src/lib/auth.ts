@@ -2,10 +2,6 @@
 // ============================================================================
 // Authentification - Hotel Booking Bloc 3
 // Hash passwords, JWT tokens, session management
-// 
-// Différence Angular → Next.js :
-// - Angular : AuthService injectable avec BehaviorSubject
-// - Next.js : Fonctions utilitaires + cookies HttpOnly
 // ============================================================================
 
 import { SignJWT, jwtVerify, JWTPayload } from "jose";
@@ -26,8 +22,6 @@ const SALT_ROUNDS = 12;
 
 // ============================================================================
 // CONSTANTES RÔLES (évite les "magic numbers")
-// Différence Angular → Next.js : Pareil dans les deux cas
-// En Angular on aurait un enum ou des constantes dans un fichier séparé
 // ============================================================================
 export const ROLES = {
   ADMIN: 1,
@@ -77,10 +71,6 @@ export interface RegisterData {
 // ============================================================================
 /**
  * Hash un mot de passe avec bcrypt
- * 
- * Différence Angular → Next.js :
- * - Angular : Fait côté backend Express/Node
- * - Next.js : Fait dans les API Routes (même projet)
  */
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS);
@@ -140,10 +130,6 @@ export async function verifyToken(token: string): Promise<UserPayload | null> {
 // ============================================================================
 /**
  * Définit le cookie d'authentification
- * 
- * Différence Angular → Next.js :
- * - Angular : Token stocké côté client (localStorage)
- * - Next.js : Cookie HttpOnly côté serveur (plus sécurisé)
  */
 export async function setAuthCookie(token: string): Promise<void> {
   const cookieStore = await cookies();

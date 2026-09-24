@@ -2,11 +2,6 @@
 // ============================================================================
 // Admin : tableau des hôtels (recherche + pagination), portage de l'ancienne
 // page Medusa vers React/Tailwind.
-//
-// Différence Angular → Next.js :
-// - Angular : HotelService.getAll() via HttpClient + Interceptor pour le token
-// - Next.js : fetch("/api/admin/hotels") ; le cookie HttpOnly part tout seul
-// - Angular : propriétés de classe + ngOnInit ; React : useState + useEffect
 // ============================================================================
 
 "use client"

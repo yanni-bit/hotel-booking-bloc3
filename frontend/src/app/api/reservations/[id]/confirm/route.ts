@@ -9,10 +9,6 @@
 //   3. le PaymentIntent a bien réussi, porte le bon montant et référence
 //      cette réservation précise (metadata.reservation_id) ;
 //   4. ce PaymentIntent n'a pas déjà servi pour un autre paiement (anti-rejeu).
-//
-// Différence Angular → Next.js :
-// - Angular : this.reservationService.updateReservationStatus(id, 2)
-// - Next.js : POST /api/reservations/[id]/confirm avec paymentIntentId
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";

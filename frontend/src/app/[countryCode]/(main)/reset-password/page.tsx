@@ -1,10 +1,6 @@
 // src/app/[countryCode]/(main)/reset-password/page.tsx
 // ============================================================================
 // Page Réinitialisation Mot de Passe - Hotel Booking Bloc 3
-//
-// Différence Angular → Next.js :
-// - Angular : ActivatedRoute.queryParams.subscribe() pour récupérer le token
-// - Next.js : useSearchParams() hook ou searchParams prop
 // ============================================================================
 
 import { Metadata } from "next";

@@ -17,10 +17,6 @@ let stripePromise: Promise<StripeClient | null> | null = null;
 /**
  * Charge Stripe côté client (navigateur)
  * Utilisé dans les composants React avec <Elements>
- *
- * Différence Angular → React :
- * - Angular : new StripeService() injecté via constructor
- * - React : Hook ou singleton importé
  */
 export function getStripe(): Promise<StripeClient | null> {
   if (!stripePromise) {
@@ -46,10 +42,6 @@ let stripeServer: Stripe | null = null;
 /**
  * Récupère l'instance Stripe côté serveur
  * Utilisé dans les API routes pour créer des PaymentIntent
- *
- * Différence Angular → Next.js :
- * - Angular : Service backend séparé (Node.js/Express)
- * - Next.js : API Routes intégrées dans le même projet
  */
 export function getStripeServer(): Stripe {
   if (!stripeServer) {

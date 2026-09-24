@@ -2,10 +2,6 @@
 // ============================================================================
 // Page de paiement Stripe (Server Component)
 // Charge les données et affiche le formulaire PaymentForm
-// 
-// Différence Angular → Next.js :
-// - Angular : ngOnInit() + route.params.subscribe()
-// - Next.js : params passés directement au Server Component
 // ============================================================================
 
 import { notFound } from "next/navigation";

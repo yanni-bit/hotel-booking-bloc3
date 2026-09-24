@@ -1,10 +1,6 @@
 // src/app/[countryCode]/(main)/forgot-password/page.tsx
 // ============================================================================
 // Page Mot de Passe Oublié - Hotel Booking Bloc 3
-//
-// Différence Angular → Next.js :
-// - Angular : @Component avec templateUrl séparé
-// - Next.js : Fonction qui retourne du JSX, metadata exportée
 // ============================================================================
 
 import { Metadata } from "next";

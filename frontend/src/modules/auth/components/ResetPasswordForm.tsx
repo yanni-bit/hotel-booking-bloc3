@@ -2,10 +2,6 @@
 // ============================================================================
 // Formulaire Réinitialisation Mot de Passe - Hotel Booking Bloc 3
 //
-// Différence Angular → React :
-// - Angular : ActivatedRoute.queryParams.subscribe() dans ngOnInit
-// - React : useSearchParams() hook
-//
 // - Angular : setTimeout(() => this.router.navigate(['/login']), 3000)
 // - React : setTimeout(() => router.push('/fr/login'), 3000)
 // ============================================================================

@@ -2,11 +2,6 @@
 // ============================================================================
 // Tests : AuthProvider / useAuth — gestion d'état de session côté client
 // (Context + hook). fetch est simulé.
-//
-// Différence Angular → React :
-// - Angular : AuthService avec BehaviorSubject, testé via TestBed.inject
-// - React : on monte un composant "sonde" à l'intérieur du Provider et on
-//   observe ce que le hook expose
 // ============================================================================
 
 import { render, screen, waitFor, act } from "@testing-library/react"

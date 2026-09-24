@@ -4,10 +4,6 @@
 // GET : Récupérer les infos du profil
 // PUT : Mettre à jour les infos du profil
 // DELETE : Supprimer le compte (soft delete)
-//
-// Différence Angular → Next.js :
-// - Angular : AuthService.updateProfile() appelle Express backend
-// - Next.js : API Route intégrée, même projet, cookies HttpOnly
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";
@@ -210,10 +206,6 @@ export async function PUT(request: NextRequest) {
 
 // ============================================================================
 // DELETE - Supprimer le compte (soft delete)
-// 
-// Différence Angular → Next.js :
-// - Angular : Service avec HttpClient.delete() vers Express
-// - Next.js : API Route DELETE intégrée
 //
 // Stratégie "Soft Delete" :
 // - Désactive le compte (actif = false)

@@ -1,10 +1,6 @@
 // src/app/[countryCode]/(main)/profil/page.tsx
 // ============================================================================
 // Page Profil - Hotel Booking Bloc 3
-//
-// Différence Angular → Next.js :
-// - Angular : @Component avec selector, templateUrl, styleUrl
-// - Next.js : Fonction qui retourne du JSX, metadata exportée
 // ============================================================================
 
 import { Metadata } from "next";

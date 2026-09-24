@@ -90,7 +90,7 @@ export default function BookingForm({
   countryCode,
 }: BookingFormProps) {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   // État du formulaire
   const [checkIn, setCheckIn] = useState("");

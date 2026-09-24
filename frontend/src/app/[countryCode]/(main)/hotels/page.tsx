@@ -5,7 +5,6 @@
 // URL: /fr/hotels?city=Paris OU /fr/hotels?search=plage
 // ============================================================================
 
-import { Suspense } from "react";
 import { getHotels, searchHotels } from "@lib/hotels";
 import HotelCard from "@modules/hotels-list/components/hotel-card/HotelCard";
 import Link from "next/link";

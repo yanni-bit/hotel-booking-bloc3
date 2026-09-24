@@ -2,10 +2,6 @@
 // ============================================================================
 // Liste des réservations - Client Component
 // 
-// Différence Angular → React :
-// - Angular : *ngFor="let reservation of reservations"
-// - React : {reservations.map((reservation: Reservation) => ...)}
-// 
 // - Angular : (click)="cancelReservation(reservation)"
 // - React : onClick={() => handleCancel(reservation.id_reservation)}
 // ============================================================================
