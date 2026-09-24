@@ -51,9 +51,14 @@ describe("HotelCard", () => {
         countryCode="fr"
       />,
     );
+    // next/image ne sert pas le fichier directement : il passe par son service
+    // d'optimisation, qui encode le chemin d'origine dans le paramètre url.
     expect(
       screen.getByRole("img", { name: "Grand Hôtel Paris" }),
-    ).toHaveAttribute("src", "/images/default-room.jpg");
+    ).toHaveAttribute(
+      "src",
+      expect.stringContaining(encodeURIComponent("/images/default-room.jpg")),
+    );
   });
 
   it("n'affiche ni note ni label quand il n'y a pas de note", () => {

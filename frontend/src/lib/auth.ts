@@ -12,8 +12,18 @@ import prisma from "./prisma";
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
+// Une clé de repli en dur signerait des jetons vérifiables par quiconque lit
+// le dépôt. Elle n'est tolérée qu'en développement : en production, l'absence
+// de JWT_SECRET arrête le démarrage plutôt que de dégrader silencieusement
+// l'authentification.
+const SECRET = process.env.JWT_SECRET;
+
+if (!SECRET && process.env.NODE_ENV === "production") {
+  throw new Error("JWT_SECRET est absent de l'environnement");
+}
+
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "hotel-booking-secret-key-change-in-production",
+  SECRET || "cle-de-developpement-non-securisee",
 );
 
 const COOKIE_NAME = "auth-token";

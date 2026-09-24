@@ -335,7 +335,9 @@ export async function getUserReservations(userId: number) {
 }
 
 /**
- * Annule une réservation (statut = 4 annulée)
+ * Annule une réservation : passage au statut 3 (Annulée).
+ * Le statut 4 (Refusée) est réservé à un refus de l'établissement,
+ * prononcé depuis l'administration.
  */
 export async function cancelReservation(reservationId: number, userId: number) {
   // Vérifier que la réservation appartient à l'utilisateur
