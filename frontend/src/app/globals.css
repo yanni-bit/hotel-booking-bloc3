@@ -233,7 +233,7 @@ body.dyslexie-mode * {
   }
 
   .search-content {
-    @apply bg-white/[0.97] backdrop-blur-sm rounded-t-lg w-full max-w-[1200px] shadow-[0_-4px_20px_rgba(0, 0, 0, 0.15)] overflow-hidden;
+    @apply bg-white/[0.97] backdrop-blur-sm rounded-t-lg w-full max-w-[1200px] shadow-[0_-4px_20px_rgba(0,0,0,0.15)] overflow-hidden;
   }
 
   .search-grid {
@@ -337,7 +337,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .search-bar-input {
-    @apply w-full rounded-[25px] py-2.5 pr-[45px] pl-5 border border-gray-300 text-sm h-10 outline-none transition-colors duration-200 focus:border-turquoise focus:shadow-[0_0_0_2px_rgba(95, 200, 194, 0.2)];
+    @apply w-full rounded-[25px] py-2.5 pr-[45px] pl-5 border border-gray-300 text-sm h-10 outline-none transition-colors duration-200 focus:border-turquoise focus:shadow-[0_0_0_2px_rgba(95,200,194,0.2)];
   }
 
   /* ==============================================
@@ -397,7 +397,7 @@ body.dyslexie-mode * {
   }
 
   .offre-badge {
-    @apply absolute top-4 right-4 bg-turquoise text-white py-1 px-4 rounded-full text-xs font-bold uppercase shadow-[0_2px_8px_rgba(95, 200, 194, 0.4)];
+    @apply absolute top-4 right-4 bg-turquoise text-white py-1 px-4 rounded-full text-xs font-bold uppercase shadow-[0_2px_8px_rgba(95,200,194,0.4)];
   }
 
   .offre-card-body {
