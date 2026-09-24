@@ -9,7 +9,7 @@ import { getChambreWithOffersById } from "@lib/chambres";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -18,7 +18,7 @@ export async function GET(
     if (isNaN(chambreId)) {
       return NextResponse.json(
         { success: false, message: "ID de chambre invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -27,7 +27,7 @@ export async function GET(
     if (!chambre) {
       return NextResponse.json(
         { success: false, message: "Chambre non trouvée" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function GET(
     console.error("Erreur récupération chambre:", error);
     return NextResponse.json(
       { success: false, message: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -11,14 +11,14 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { 
-  FiLock, 
-  FiEye, 
-  FiEyeOff, 
-  FiArrowLeft, 
-  FiCheckCircle, 
+import {
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiArrowLeft,
+  FiCheckCircle,
   FiAlertTriangle,
-  FiMail
+  FiMail,
 } from "react-icons/fi";
 
 export default function ResetPasswordForm() {
@@ -48,7 +48,9 @@ export default function ResetPasswordForm() {
     setToken(tokenFromUrl);
 
     if (!tokenFromUrl) {
-      setErrorMessage("Token manquant. Veuillez utiliser le lien envoyé par email.");
+      setErrorMessage(
+        "Token manquant. Veuillez utiliser le lien envoyé par email.",
+      );
     }
   }, [searchParams]);
 

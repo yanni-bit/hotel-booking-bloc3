@@ -1,44 +1,54 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import Link from "next/link"
-import { useAuth } from "@modules/auth/components/AuthProvider"
-import { FiUser, FiLogOut, FiCalendar, FiSettings, FiChevronDown } from "react-icons/fi"
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useAuth } from "@modules/auth/components/AuthProvider";
+import {
+  FiUser,
+  FiLogOut,
+  FiCalendar,
+  FiSettings,
+  FiChevronDown,
+} from "react-icons/fi";
 
 const Nav = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const userMenuRef = useRef<HTMLDivElement>(null)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
 
   // Fermer le menu utilisateur si clic en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        setUserMenuOpen(false)
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      window.location.href = `/hotels?search=${encodeURIComponent(searchQuery)}`
+      window.location.href = `/hotels?search=${encodeURIComponent(searchQuery)}`;
     }
-  }
+  };
 
   const handleSearchKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch()
-  }
+    if (e.key === "Enter") handleSearch();
+  };
 
   const handleLogout = async () => {
-    await logout()
-    setUserMenuOpen(false)
-    window.location.href = "/fr"
-  }
+    await logout();
+    setUserMenuOpen(false);
+    window.location.href = "/fr";
+  };
 
   return (
     <>
@@ -51,11 +61,17 @@ const Nav = () => {
       <header className="header-base">
         <div className="header-container">
           <div className="header-grid">
-
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="block">
-                <img src="/images/logo.png" alt="Book Your Travel" className="h-auto max-h-[60px] w-auto max-md:max-h-[50px]" />
+                <Image
+                  src="/images/logo.png"
+                  alt="Book Your Travel"
+                  width={224}
+                  height={50}
+                  priority
+                  className="h-auto max-h-[60px] w-auto max-md:max-h-[50px]"
+                />
               </Link>
             </div>
 
@@ -80,8 +96,12 @@ const Nav = () => {
                   <span>📞</span>
                 </div>
                 <div className="text-left">
-                  <div className="text-sm text-gris-moyen max-md:text-xs">Support 24/7</div>
-                  <div className="text-[15px] font-bold text-gris-fonce max-md:text-xs">1-555-555-555</div>
+                  <div className="text-sm text-gris-moyen max-md:text-xs">
+                    Support 24/7
+                  </div>
+                  <div className="text-[15px] font-bold text-gris-fonce max-md:text-xs">
+                    1-555-555-555
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,7 +124,9 @@ const Nav = () => {
                   onClick={handleSearch}
                   aria-label="Lancer la recherche"
                 >
-                  <span className="text-lg text-gray-400 transition-colors duration-200 group-hover:text-turquoise">🔍</span>
+                  <span className="text-lg text-gray-400 transition-colors duration-200 group-hover:text-turquoise">
+                    🔍
+                  </span>
                 </button>
               </div>
             </div>
@@ -112,7 +134,6 @@ const Nav = () => {
             {/* Ruban */}
             <div className="ribbon ribbon-triangle">
               <nav className="ribbon-nav">
-                
                 {/* Bouton Auth dynamique */}
                 <div className="ribbon-item relative" ref={userMenuRef}>
                   {isLoading ? (
@@ -124,18 +145,26 @@ const Nav = () => {
                         className="ribbon-btn flex items-center gap-1"
                       >
                         <FiUser className="w-4 h-4" />
-                        <span className="max-w-[100px] truncate">{user.prenom}</span>
-                        <FiChevronDown className={`w-3 h-3 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                        <span className="max-w-[100px] truncate">
+                          {user.prenom}
+                        </span>
+                        <FiChevronDown
+                          className={`w-3 h-3 transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
+                        />
                       </button>
-                      
+
                       {/* Menu déroulant */}
                       {userMenuOpen && (
                         <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                           <div className="px-4 py-2 border-b border-gray-100">
-                            <p className="text-sm font-medium text-gray-900 truncate">{user.prenom} {user.nom}</p>
-                            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                            <p className="text-sm font-medium text-gray-900 truncate">
+                              {user.prenom} {user.nom}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                              {user.email}
+                            </p>
                           </div>
-                          
+
                           <Link
                             href="/fr/profil"
                             className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -144,7 +173,7 @@ const Nav = () => {
                             <FiUser className="w-4 h-4" />
                             Mon profil
                           </Link>
-                          
+
                           <Link
                             href="/fr/mes-reservations"
                             className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -153,7 +182,7 @@ const Nav = () => {
                             <FiCalendar className="w-4 h-4" />
                             Mes réservations
                           </Link>
-                          
+
                           {user.role === "admin" && (
                             <Link
                               href="/fr/admin"
@@ -164,7 +193,7 @@ const Nav = () => {
                               Administration
                             </Link>
                           )}
-                          
+
                           <div className="border-t border-gray-100 mt-2 pt-2">
                             <button
                               onClick={handleLogout}
@@ -178,7 +207,10 @@ const Nav = () => {
                       )}
                     </>
                   ) : (
-                    <Link href="/fr/login" className="ribbon-btn flex items-center gap-1">
+                    <Link
+                      href="/fr/login"
+                      className="ribbon-btn flex items-center gap-1"
+                    >
                       <FiUser className="w-4 h-4" />
                       CONNEXION
                     </Link>
@@ -193,7 +225,6 @@ const Nav = () => {
                 </div>
               </nav>
             </div>
-
           </div>
         </div>
       </header>
@@ -201,7 +232,9 @@ const Nav = () => {
       {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-container">
-          <span className="hidden max-md:block text-white font-bold text-sm uppercase py-3 px-4">Menu</span>
+          <span className="hidden max-md:block text-white font-bold text-sm uppercase py-3 px-4">
+            Menu
+          </span>
           <button
             className="hidden max-md:block bg-transparent border-none py-2.5 px-4 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2"
             type="button"
@@ -212,17 +245,31 @@ const Nav = () => {
             <span className="text-white text-2xl">☰</span>
           </button>
 
-          <div className={`flex max-md:hidden max-md:absolute max-md:top-full max-md:left-0 max-md:right-0 max-md:bg-turquoise max-md:z-[100] ${menuOpen ? "max-md:!block" : ""}`}>
+          <div
+            className={`flex max-md:hidden max-md:absolute max-md:top-full max-md:left-0 max-md:right-0 max-md:bg-turquoise max-md:z-[100] ${menuOpen ? "max-md:!block" : ""}`}
+          >
             <ul className="flex list-none m-0 p-0 max-md:flex-col">
-              <li><Link href="/" className="navbar-link">Accueil</Link></li>
-              <li><Link href="/hotels" className="navbar-link">Hôtels</Link></li>
-              <li><Link href="/contact" className="navbar-link">Contact</Link></li>
+              <li>
+                <Link href="/" className="navbar-link">
+                  Accueil
+                </Link>
+              </li>
+              <li>
+                <Link href="/hotels" className="navbar-link">
+                  Hôtels
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="navbar-link">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Nav
+export default Nav;

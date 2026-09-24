@@ -5,12 +5,12 @@
 // pagination, fetch) vit dans le Client Component HotelsTable.
 // ============================================================================
 
-import { Metadata } from "next"
-import HotelsTable from "@modules/admin/components/HotelsTable"
+import { Metadata } from "next";
+import HotelsTable from "@modules/admin/components/HotelsTable";
 
 export const metadata: Metadata = {
   title: "Hôtels | Administration",
-}
+};
 
 export default function AdminHotelsPage() {
   return (
@@ -18,5 +18,5 @@ export default function AdminHotelsPage() {
       <h1 className="text-2xl font-bold text-gris-fonce mb-6">Hôtels</h1>
       <HotelsTable />
     </div>
-  )
+  );
 }

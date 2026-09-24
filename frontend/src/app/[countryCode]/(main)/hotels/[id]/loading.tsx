@@ -12,5 +12,5 @@ export default function HotelLoading() {
         <p className="mt-4 text-gray-600">Chargement de l&apos;hôtel...</p>
       </div>
     </div>
-  )
+  );
 }

@@ -74,7 +74,7 @@ export interface ReservationWithDetails {
  * Récupère une réservation avec tous ses détails
  */
 export async function getReservationById(
-  id: number
+  id: number,
 ): Promise<ReservationWithDetails | null> {
   const reservation = await prisma.reservation.findUnique({
     where: { id_reservation: id },
@@ -182,7 +182,7 @@ export async function createPayment(data: CreatePaymentData) {
 export async function confirmReservation(
   reservationId: number,
   paymentId: number,
-  stripePaymentIntentId: string
+  stripePaymentIntentId: string,
 ) {
   return prisma.reservation.update({
     where: { id_reservation: reservationId },
@@ -207,7 +207,7 @@ export { generateConfirmationNumber } from "./reservations";
 // ============================================================================
 export async function updateConfirmationNumber(
   reservationId: number,
-  confirmationNumber: string
+  confirmationNumber: string,
 ) {
   return prisma.reservation.update({
     where: { id_reservation: reservationId },

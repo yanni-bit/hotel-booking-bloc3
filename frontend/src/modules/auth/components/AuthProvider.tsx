@@ -1,7 +1,7 @@
 // src/modules/auth/components/AuthProvider.tsx
 // ============================================================================
 // Context Auth - Hotel Booking Bloc 3
-// 
+//
 // Différence Angular → React :
 // - Angular : AuthService avec BehaviorSubject, injection via constructor
 // - React : Context + Hook useAuth(), wrapping dans un Provider
@@ -34,8 +34,13 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ success: boolean; error?: string }>;
+  register: (
+    data: RegisterData,
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -65,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch("/api/auth/me");
       const data = await response.json();
-      
+
       if (data.success && data.user) {
         setUser(data.user);
       } else {
@@ -87,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Login
   const login = async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch("/api/auth/login", {
@@ -112,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Register
   const register = async (
-    registerData: RegisterData
+    registerData: RegisterData,
   ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch("/api/auth/register", {
@@ -170,10 +175,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
  */
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error("useAuth doit être utilisé dans un AuthProvider");
   }
-  
+
   return context;
 }

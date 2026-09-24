@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (!email) {
       return NextResponse.json(
         { success: false, error: "Email requis" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { success: false, error: "Format d'email invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Aucun compte associé à cet email" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     if (!user.actif) {
       return NextResponse.json(
         { success: false, error: "Ce compte a été désactivé" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     const emailSent = await sendPasswordResetEmail(
       user.email_user,
       user.prenom_user,
-      resetLink
+      resetLink,
     );
 
     if (!emailSent) {
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     console.error("Erreur POST /api/auth/forgot-password:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

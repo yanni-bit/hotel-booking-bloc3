@@ -22,7 +22,7 @@ function formatDateFr(date: Date): string {
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -31,7 +31,7 @@ export async function POST(
     if (isNaN(reservationId)) {
       return NextResponse.json(
         { success: false, error: "ID de réservation invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function POST(
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -51,14 +51,14 @@ export async function POST(
     if (!reservation) {
       return NextResponse.json(
         { success: false, error: "Réservation non trouvée" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (reservation.id_user !== user.id_user) {
       return NextResponse.json(
         { success: false, error: "Non autorisé" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -66,7 +66,7 @@ export async function POST(
     if (reservation.id_statut === 3) {
       return NextResponse.json(
         { success: false, error: "Cette réservation est déjà annulée" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -105,7 +105,8 @@ export async function POST(
     // ========================================================================
     if (reservationDetails) {
       const emailData = {
-        numConfirmation: reservationDetails.num_confirmation || `RES-${reservationId}`,
+        numConfirmation:
+          reservationDetails.num_confirmation || `RES-${reservationId}`,
         hotelName: reservationDetails.hotel.nom_hotel,
         roomType: reservationDetails.chambre.type_room,
         checkIn: formatDateFr(reservationDetails.check_in),
@@ -117,12 +118,18 @@ export async function POST(
       sendReservationCancellationEmail(
         reservationDetails.user.email_user,
         reservationDetails.user.prenom_user,
-        emailData
+        emailData,
       ).then((sent) => {
         if (sent) {
-          console.log("Email d'annulation envoyé à:", reservationDetails.user.email_user);
+          console.log(
+            "Email d'annulation envoyé à:",
+            reservationDetails.user.email_user,
+          );
         } else {
-          console.error("Échec envoi email d'annulation à:", reservationDetails.user.email_user);
+          console.error(
+            "Échec envoi email d'annulation à:",
+            reservationDetails.user.email_user,
+          );
         }
       });
     }
@@ -135,7 +142,7 @@ export async function POST(
     console.error("Erreur annulation:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de l'annulation" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

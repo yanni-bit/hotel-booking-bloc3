@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // jose (JWT) est publié en ESM uniquement : transpilé pour Jest via next/jest
+  // jose (JWT) est publiï¿½ en ESM uniquement : transpilï¿½ pour Jest via next/jest
   transpilePackages: ["jose"],
   images: {
     remotePatterns: [

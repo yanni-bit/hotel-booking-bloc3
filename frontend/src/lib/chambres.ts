@@ -60,7 +60,7 @@ type OffrePrisma = {
  * Récupère une chambre avec ses offres (Prisma)
  */
 export async function getChambreWithOffersById(
-  chambreId: number
+  chambreId: number,
 ): Promise<Chambre | null> {
   try {
     const chambre = await prisma.chambre.findUnique({
@@ -124,7 +124,7 @@ export async function getChambreWithOffersById(
  * on lit Prisma directement.
  */
 export async function getChambreWithOffers(
-  chambreId: number
+  chambreId: number,
 ): Promise<Chambre | null> {
   return getChambreWithOffersById(chambreId);
 }

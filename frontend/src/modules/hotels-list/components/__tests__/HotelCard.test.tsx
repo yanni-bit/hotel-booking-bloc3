@@ -4,8 +4,8 @@
 // Vérifie l'affichage conditionnel (étoiles, note, avis) et le lien généré.
 // ============================================================================
 
-import { render, screen } from "@testing-library/react"
-import HotelCard from "../hotel-card/HotelCard"
+import { render, screen } from "@testing-library/react";
+import HotelCard from "../hotel-card/HotelCard";
 
 const hotelComplet = {
   id_hotel: 42,
@@ -17,39 +17,55 @@ const hotelComplet = {
   nbre_etoile_hotel: 5,
   note_moy_hotel: "9.4",
   nbre_avis_hotel: 12,
-}
+};
 
 describe("HotelCard", () => {
   it("affiche le nom, la localisation et la description", () => {
-    render(<HotelCard hotel={hotelComplet} countryCode="fr" />)
-    expect(screen.getByRole("heading", { name: "Grand Hôtel Paris" })).toBeInTheDocument()
-    expect(screen.getByText("Paris, France")).toBeInTheDocument()
-    expect(screen.getByText("Un palace au cœur de Paris.")).toBeInTheDocument()
-  })
+    render(<HotelCard hotel={hotelComplet} countryCode="fr" />);
+    expect(
+      screen.getByRole("heading", { name: "Grand Hôtel Paris" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Paris, France")).toBeInTheDocument();
+    expect(screen.getByText("Un palace au cœur de Paris.")).toBeInTheDocument();
+  });
 
   it("affiche la note formatée, son label et le nombre d'avis", () => {
-    render(<HotelCard hotel={hotelComplet} countryCode="fr" />)
+    render(<HotelCard hotel={hotelComplet} countryCode="fr" />);
     // La note apparaît deux fois (badge sur l'image + bloc note) : on en attend au moins une
-    expect(screen.getAllByText("9.4/10").length).toBeGreaterThan(0)
-    expect(screen.getByText("Exceptionnel")).toBeInTheDocument()
-    expect(screen.getByText("(12 avis)")).toBeInTheDocument()
-  })
+    expect(screen.getAllByText("9.4/10").length).toBeGreaterThan(0);
+    expect(screen.getByText("Exceptionnel")).toBeInTheDocument();
+    expect(screen.getByText("(12 avis)")).toBeInTheDocument();
+  });
 
   it("génère le lien vers la fiche hôtel avec le code pays", () => {
-    render(<HotelCard hotel={hotelComplet} countryCode="fr" />)
-    expect(screen.getByRole("link", { name: /voir les chambres/i })).toHaveAttribute("href", "/fr/hotels/42")
-  })
+    render(<HotelCard hotel={hotelComplet} countryCode="fr" />);
+    expect(
+      screen.getByRole("link", { name: /voir les chambres/i }),
+    ).toHaveAttribute("href", "/fr/hotels/42");
+  });
 
   it("utilise l'image par défaut quand l'hôtel n'a pas d'image", () => {
-    render(<HotelCard hotel={{ ...hotelComplet, img_hotel: null }} countryCode="fr" />)
-    expect(screen.getByRole("img", { name: "Grand Hôtel Paris" })).toHaveAttribute("src", "/images/default-room.jpg")
-  })
+    render(
+      <HotelCard
+        hotel={{ ...hotelComplet, img_hotel: null }}
+        countryCode="fr"
+      />,
+    );
+    expect(
+      screen.getByRole("img", { name: "Grand Hôtel Paris" }),
+    ).toHaveAttribute("src", "/images/default-room.jpg");
+  });
 
   it("n'affiche ni note ni label quand il n'y a pas de note", () => {
-    render(<HotelCard hotel={{ ...hotelComplet, note_moy_hotel: null, nbre_avis_hotel: 0 }} countryCode="fr" />)
-    expect(screen.queryByText(/\/10/)).not.toBeInTheDocument()
-    expect(screen.queryByText("Exceptionnel")).not.toBeInTheDocument()
-  })
+    render(
+      <HotelCard
+        hotel={{ ...hotelComplet, note_moy_hotel: null, nbre_avis_hotel: 0 }}
+        countryCode="fr"
+      />,
+    );
+    expect(screen.queryByText(/\/10/)).not.toBeInTheDocument();
+    expect(screen.queryByText("Exceptionnel")).not.toBeInTheDocument();
+  });
 
   it.each([
     ["9.2", "Exceptionnel"],
@@ -58,7 +74,12 @@ describe("HotelCard", () => {
     ["6.1", "Bien"],
     ["5.0", "Correct"],
   ])("traduit la note %s en « %s »", (note, label) => {
-    render(<HotelCard hotel={{ ...hotelComplet, note_moy_hotel: note }} countryCode="fr" />)
-    expect(screen.getByText(label)).toBeInTheDocument()
-  })
-})
+    render(
+      <HotelCard
+        hotel={{ ...hotelComplet, note_moy_hotel: note }}
+        countryCode="fr"
+      />,
+    );
+    expect(screen.getByText(label)).toBeInTheDocument();
+  });
+});

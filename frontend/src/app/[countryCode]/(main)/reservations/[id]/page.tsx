@@ -14,14 +14,16 @@ interface ReservationDetailPageProps {
 
 export async function generateMetadata({ params }: ReservationDetailPageProps) {
   const { id } = await params;
-  
+
   return {
     title: `Réservation #${id} | Hotel Booking`,
     description: "Détail de votre réservation d'hôtel.",
   };
 }
 
-export default async function ReservationDetailPage({ params }: ReservationDetailPageProps) {
+export default async function ReservationDetailPage({
+  params,
+}: ReservationDetailPageProps) {
   const { id, countryCode } = await params;
   const reservationId = Number(id);
 
@@ -145,9 +147,6 @@ export default async function ReservationDetailPage({ params }: ReservationDetai
   };
 
   return (
-    <ReservationDetail
-      reservation={reservation}
-      countryCode={countryCode}
-    />
+    <ReservationDetail reservation={reservation} countryCode={countryCode} />
   );
 }

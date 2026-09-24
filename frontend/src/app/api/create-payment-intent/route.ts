@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { error: "Authentification requise" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (!reservationId) {
       return NextResponse.json(
         { error: "reservationId requis" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     if (!reservation) {
       return NextResponse.json(
         { error: "Réservation non trouvée" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     if (reservation.id_user !== user.id_user) {
       return NextResponse.json(
         { error: "Accès refusé à cette réservation" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     if (reservation.id_statut === 2) {
       return NextResponse.json(
         { error: "Cette réservation est déjà confirmée" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (!Number.isInteger(amountInCents) || amountInCents < 1) {
       return NextResponse.json(
         { error: "Montant de réservation invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { error: "Erreur lors de la création du paiement" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -4,9 +4,9 @@
 // Équivalent de hotel-amenities.component Angular
 // ============================================================================
 
-import { notFound } from "next/navigation"
-import { getHotelById } from "@lib/hotels"
-import { 
+import { notFound } from "next/navigation";
+import { getHotelById } from "@lib/hotels";
+import {
   FaStar,
   FaParking,
   FaUtensils,
@@ -22,11 +22,11 @@ import {
   FaDumbbell,
   FaInfoCircle,
   FaCheck,
-  FaTimes
-} from "react-icons/fa"
+  FaTimes,
+} from "react-icons/fa";
 
 interface AmenitiesPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 // Configuration des équipements avec leurs icônes
@@ -49,37 +49,44 @@ const amenitiesConfig = {
     { key: "spa", label: "Spa & Bien-être", icon: FaSpa },
     { key: "salle_sport", label: "Salle de sport", icon: FaDumbbell },
   ],
-}
+};
 
 export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
-  const { id } = await params
-  const hotelId = parseInt(id)
-  
+  const { id } = await params;
+  const hotelId = parseInt(id);
+
   if (isNaN(hotelId)) {
-    notFound()
-  }
-  
-  const hotel = await getHotelById(hotelId)
-  
-  if (!hotel) {
-    notFound()
+    notFound();
   }
 
-  const amenities = hotel.amenities
+  const hotel = await getHotelById(hotelId);
+
+  if (!hotel) {
+    notFound();
+  }
+
+  const amenities = hotel.amenities;
 
   // Fonction pour afficher un équipement
-  const renderAmenity = (config: { key: string; label: string; icon: React.ComponentType<{ className?: string }> }) => {
-    const Icon = config.icon
-    const isAvailable = amenities?.[config.key as keyof typeof amenities] ?? false
-    
+  const renderAmenity = (config: {
+    key: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }) => {
+    const Icon = config.icon;
+    const isAvailable =
+      amenities?.[config.key as keyof typeof amenities] ?? false;
+
     return (
-      <div 
+      <div
         key={config.key}
         className={`flex items-center p-3 rounded-lg ${
           isAvailable ? "bg-green-50" : "bg-gray-50"
         }`}
       >
-        <Icon className={`mr-3 ${isAvailable ? "text-green-600" : "text-gray-400"}`} />
+        <Icon
+          className={`mr-3 ${isAvailable ? "text-green-600" : "text-gray-400"}`}
+        />
         <span className={isAvailable ? "text-gray-700" : "text-gray-400"}>
           {config.label}
         </span>
@@ -91,18 +98,17 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
           )}
         </span>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="hotel-amenities">
-      
       {/* Titre section */}
       <h2 className="text-xl font-semibold mb-4 pb-2 border-b text-gray-700 flex items-center">
         <FaStar className="mr-3 text-turquoise" />
         Équipements & Services
       </h2>
-      
+
       {/* Info hôtel */}
       <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg mb-6">
         <p className="flex items-center">
@@ -112,14 +118,13 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
           {hotel.nbre_etoile_hotel} étoiles
         </p>
       </div>
-      
+
       {!amenities ? (
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
           <p>Informations sur les équipements non disponibles.</p>
         </div>
       ) : (
         <div className="space-y-6">
-          
           {/* Équipements généraux */}
           <div className="bg-white p-5 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
@@ -130,7 +135,7 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
               {amenitiesConfig.general.map(renderAmenity)}
             </div>
           </div>
-          
+
           {/* Équipements chambre */}
           <div className="bg-white p-5 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
@@ -141,7 +146,7 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
               {amenitiesConfig.room.map(renderAmenity)}
             </div>
           </div>
-          
+
           {/* Loisirs */}
           <div className="bg-white p-5 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
@@ -152,17 +157,15 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
               {amenitiesConfig.leisure.map(renderAmenity)}
             </div>
           </div>
-          
         </div>
       )}
-      
+
       {/* Note de bas de page */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-500">
         <FaInfoCircle className="inline mr-2" />
-        Les équipements peuvent varier selon le type de chambre. 
-        Veuillez vérifier les détails lors de votre réservation.
+        Les équipements peuvent varier selon le type de chambre. Veuillez
+        vérifier les détails lors de votre réservation.
       </div>
-      
     </div>
-  )
+  );
 }

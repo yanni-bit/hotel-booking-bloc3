@@ -9,26 +9,29 @@
 // par AdminGuard.
 // ============================================================================
 
-import { Metadata } from "next"
-import { redirect } from "next/navigation"
-import { requireAdmin } from "@lib/admin"
-import AdminSidebar from "@modules/admin/components/AdminSidebar"
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { requireAdmin } from "@lib/admin";
+import AdminSidebar from "@modules/admin/components/AdminSidebar";
 
 export const metadata: Metadata = {
   title: "Administration",
-}
+};
 
 interface AdminLayoutProps {
-  children: React.ReactNode
-  params: Promise<{ countryCode: string }>
+  children: React.ReactNode;
+  params: Promise<{ countryCode: string }>;
 }
 
-export default async function AdminLayout({ children, params }: AdminLayoutProps) {
-  const { countryCode } = await params
-  const admin = await requireAdmin()
+export default async function AdminLayout({
+  children,
+  params,
+}: AdminLayoutProps) {
+  const { countryCode } = await params;
+  const admin = await requireAdmin();
 
   if (!admin) {
-    redirect(`/${countryCode}/login?redirect=/${countryCode}/admin`)
+    redirect(`/${countryCode}/login?redirect=/${countryCode}/admin`);
   }
 
   return (
@@ -36,5 +39,5 @@ export default async function AdminLayout({ children, params }: AdminLayoutProps
       <AdminSidebar adminName={admin.prenom} />
       <main className="flex-1 min-w-0 p-6 lg:p-10">{children}</main>
     </div>
-  )
+  );
 }

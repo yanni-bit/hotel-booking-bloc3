@@ -2,7 +2,7 @@
 // ============================================================================
 // Page de confirmation de réservation (Server Component)
 // Affichée après un paiement réussi
-// 
+//
 // Équivalent de la section "paymentSuccess" dans payment.html Angular
 // ============================================================================
 
@@ -23,7 +23,9 @@ interface ConfirmationPageProps {
   params: Promise<{ reservationId: string; countryCode: string }>;
 }
 
-export default async function ConfirmationPage({ params }: ConfirmationPageProps) {
+export default async function ConfirmationPage({
+  params,
+}: ConfirmationPageProps) {
   const { reservationId, countryCode } = await params;
   const reservationIdNum = parseInt(reservationId);
 
@@ -67,7 +69,9 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             {/* Numéro de confirmation */}
             {reservation.num_confirmation && (
               <div className="bg-turquoise/10 border border-turquoise/30 rounded-lg p-4 mb-6">
-                <p className="text-sm text-gray-600 mb-1">Numéro de confirmation</p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Numéro de confirmation
+                </p>
                 <p className="text-2xl font-bold text-turquoise">
                   {reservation.num_confirmation}
                 </p>
@@ -78,21 +82,27 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
               <div className="flex gap-4">
                 <Image
-                  src={reservation.hotel.img_hotel || "/images/default-hotel.jpg"}
+                  src={
+                    reservation.hotel.img_hotel || "/images/default-hotel.jpg"
+                  }
                   alt={reservation.hotel.nom_hotel}
                   width={120}
                   height={80}
                   className="w-28 h-20 object-cover rounded-lg"
                 />
                 <div>
-                  <h2 className="font-bold text-gray-800">{reservation.hotel.nom_hotel}</h2>
+                  <h2 className="font-bold text-gray-800">
+                    {reservation.hotel.nom_hotel}
+                  </h2>
                   <p className="text-sm text-gray-500">
                     <FaMapMarkerAlt className="inline mr-1" />
-                    {reservation.hotel.ville_hotel}, {reservation.hotel.pays_hotel}
+                    {reservation.hotel.ville_hotel},{" "}
+                    {reservation.hotel.pays_hotel}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     {reservation.chambre.type_room}
-                    {reservation.chambre.cat_room && ` - ${reservation.chambre.cat_room}`}
+                    {reservation.chambre.cat_room &&
+                      ` - ${reservation.chambre.cat_room}`}
                   </p>
                 </div>
               </div>
@@ -128,8 +138,10 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             <div className="border-t border-b py-4 mb-6">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">
-                  {reservation.nbre_nuits} nuit{reservation.nbre_nuits > 1 ? "s" : ""},{" "}
-                  {reservation.nbre_adults} adulte{reservation.nbre_adults > 1 ? "s" : ""}
+                  {reservation.nbre_nuits} nuit
+                  {reservation.nbre_nuits > 1 ? "s" : ""},{" "}
+                  {reservation.nbre_adults} adulte
+                  {reservation.nbre_adults > 1 ? "s" : ""}
                   {reservation.nbre_children > 0 &&
                     `, ${reservation.nbre_children} enfant${
                       reservation.nbre_children > 1 ? "s" : ""
@@ -145,8 +157,8 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
               <p className="text-sm text-blue-800">
                 <FaEnvelope className="inline mr-2" />
-                Un email de confirmation a été envoyé à votre adresse email avec tous les
-                détails de votre réservation.
+                Un email de confirmation a été envoyé à votre adresse email avec
+                tous les détails de votre réservation.
               </p>
             </div>
 
@@ -167,14 +179,15 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
                 Mes réservations
               </Link>
             </div>
-
           </div>
 
           {/* ============================================================ */}
           {/* AIDE */}
           {/* ============================================================ */}
           <div className="mt-6 bg-white rounded-lg shadow-sm p-6 text-center">
-            <h3 className="font-semibold text-gray-800 mb-2">Besoin d&apos;aide ?</h3>
+            <h3 className="font-semibold text-gray-800 mb-2">
+              Besoin d&apos;aide ?
+            </h3>
             <p className="text-sm text-gray-600 mb-3">
               Notre équipe est disponible 24h/24 pour répondre à vos questions.
             </p>

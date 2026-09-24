@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: "Email et mot de passe requis" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Email ou mot de passe incorrect" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     if (!passwordHash) {
       return NextResponse.json(
         { success: false, error: "Email ou mot de passe incorrect" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (!isValidPassword) {
       return NextResponse.json(
         { success: false, error: "Email ou mot de passe incorrect" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     console.error("Erreur login:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de la connexion" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

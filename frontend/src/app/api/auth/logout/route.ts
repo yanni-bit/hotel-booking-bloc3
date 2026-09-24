@@ -23,7 +23,7 @@ export async function POST() {
     console.error("Erreur logout:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de la déconnexion" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -5,12 +5,7 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createUser,
-  emailExists,
-  createToken,
-  setAuthCookie,
-} from "@lib/auth";
+import { createUser, emailExists, createToken, setAuthCookie } from "@lib/auth";
 import { sendWelcomeEmail } from "@lib/email";
 
 // ============================================================================
@@ -52,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (validationError) {
       return NextResponse.json(
         { success: false, error: validationError },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -61,7 +56,7 @@ export async function POST(request: NextRequest) {
     if (exists) {
       return NextResponse.json(
         { success: false, error: "Cet email est déjà utilisé" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -105,7 +100,7 @@ export async function POST(request: NextRequest) {
     console.error("Erreur register:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de l'inscription" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

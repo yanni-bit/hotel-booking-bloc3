@@ -16,7 +16,7 @@ export async function GET() {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -58,7 +58,7 @@ export async function GET() {
     console.error("Erreur récupération réservations:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

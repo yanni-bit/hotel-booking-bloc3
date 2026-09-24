@@ -17,12 +17,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
-import { 
-  FiEdit2, 
-  FiSave, 
-  FiX, 
-  FiKey, 
-  FiEye, 
+import {
+  FiEdit2,
+  FiSave,
+  FiX,
+  FiKey,
+  FiEye,
   FiEyeOff,
   FiLock,
   FiUser,
@@ -30,7 +30,7 @@ import {
   FiPhone,
   FiMapPin,
   FiAlertTriangle,
-  FiTrash2
+  FiTrash2,
 } from "react-icons/fi";
 
 // ============================================================================
@@ -80,7 +80,7 @@ interface FullProfile {
 export default function ProfileForm() {
   // Hook Router pour redirection après suppression
   const router = useRouter();
-  
+
   // Hook Auth (équivalent Angular: constructor(public authService: AuthService))
   const { refreshUser, logout } = useAuth();
 
@@ -120,7 +120,10 @@ export default function ProfileForm() {
 
   // États de soumission
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // ============================================================================
   // ÉTATS POUR LA SUPPRESSION DE COMPTE
@@ -202,7 +205,10 @@ export default function ProfileForm() {
 
     // Validation (comme Angular ligne 69-72)
     if (!formData.prenom || !formData.nom) {
-      setMessage({ type: "error", text: "Le prénom et le nom sont obligatoires" });
+      setMessage({
+        type: "error",
+        text: "Le prénom et le nom sont obligatoires",
+      });
       return;
     }
 
@@ -224,11 +230,17 @@ export default function ProfileForm() {
         await loadProfile(); // Recharger les données
         await refreshUser(); // Mettre à jour le contexte Auth (header, etc.)
       } else {
-        setMessage({ type: "error", text: data.error || "Erreur lors de la mise à jour" });
+        setMessage({
+          type: "error",
+          text: data.error || "Erreur lors de la mise à jour",
+        });
       }
     } catch (error) {
       console.error("Erreur sauvegarde profil:", error);
-      setMessage({ type: "error", text: "Erreur lors de la mise à jour du profil" });
+      setMessage({
+        type: "error",
+        text: "Erreur lors de la mise à jour du profil",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -259,18 +271,28 @@ export default function ProfileForm() {
     e.preventDefault();
 
     // Validation (comme Angular lignes 105-119)
-    if (!passwordForm.oldPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+    if (
+      !passwordForm.oldPassword ||
+      !passwordForm.newPassword ||
+      !passwordForm.confirmPassword
+    ) {
       setMessage({ type: "error", text: "Veuillez remplir tous les champs" });
       return;
     }
 
     if (passwordForm.newPassword.length < 6) {
-      setMessage({ type: "error", text: "Le nouveau mot de passe doit contenir au moins 6 caractères" });
+      setMessage({
+        type: "error",
+        text: "Le nouveau mot de passe doit contenir au moins 6 caractères",
+      });
       return;
     }
 
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setMessage({ type: "error", text: "Les mots de passe ne correspondent pas" });
+      setMessage({
+        type: "error",
+        text: "Les mots de passe ne correspondent pas",
+      });
       return;
     }
 
@@ -290,7 +312,10 @@ export default function ProfileForm() {
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: "success", text: "Mot de passe modifié avec succès" });
+        setMessage({
+          type: "success",
+          text: "Mot de passe modifié avec succès",
+        });
         setShowPasswordForm(false);
         setPasswordForm({
           oldPassword: "",
@@ -298,11 +323,17 @@ export default function ProfileForm() {
           confirmPassword: "",
         });
       } else {
-        setMessage({ type: "error", text: data.error || "Erreur lors du changement de mot de passe" });
+        setMessage({
+          type: "error",
+          text: data.error || "Erreur lors du changement de mot de passe",
+        });
       }
     } catch (error) {
       console.error("Erreur changement mot de passe:", error);
-      setMessage({ type: "error", text: "Erreur lors du changement de mot de passe" });
+      setMessage({
+        type: "error",
+        text: "Erreur lors du changement de mot de passe",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -332,7 +363,10 @@ export default function ProfileForm() {
     }
 
     if (!deleteConfirmed) {
-      setMessage({ type: "error", text: "Veuillez confirmer que vous comprenez les conséquences" });
+      setMessage({
+        type: "error",
+        text: "Veuillez confirmer que vous comprenez les conséquences",
+      });
       return;
     }
 
@@ -351,20 +385,26 @@ export default function ProfileForm() {
       if (data.success) {
         // Fermer la modal
         closeDeleteModal();
-        
+
         // Déconnecter l'utilisateur côté client
         if (logout) {
           await logout();
         }
-        
+
         // Rediriger vers la page d'accueil avec un message
         router.push("/fr?deleted=1");
       } else {
-        setMessage({ type: "error", text: data.error || "Erreur lors de la suppression" });
+        setMessage({
+          type: "error",
+          text: data.error || "Erreur lors de la suppression",
+        });
       }
     } catch (error) {
       console.error("Erreur suppression compte:", error);
-      setMessage({ type: "error", text: "Erreur lors de la suppression du compte" });
+      setMessage({
+        type: "error",
+        text: "Erreur lors de la suppression du compte",
+      });
     } finally {
       setDeleting(false);
     }
@@ -375,18 +415,27 @@ export default function ProfileForm() {
   // Équivalent Angular: [(ngModel)] two-way binding
   // React: value + onChange (one-way binding explicite)
   // ============================================================================
-  const handleInputChange = (field: keyof Omit<ProfileFormData, "adresse">, value: string) => {
+  const handleInputChange = (
+    field: keyof Omit<ProfileFormData, "adresse">,
+    value: string,
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAdresseChange = (field: keyof ProfileFormData["adresse"], value: string) => {
+  const handleAdresseChange = (
+    field: keyof ProfileFormData["adresse"],
+    value: string,
+  ) => {
     setFormData((prev) => ({
       ...prev,
       adresse: { ...prev.adresse, [field]: value },
     }));
   };
 
-  const handlePasswordChange = (field: keyof PasswordFormData, value: string) => {
+  const handlePasswordChange = (
+    field: keyof PasswordFormData,
+    value: string,
+  ) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -462,7 +511,9 @@ export default function ProfileForm() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <span className="text-sm font-medium text-gray-500">Prénom</span>
+                  <span className="text-sm font-medium text-gray-500">
+                    Prénom
+                  </span>
                   <p className="text-gray-900">{profile.prenom}</p>
                 </div>
                 <div>
@@ -470,7 +521,9 @@ export default function ProfileForm() {
                   <p className="text-gray-900">{profile.nom}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-gray-500">Rôle</span>
+                  <span className="text-sm font-medium text-gray-500">
+                    Rôle
+                  </span>
                   <p>
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
                       {profile.nom_role}
@@ -483,15 +536,21 @@ export default function ProfileForm() {
                 <div className="flex items-start gap-2">
                   <FiMail className="w-4 h-4 text-gray-400 mt-1" />
                   <div>
-                    <span className="text-sm font-medium text-gray-500">Email</span>
+                    <span className="text-sm font-medium text-gray-500">
+                      Email
+                    </span>
                     <p className="text-gray-900">{profile.email}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <FiPhone className="w-4 h-4 text-gray-400 mt-1" />
                   <div>
-                    <span className="text-sm font-medium text-gray-500">Téléphone</span>
-                    <p className="text-gray-900">{profile.tel || "Non renseigné"}</p>
+                    <span className="text-sm font-medium text-gray-500">
+                      Téléphone
+                    </span>
+                    <p className="text-gray-900">
+                      {profile.tel || "Non renseigné"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -501,12 +560,16 @@ export default function ProfileForm() {
                 <div className="flex items-start gap-2 pt-2 border-t border-gray-100">
                   <FiMapPin className="w-4 h-4 text-gray-400 mt-1" />
                   <div>
-                    <span className="text-sm font-medium text-gray-500">Adresse</span>
+                    <span className="text-sm font-medium text-gray-500">
+                      Adresse
+                    </span>
                     <p className="text-gray-900">
                       {profile.adresse.rue && `${profile.adresse.rue}`}
-                      {profile.adresse.complement && `, ${profile.adresse.complement}`}
+                      {profile.adresse.complement &&
+                        `, ${profile.adresse.complement}`}
                       <br />
-                      {profile.adresse.code_postal && `${profile.adresse.code_postal} `}
+                      {profile.adresse.code_postal &&
+                        `${profile.adresse.code_postal} `}
                       {profile.adresse.ville && `${profile.adresse.ville}`}
                       {profile.adresse.pays && `, ${profile.adresse.pays}`}
                     </p>
@@ -542,7 +605,9 @@ export default function ProfileForm() {
                   <input
                     type="text"
                     value={formData.prenom}
-                    onChange={(e) => handleInputChange("prenom", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("prenom", e.target.value)
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     required
                   />
@@ -573,7 +638,9 @@ export default function ProfileForm() {
                     disabled
                     className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
                   />
-                  <p className="text-xs text-gray-500 mt-1">L&apos;email ne peut pas être modifié</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    L&apos;email ne peut pas être modifié
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -606,7 +673,9 @@ export default function ProfileForm() {
                   <input
                     type="text"
                     value={formData.adresse.complement}
-                    onChange={(e) => handleAdresseChange("complement", e.target.value)}
+                    onChange={(e) =>
+                      handleAdresseChange("complement", e.target.value)
+                    }
                     placeholder="Complément d'adresse"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                   />
@@ -614,21 +683,27 @@ export default function ProfileForm() {
                     <input
                       type="text"
                       value={formData.adresse.code_postal}
-                      onChange={(e) => handleAdresseChange("code_postal", e.target.value)}
+                      onChange={(e) =>
+                        handleAdresseChange("code_postal", e.target.value)
+                      }
                       placeholder="Code postal"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     />
                     <input
                       type="text"
                       value={formData.adresse.ville}
-                      onChange={(e) => handleAdresseChange("ville", e.target.value)}
+                      onChange={(e) =>
+                        handleAdresseChange("ville", e.target.value)
+                      }
                       placeholder="Ville"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     />
                     <input
                       type="text"
                       value={formData.adresse.pays}
-                      onChange={(e) => handleAdresseChange("pays", e.target.value)}
+                      onChange={(e) =>
+                        handleAdresseChange("pays", e.target.value)
+                      }
                       placeholder="Pays"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     />
@@ -713,7 +788,9 @@ export default function ProfileForm() {
                   <input
                     type={showOldPassword ? "text" : "password"}
                     value={passwordForm.oldPassword}
-                    onChange={(e) => handlePasswordChange("oldPassword", e.target.value)}
+                    onChange={(e) =>
+                      handlePasswordChange("oldPassword", e.target.value)
+                    }
                     className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     required
                     autoComplete="current-password"
@@ -723,7 +800,11 @@ export default function ProfileForm() {
                     onClick={() => setShowOldPassword(!showOldPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-600 transition-colors"
                   >
-                    {showOldPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                    {showOldPassword ? (
+                      <FiEyeOff className="w-5 h-5" />
+                    ) : (
+                      <FiEye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -737,7 +818,9 @@ export default function ProfileForm() {
                   <input
                     type={showNewPassword ? "text" : "password"}
                     value={passwordForm.newPassword}
-                    onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
+                    onChange={(e) =>
+                      handlePasswordChange("newPassword", e.target.value)
+                    }
                     className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     required
                     autoComplete="new-password"
@@ -747,22 +830,31 @@ export default function ProfileForm() {
                     onClick={() => setShowNewPassword(!showNewPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-600 transition-colors"
                   >
-                    {showNewPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                    {showNewPassword ? (
+                      <FiEyeOff className="w-5 h-5" />
+                    ) : (
+                      <FiEye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Minimum 6 caractères</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Minimum 6 caractères
+                </p>
               </div>
 
               {/* Confirmer mot de passe */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirmer le nouveau mot de passe <span className="text-red-500">*</span>
+                  Confirmer le nouveau mot de passe{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={passwordForm.confirmPassword}
-                    onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
+                    onChange={(e) =>
+                      handlePasswordChange("confirmPassword", e.target.value)
+                    }
                     className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-colors"
                     required
                     autoComplete="new-password"
@@ -772,7 +864,11 @@ export default function ProfileForm() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-600 transition-colors"
                   >
-                    {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                    {showConfirmPassword ? (
+                      <FiEyeOff className="w-5 h-5" />
+                    ) : (
+                      <FiEye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -826,8 +922,9 @@ export default function ProfileForm() {
 
           {/* Description */}
           <p className="text-gray-600 mb-4">
-            La suppression de votre compte est irréversible. Toutes vos données personnelles 
-            seront effacées. Vos réservations passées seront conservées de manière anonyme.
+            La suppression de votre compte est irréversible. Toutes vos données
+            personnelles seront effacées. Vos réservations passées seront
+            conservées de manière anonyme.
           </p>
 
           {/* Bouton supprimer */}
@@ -847,11 +944,11 @@ export default function ProfileForm() {
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Overlay */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/50"
             onClick={closeDeleteModal}
           />
-          
+
           {/* Modal */}
           <div className="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10">
             {/* Header */}
@@ -879,7 +976,8 @@ export default function ProfileForm() {
             {/* Avertissement */}
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-red-700">
-                <strong>Attention :</strong> En supprimant votre compte, vous perdrez :
+                <strong>Attention :</strong> En supprimant votre compte, vous
+                perdrez :
               </p>
               <ul className="text-sm text-red-700 mt-2 space-y-1 list-disc list-inside">
                 <li>Vos informations personnelles</li>
@@ -907,7 +1005,11 @@ export default function ProfileForm() {
                   onClick={() => setShowDeletePassword(!showDeletePassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition-colors"
                 >
-                  {showDeletePassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                  {showDeletePassword ? (
+                    <FiEyeOff className="w-5 h-5" />
+                  ) : (
+                    <FiEye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -922,8 +1024,9 @@ export default function ProfileForm() {
                   className="mt-1 w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                 />
                 <span className="text-sm text-gray-700">
-                  Je comprends que cette action est <strong>irréversible</strong> et 
-                  que toutes mes données personnelles seront supprimées.
+                  Je comprends que cette action est{" "}
+                  <strong>irréversible</strong> et que toutes mes données
+                  personnelles seront supprimées.
                 </span>
               </label>
             </div>

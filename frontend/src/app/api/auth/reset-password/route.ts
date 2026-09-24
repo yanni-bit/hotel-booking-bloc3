@@ -20,14 +20,17 @@ export async function POST(request: NextRequest) {
     if (!token || !newPassword) {
       return NextResponse.json(
         { success: false, error: "Token et nouveau mot de passe requis" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (newPassword.length < 6) {
       return NextResponse.json(
-        { success: false, error: "Le mot de passe doit contenir au moins 6 caractères" },
-        { status: 400 }
+        {
+          success: false,
+          error: "Le mot de passe doit contenir au moins 6 caractères",
+        },
+        { status: 400 },
       );
     }
 
@@ -49,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (!resetRecord) {
       return NextResponse.json(
         { success: false, error: "Lien invalide ou expiré" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -57,15 +60,18 @@ export async function POST(request: NextRequest) {
     if (resetRecord.used) {
       return NextResponse.json(
         { success: false, error: "Ce lien a déjà été utilisé" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Token expiré
     if (resetRecord.expires_at < new Date()) {
       return NextResponse.json(
-        { success: false, error: "Ce lien a expiré. Veuillez faire une nouvelle demande." },
-        { status: 400 }
+        {
+          success: false,
+          error: "Ce lien a expiré. Veuillez faire une nouvelle demande.",
+        },
+        { status: 400 },
       );
     }
 
@@ -87,7 +93,9 @@ export async function POST(request: NextRequest) {
     console.log("\n========================================");
     console.log("MOT DE PASSE RÉINITIALISÉ");
     console.log("========================================");
-    console.log(`Utilisateur: ${resetRecord.user.prenom_user} ${resetRecord.user.nom_user}`);
+    console.log(
+      `Utilisateur: ${resetRecord.user.prenom_user} ${resetRecord.user.nom_user}`,
+    );
     console.log(`Date: ${new Date().toLocaleString("fr-FR")}`);
     console.log("========================================\n");
 
@@ -99,7 +107,7 @@ export async function POST(request: NextRequest) {
     console.error("Erreur POST /api/auth/reset-password:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

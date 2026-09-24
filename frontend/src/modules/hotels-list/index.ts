@@ -3,4 +3,4 @@
 // Exports du module hotels-list
 // ============================================================================
 
-export { default as HotelCard } from "./components/hotel-card/HotelCard"
+export { default as HotelCard } from "./components/hotel-card/HotelCard";

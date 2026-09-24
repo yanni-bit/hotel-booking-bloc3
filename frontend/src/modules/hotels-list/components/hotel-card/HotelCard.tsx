@@ -4,51 +4,52 @@
 // Équivalent de la carte dans hotels-list.html Angular
 // ============================================================================
 
-import type { Prisma } from "@prisma/client"
-import Link from "next/link"
-import { FaStar, FaMapMarkerAlt, FaEye } from "react-icons/fa"
+import type { Prisma } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
+import { FaStar, FaMapMarkerAlt, FaEye } from "react-icons/fa";
 
 // La note vient de Prisma (Decimal) côté serveur, ou d'un JSON (string/number)
 // côté API : on accepte les trois et on passe par Number() à l'affichage.
-type Note = Prisma.Decimal | number | string | null
+type Note = Prisma.Decimal | number | string | null;
 
 interface HotelCardProps {
   hotel: {
-    id_hotel: number
-    nom_hotel: string
-    description_hotel: string | null
-    img_hotel: string | null
-    ville_hotel: string
-    pays_hotel: string
-    nbre_etoile_hotel: number | null
-    note_moy_hotel: Note
-    nbre_avis_hotel: number
-  }
-  countryCode: string
+    id_hotel: number;
+    nom_hotel: string;
+    description_hotel: string | null;
+    img_hotel: string | null;
+    ville_hotel: string;
+    pays_hotel: string;
+    nbre_etoile_hotel: number | null;
+    note_moy_hotel: Note;
+    nbre_avis_hotel: number;
+  };
+  countryCode: string;
 }
 
 export default function HotelCard({ hotel, countryCode }: HotelCardProps) {
   // Déterminer le label de la note
   const getNoteLabel = (note: number): string => {
-    if (note >= 9) return "Exceptionnel"
-    if (note >= 8) return "Excellent"
-    if (note >= 7) return "Très bien"
-    if (note >= 6) return "Bien"
-    return "Correct"
-  }
+    if (note >= 9) return "Exceptionnel";
+    if (note >= 8) return "Excellent";
+    if (note >= 7) return "Très bien";
+    if (note >= 6) return "Bien";
+    return "Correct";
+  };
 
   return (
     <div className="hotel-card bg-white rounded-lg shadow-sm overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      
       {/* Image de l'hôtel */}
       <div className="relative h-48 overflow-hidden">
-        <img 
+        <Image
           src={hotel.img_hotel || "/images/default-room.jpg"}
           alt={hotel.nom_hotel}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-          loading="lazy"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          className="object-cover transition-transform duration-300 hover:scale-110"
         />
-        
+
         {/* Badge note */}
         {hotel.note_moy_hotel && (
           <div className="absolute top-3 right-3 bg-turquoise text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
@@ -59,12 +60,11 @@ export default function HotelCard({ hotel, countryCode }: HotelCardProps) {
 
       {/* Corps de la carte */}
       <div className="p-5 flex flex-col flex-1">
-        
         {/* Titre */}
         <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">
           {hotel.nom_hotel}
         </h3>
-        
+
         {/* Étoiles */}
         {hotel.nbre_etoile_hotel && (
           <div className="flex items-center mb-2">
@@ -105,15 +105,14 @@ export default function HotelCard({ hotel, countryCode }: HotelCardProps) {
         )}
 
         {/* Bouton voir détails */}
-        <Link 
+        <Link
           href={`/${countryCode}/hotels/${hotel.id_hotel}`}
           className="mt-auto w-full flex items-center justify-center px-4 py-3 bg-turquoise text-white rounded-full font-semibold hover:bg-turquoise-dark transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
         >
           <FaEye className="mr-2" />
           Voir les chambres
         </Link>
-
       </div>
     </div>
-  )
+  );
 }

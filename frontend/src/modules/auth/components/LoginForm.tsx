@@ -13,8 +13,16 @@ import { useAuth } from "./AuthProvider";
 
 // Comptes de démonstration (projet d'examen) : pré-remplissent le formulaire
 const DEMO_ACCOUNTS = [
-  { label: "Client", email: "demo.client@bookyourtravel.fr", password: "Demo2026!" },
-  { label: "Administrateur", email: "demo.admin@bookyourtravel.fr", password: "Demo2026!" },
+  {
+    label: "Client",
+    email: "demo.client@bookyourtravel.fr",
+    password: "Demo2026!",
+  },
+  {
+    label: "Administrateur",
+    email: "demo.admin@bookyourtravel.fr",
+    password: "Demo2026!",
+  },
 ] as const;
 
 export default function LoginForm() {
@@ -164,10 +172,15 @@ export default function LoginForm() {
         </p>
         <ul className="space-y-2">
           {DEMO_ACCOUNTS.map((account) => (
-            <li key={account.email} className="flex items-center justify-between gap-3">
+            <li
+              key={account.email}
+              className="flex items-center justify-between gap-3"
+            >
               <span className="text-gray-700">
                 <span className="font-medium">{account.label}</span>
-                <span className="block text-xs text-gray-500">{account.email}</span>
+                <span className="block text-xs text-gray-500">
+                  {account.email}
+                </span>
               </span>
               <button
                 type="button"
@@ -179,7 +192,9 @@ export default function LoginForm() {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-gray-500">Mot de passe des deux comptes : {DEMO_ACCOUNTS[0].password}</p>
+        <p className="mt-2 text-xs text-gray-500">
+          Mot de passe des deux comptes : {DEMO_ACCOUNTS[0].password}
+        </p>
       </div>
     </form>
   );

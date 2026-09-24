@@ -7,7 +7,6 @@ export default function HotelsLoading() {
   return (
     <section className="hotels-list-section py-8 min-h-screen bg-gray-50">
       <div className="content-container">
-        
         {/* Skeleton titre */}
         <div className="mb-6">
           <div className="h-8 w-64 bg-gray-200 rounded animate-pulse"></div>
@@ -17,10 +16,13 @@ export default function HotelsLoading() {
         {/* Skeleton grille */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div
+              key={i}
+              className="bg-white rounded-lg shadow-sm overflow-hidden"
+            >
               {/* Image skeleton */}
               <div className="h-48 bg-gray-200 animate-pulse"></div>
-              
+
               {/* Content skeleton */}
               <div className="p-5 space-y-3">
                 <div className="h-6 bg-gray-200 rounded animate-pulse w-3/4"></div>
@@ -32,8 +34,7 @@ export default function HotelsLoading() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
-  )
+  );
 }

@@ -8,7 +8,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { FiMail, FiLock, FiUser, FiPhone, FiAlertCircle, FiCheck, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiPhone,
+  FiAlertCircle,
+  FiCheck,
+  FiEye,
+  FiEyeOff,
+} from "react-icons/fi";
 import { useAuth } from "./AuthProvider";
 
 export default function RegisterForm() {
@@ -92,7 +101,10 @@ export default function RegisterForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="prenom" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="prenom"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Prénom *
           </label>
           <div className="relative">
@@ -111,7 +123,10 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="nom" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="nom"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Nom *
           </label>
           <div className="relative">
@@ -131,7 +146,10 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Adresse email *
         </label>
         <div className="relative">
@@ -150,7 +168,10 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label htmlFor="tel" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="tel"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Téléphone <span className="text-gray-400">(optionnel)</span>
         </label>
         <div className="relative">
@@ -168,7 +189,10 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Mot de passe *
         </label>
         <div className="relative">
@@ -188,16 +212,27 @@ export default function RegisterForm() {
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            aria-label={
+              showPassword
+                ? "Masquer le mot de passe"
+                : "Afficher le mot de passe"
+            }
           >
-            {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+            {showPassword ? (
+              <FiEyeOff className="w-5 h-5" />
+            ) : (
+              <FiEye className="w-5 h-5" />
+            )}
           </button>
         </div>
         <p className="mt-1 text-xs text-gray-500">Minimum 6 caractères</p>
       </div>
 
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="confirmPassword"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Confirmer le mot de passe *
         </label>
         <div className="relative">
@@ -216,11 +251,17 @@ export default function RegisterForm() {
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-            aria-label={showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            aria-label={
+              showConfirmPassword
+                ? "Masquer le mot de passe"
+                : "Afficher le mot de passe"
+            }
           >
             {showConfirmPassword ? (
               <FiEyeOff className="w-5 h-5" />
-            ) : formData.password && formData.confirmPassword && formData.password === formData.confirmPassword ? (
+            ) : formData.password &&
+              formData.confirmPassword &&
+              formData.password === formData.confirmPassword ? (
               <FiCheck className="w-5 h-5 text-green-500" />
             ) : (
               <FiEye className="w-5 h-5" />

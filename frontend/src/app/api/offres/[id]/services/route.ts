@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (isNaN(hotelId)) {
       return NextResponse.json(
         { error: "ID d'hôtel invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     console.error("Erreur récupération services:", error);
     return NextResponse.json(
       { error: "Erreur lors de la récupération des services" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

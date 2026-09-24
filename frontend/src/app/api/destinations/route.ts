@@ -16,7 +16,7 @@ export async function GET() {
     console.error("Error fetching destinations:", error);
     return NextResponse.json(
       { error: "Erreur lors de la récupération des destinations" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

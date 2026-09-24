@@ -5,7 +5,11 @@
 // ============================================================================
 
 import { notFound } from "next/navigation";
-import { getOffreById, getHotelServices, HotelServicesList } from "@lib/reservations";
+import {
+  getOffreById,
+  getHotelServices,
+  HotelServicesList,
+} from "@lib/reservations";
 import BookingForm from "@modules/booking/components/BookingForm";
 
 interface BookingPageProps {

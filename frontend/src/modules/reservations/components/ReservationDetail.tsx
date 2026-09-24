@@ -96,7 +96,9 @@ export default function ReservationDetail({
   const router = useRouter();
   const [cancelling, setCancelling] = useState(false);
   const [currentStatut, setCurrentStatut] = useState(reservation.id_statut);
-  const [currentStatutInfo, setCurrentStatutInfo] = useState(reservation.statut);
+  const [currentStatutInfo, setCurrentStatutInfo] = useState(
+    reservation.statut,
+  );
 
   // Formater une date
   const formatDate = (dateString: string): string => {
@@ -159,7 +161,7 @@ export default function ReservationDetail({
     try {
       const response = await fetch(
         `/api/reservations/${reservation.id_reservation}/cancel`,
-        { method: "POST" }
+        { method: "POST" },
       );
 
       const data = await response.json();
@@ -235,12 +237,15 @@ export default function ReservationDetail({
               Détail de la réservation
             </h1>
             <p className="text-gray-500 mt-2">
-              N° de confirmation : <strong className="text-gray-800">{reservation.num_confirmation}</strong>
+              N° de confirmation :{" "}
+              <strong className="text-gray-800">
+                {reservation.num_confirmation}
+              </strong>
             </p>
           </div>
           <span
             className={`inline-flex px-4 py-2 rounded-full text-sm font-semibold ${getStatusBadgeClass(
-              currentStatutInfo.couleur
+              currentStatutInfo.couleur,
             )}`}
           >
             {currentStatutInfo.nom_statut}
@@ -261,7 +266,10 @@ export default function ReservationDetail({
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-48 h-36 relative rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src={reservation.hotel.img_hotel || "/images/hotel-placeholder.jpg"}
+                    src={
+                      reservation.hotel.img_hotel ||
+                      "/images/hotel-placeholder.jpg"
+                    }
                     alt={reservation.hotel.nom_hotel}
                     fill
                     className="object-cover"
@@ -277,7 +285,8 @@ export default function ReservationDetail({
                   </div>
                   <p className="text-gray-500 mb-4">
                     <FaMapMarkerAlt className="inline mr-1" />
-                    {reservation.hotel.ville_hotel}, {reservation.hotel.pays_hotel}
+                    {reservation.hotel.ville_hotel},{" "}
+                    {reservation.hotel.pays_hotel}
                   </p>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -285,12 +294,15 @@ export default function ReservationDetail({
                       <p className="text-sm text-gray-500">Chambre</p>
                       <p className="font-medium">
                         {reservation.chambre.type_room}
-                        {reservation.chambre.cat_room && ` - ${reservation.chambre.cat_room}`}
+                        {reservation.chambre.cat_room &&
+                          ` - ${reservation.chambre.cat_room}`}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Offre</p>
-                      <p className="font-medium">{reservation.offre.nom_offre}</p>
+                      <p className="font-medium">
+                        {reservation.offre.nom_offre}
+                      </p>
                     </div>
                   </div>
 
@@ -313,16 +325,21 @@ export default function ReservationDetail({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div className="bg-gray-50 rounded-lg p-4 text-center">
                   <p className="text-sm text-gray-500 mb-1">Arrivée</p>
-                  <p className="font-semibold">{formatDate(reservation.check_in)}</p>
+                  <p className="font-semibold">
+                    {formatDate(reservation.check_in)}
+                  </p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 text-center">
                   <p className="text-sm text-gray-500 mb-1">Départ</p>
-                  <p className="font-semibold">{formatDate(reservation.check_out)}</p>
+                  <p className="font-semibold">
+                    {formatDate(reservation.check_out)}
+                  </p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 text-center">
                   <p className="text-sm text-gray-500 mb-1">Durée</p>
                   <p className="font-semibold">
-                    {reservation.nbre_nuits} nuit{reservation.nbre_nuits > 1 ? "s" : ""}
+                    {reservation.nbre_nuits} nuit
+                    {reservation.nbre_nuits > 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
@@ -387,7 +404,9 @@ export default function ReservationDetail({
                             <FaCheckCircle className="inline mr-2 text-turquoise" />
                             {service.nom_service}
                           </td>
-                          <td className="px-4 py-3 text-center">{service.quantite}</td>
+                          <td className="px-4 py-3 text-center">
+                            {service.quantite}
+                          </td>
                           <td className="px-4 py-3 text-right">
                             {service.prix_unitaire.toFixed(2)} €
                           </td>
@@ -399,7 +418,10 @@ export default function ReservationDetail({
                     </tbody>
                     <tfoot className="bg-gray-50">
                       <tr>
-                        <td colSpan={3} className="px-4 py-3 text-right font-medium">
+                        <td
+                          colSpan={3}
+                          className="px-4 py-3 text-right font-medium"
+                        >
                           Total services :
                         </td>
                         <td className="px-4 py-3 text-right font-bold text-turquoise">
@@ -421,7 +443,9 @@ export default function ReservationDetail({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <p className="text-sm text-gray-500">Date de réservation</p>
-                  <p className="font-medium">{formatDateTime(reservation.date_reservation)}</p>
+                  <p className="font-medium">
+                    {formatDateTime(reservation.date_reservation)}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">N° de confirmation</p>
@@ -431,7 +455,7 @@ export default function ReservationDetail({
                   <p className="text-sm text-gray-500">Statut</p>
                   <span
                     className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(
-                      currentStatutInfo.couleur
+                      currentStatutInfo.couleur,
                     )}`}
                   >
                     {currentStatutInfo.nom_statut}
@@ -513,7 +537,8 @@ export default function ReservationDetail({
             {/* AIDE */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h3 className="text-md font-semibold flex items-center mb-3">
-                <FaQuestionCircle className="mr-2 text-turquoise" /> Besoin d&apos;aide ?
+                <FaQuestionCircle className="mr-2 text-turquoise" /> Besoin
+                d&apos;aide ?
               </h3>
               <p className="text-sm text-gray-500 mb-3">
                 Notre équipe est disponible 24h/24 pour vous aider.

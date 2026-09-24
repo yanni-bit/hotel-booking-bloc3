@@ -1,7 +1,7 @@
 // src/modules/reservations/components/ReservationsList.tsx
 // ============================================================================
 // Liste des réservations - Client Component
-// 
+//
 // - Angular : (click)="cancelReservation(reservation)"
 // - React : onClick={() => handleCancel(reservation.id_reservation)}
 // ============================================================================
@@ -11,13 +11,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  FaCalendarAlt, 
-  FaUsers, 
-  FaEye, 
+import {
+  FaCalendarAlt,
+  FaUsers,
+  FaEye,
   FaTimesCircle,
   FaInbox,
-  FaSearch 
+  FaSearch,
 } from "react-icons/fa";
 
 // ============================================================================
@@ -61,7 +61,8 @@ export default function ReservationsList({
   initialReservations,
   countryCode,
 }: ReservationsListProps) {
-  const [reservations, setReservations] = useState<Reservation[]>(initialReservations);
+  const [reservations, setReservations] =
+    useState<Reservation[]>(initialReservations);
   const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   // Formater une date
@@ -93,16 +94,23 @@ export default function ReservationsList({
 
   // Annuler une réservation
   const handleCancel = async (reservation: Reservation) => {
-    if (!confirm(`Voulez-vous vraiment annuler cette réservation à ${reservation.hotel.nom_hotel} ?`)) {
+    if (
+      !confirm(
+        `Voulez-vous vraiment annuler cette réservation à ${reservation.hotel.nom_hotel} ?`,
+      )
+    ) {
       return;
     }
 
     setCancellingId(reservation.id_reservation);
 
     try {
-      const response = await fetch(`/api/reservations/${reservation.id_reservation}/cancel`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `/api/reservations/${reservation.id_reservation}/cancel`,
+        {
+          method: "POST",
+        },
+      );
 
       const data = await response.json();
 
@@ -116,8 +124,8 @@ export default function ReservationsList({
                   id_statut: 3,
                   statut: { nom_statut: "Annulée", couleur_statut: "danger" },
                 }
-              : r
-          )
+              : r,
+          ),
         );
         alert("Réservation annulée avec succès");
       } else {
@@ -170,7 +178,10 @@ export default function ReservationsList({
               {/* Image hôtel */}
               <div className="w-full md:w-48 h-32 relative rounded-lg overflow-hidden flex-shrink-0">
                 <Image
-                  src={reservation.hotel.img_hotel || "/images/hotel-placeholder.jpg"}
+                  src={
+                    reservation.hotel.img_hotel ||
+                    "/images/hotel-placeholder.jpg"
+                  }
                   alt={reservation.hotel.nom_hotel}
                   fill
                   className="object-cover"
@@ -195,7 +206,7 @@ export default function ReservationsList({
                   {/* Badge statut */}
                   <span
                     className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass(
-                      reservation.statut.couleur_statut
+                      reservation.statut.couleur_statut,
                     )}`}
                   >
                     {reservation.statut.nom_statut}
@@ -207,18 +218,24 @@ export default function ReservationsList({
                   <div className="flex items-center">
                     <FaCalendarAlt className="mr-2 text-turquoise" />
                     <span>
-                      {formatDate(reservation.check_in)} → {formatDate(reservation.check_out)}
+                      {formatDate(reservation.check_in)} →{" "}
+                      {formatDate(reservation.check_out)}
                     </span>
                     <span className="ml-2 text-gray-400">
-                      ({reservation.nbre_nuits} nuit{reservation.nbre_nuits > 1 ? "s" : ""})
+                      ({reservation.nbre_nuits} nuit
+                      {reservation.nbre_nuits > 1 ? "s" : ""})
                     </span>
                   </div>
                   <div className="flex items-center">
                     <FaUsers className="mr-2 text-turquoise" />
                     <span>
-                      {reservation.nbre_adults} adulte{reservation.nbre_adults > 1 ? "s" : ""}
+                      {reservation.nbre_adults} adulte
+                      {reservation.nbre_adults > 1 ? "s" : ""}
                       {(reservation.nbre_children ?? 0) > 0 && (
-                        <>, {reservation.nbre_children} enfant{(reservation.nbre_children ?? 0) > 1 ? "s" : ""}</>
+                        <>
+                          , {reservation.nbre_children} enfant
+                          {(reservation.nbre_children ?? 0) > 1 ? "s" : ""}
+                        </>
                       )}
                     </span>
                   </div>
@@ -258,7 +275,9 @@ export default function ReservationsList({
                         className="inline-flex items-center px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <FaTimesCircle className="mr-2" />
-                        {cancellingId === reservation.id_reservation ? "Annulation..." : "Annuler"}
+                        {cancellingId === reservation.id_reservation
+                          ? "Annulation..."
+                          : "Annuler"}
                       </button>
                     )}
                   </div>

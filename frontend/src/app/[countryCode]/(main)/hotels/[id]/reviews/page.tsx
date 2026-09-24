@@ -4,19 +4,19 @@
 // Équivalent de hotel-reviews.component Angular
 // ============================================================================
 
-import { notFound } from "next/navigation"
-import { getHotelById } from "@lib/hotels"
-import { 
+import { notFound } from "next/navigation";
+import { getHotelById } from "@lib/hotels";
+import {
   FaComments,
   FaCalendarAlt,
   FaUser,
   FaFlag,
   FaShieldAlt,
-  FaInfoCircle
-} from "react-icons/fa"
+  FaInfoCircle,
+} from "react-icons/fa";
 
 interface ReviewsPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 // Labels des types de voyageurs
@@ -27,46 +27,45 @@ const typesVoyageurLabels: Record<string, string> = {
   business: "Voyage d'affaires",
   groupe: "Voyage en groupe",
   autre: "Autre",
-}
+};
 
 // Formate une date nullable (date_avis peut être NULL en base)
 function formatDateAvis(date: Date | null): string {
-  if (!date) return "Date non renseignée"
+  if (!date) return "Date non renseignée";
   return new Date(date).toLocaleDateString("fr-FR", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  })
+  });
 }
 
 export default async function ReviewsPage({ params }: ReviewsPageProps) {
-  const { id } = await params
-  const hotelId = parseInt(id)
-  
+  const { id } = await params;
+  const hotelId = parseInt(id);
+
   if (isNaN(hotelId)) {
-    notFound()
-  }
-  
-  const hotel = await getHotelById(hotelId)
-  
-  if (!hotel) {
-    notFound()
+    notFound();
   }
 
-  const avis = hotel.avis || []
-  const noteMoyenne = hotel.note_moy_hotel 
-    ? Number(hotel.note_moy_hotel).toFixed(1) 
-    : null
+  const hotel = await getHotelById(hotelId);
+
+  if (!hotel) {
+    notFound();
+  }
+
+  const avis = hotel.avis || [];
+  const noteMoyenne = hotel.note_moy_hotel
+    ? Number(hotel.note_moy_hotel).toFixed(1)
+    : null;
 
   return (
     <div className="hotel-reviews">
-      
       {/* Titre section */}
       <h2 className="text-xl font-semibold mb-4 pb-2 border-b text-gray-700 flex items-center">
         <FaComments className="mr-3 text-turquoise" />
         Avis clients
       </h2>
-      
+
       {/* Aucun avis */}
       {avis.length === 0 && (
         <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg">
@@ -76,7 +75,7 @@ export default async function ReviewsPage({ params }: ReviewsPageProps) {
           </p>
         </div>
       )}
-      
+
       {/* Contenu si avis présents */}
       {avis.length > 0 && (
         <>
@@ -103,15 +102,14 @@ export default async function ReviewsPage({ params }: ReviewsPageProps) {
               </div>
             </div>
           </div>
-          
+
           {/* Liste des avis */}
           <div className="space-y-4">
             {avis.map((review) => (
-              <div 
-                key={review.id_avis} 
+              <div
+                key={review.id_avis}
                 className="bg-white p-5 rounded-lg shadow-sm"
               >
-                
                 {/* En-tête avis */}
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -127,26 +125,25 @@ export default async function ReviewsPage({ params }: ReviewsPageProps) {
                     {Number(review.note).toFixed(1)}/10
                   </div>
                 </div>
-                
+
                 {/* Titre avis */}
                 {review.titre_avis && (
                   <h5 className="text-turquoise font-medium mb-2">
                     &quot;{review.titre_avis}&quot;
                   </h5>
                 )}
-                
+
                 {/* Commentaire */}
                 {review.commentaire && (
-                  <p className="text-gray-600 mb-4">
-                    {review.commentaire}
-                  </p>
+                  <p className="text-gray-600 mb-4">{review.commentaire}</p>
                 )}
-                
+
                 {/* Infos supplémentaires */}
                 <div className="pt-3 border-t text-sm text-gray-400 flex justify-between">
                   <span className="flex items-center">
                     <FaUser className="mr-2" />
-                    {typesVoyageurLabels[review.type_voyageur] || "Non spécifié"}
+                    {typesVoyageurLabels[review.type_voyageur] ||
+                      "Non spécifié"}
                   </span>
                   {review.pays_origine && (
                     <span className="flex items-center">
@@ -155,19 +152,18 @@ export default async function ReviewsPage({ params }: ReviewsPageProps) {
                     </span>
                   )}
                 </div>
-                
               </div>
             ))}
           </div>
-          
+
           {/* Note de bas de page */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-500">
             <FaShieldAlt className="inline mr-2" />
-            Tous les avis proviennent de clients ayant séjourné dans cet établissement.
+            Tous les avis proviennent de clients ayant séjourné dans cet
+            établissement.
           </div>
         </>
       )}
-      
     </div>
-  )
+  );
 }

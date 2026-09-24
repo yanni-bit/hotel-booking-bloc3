@@ -213,7 +213,7 @@ export default function BookingForm({
       ]);
     } else {
       setServicesSelectionnes((prev) =>
-        prev.filter((s) => s.id_hotel_service !== service.id_hotel_service)
+        prev.filter((s) => s.id_hotel_service !== service.id_hotel_service),
       );
     }
   }
@@ -316,7 +316,7 @@ export default function BookingForm({
       router.push(`/${countryCode}/payment/${result.data.id_reservation}`);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Erreur lors de la réservation"
+        err instanceof Error ? err.message : "Erreur lors de la réservation",
       );
       setSubmitting(false);
     }
@@ -573,7 +573,7 @@ export default function BookingForm({
                             service.inclus ||
                             servicesSelectionnes.some(
                               (s) =>
-                                s.id_hotel_service === service.id_hotel_service
+                                s.id_hotel_service === service.id_hotel_service,
                             )
                           }
                           onChange={(e) =>

@@ -3,12 +3,12 @@
 // Admin : liste des utilisateurs
 // ============================================================================
 
-import { Metadata } from "next"
-import UsersTable from "@modules/admin/components/UsersTable"
+import { Metadata } from "next";
+import UsersTable from "@modules/admin/components/UsersTable";
 
 export const metadata: Metadata = {
   title: "Utilisateurs | Administration",
-}
+};
 
 export default function AdminUsersPage() {
   return (
@@ -16,5 +16,5 @@ export default function AdminUsersPage() {
       <h1 className="text-2xl font-bold text-gris-fonce mb-6">Utilisateurs</h1>
       <UsersTable />
     </div>
-  )
+  );
 }

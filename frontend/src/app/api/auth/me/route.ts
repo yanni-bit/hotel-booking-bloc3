@@ -15,7 +15,10 @@ const AUTH_COOKIE = "auth-token";
 // base réinitialisée) ne doit pas laisser le navigateur dans un état incohérent
 // où le middleware voit une session et le front ne voit personne.
 function unauthenticated(error: string) {
-  const response = NextResponse.json({ success: false, error }, { status: 401 });
+  const response = NextResponse.json(
+    { success: false, error },
+    { status: 401 },
+  );
   response.cookies.set(AUTH_COOKIE, "", { maxAge: 0, path: "/" });
   return response;
 }
@@ -27,7 +30,7 @@ export async function GET() {
   try {
     // 1. Récupérer le payload du token
     const payload = await getCurrentUser();
-    
+
     // Pas de session : réponse 200 avec user null. Un visiteur anonyme n'est
     // pas une erreur (un 401 ici polluait la console et le score Lighthouse).
     if (!payload) {
@@ -36,7 +39,7 @@ export async function GET() {
 
     // 2. Récupérer les infos fraîches depuis la BDD
     const user = await findUserById(payload.id_user);
-    
+
     // Token valide mais utilisateur inexistant → session orpheline, on la ferme
     if (!user) {
       return unauthenticated("Utilisateur non trouvé");
@@ -58,7 +61,7 @@ export async function GET() {
     console.error("Erreur me:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

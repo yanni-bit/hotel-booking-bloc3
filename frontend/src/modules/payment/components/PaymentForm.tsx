@@ -2,7 +2,7 @@
 // ============================================================================
 // Formulaire de paiement Stripe Elements - VERSION AMÉLIORÉE
 // Avec champs séparés comme dans Angular (Bloc 2)
-// 
+//
 // COMPARAISON Angular → React + Stripe :
 // ┌─────────────────────────────────────────────────────────────────┐
 // │ Angular (Bloc 2)              │ React + Stripe (Bloc 3)        │
@@ -119,7 +119,10 @@ const stripeElementStyle = {
 // ============================================================================
 // COMPOSANT WRAPPER (avec Elements Provider)
 // ============================================================================
-export default function PaymentForm({ reservation, countryCode }: PaymentFormProps) {
+export default function PaymentForm({
+  reservation,
+  countryCode,
+}: PaymentFormProps) {
   const stripePromise = getStripe();
 
   return (
@@ -130,10 +133,7 @@ export default function PaymentForm({ reservation, countryCode }: PaymentFormPro
         locale: "fr",
       }}
     >
-      <PaymentFormContent
-        reservation={reservation}
-        countryCode={countryCode}
-      />
+      <PaymentFormContent reservation={reservation} countryCode={countryCode} />
     </Elements>
   );
 }
@@ -190,7 +190,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Erreur lors de la création du paiement");
+          throw new Error(
+            data.error || "Erreur lors de la création du paiement",
+          );
         }
 
         setClientSecret(data.clientSecret);
@@ -251,17 +253,15 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
       }
 
       // 2. Confirmer le paiement avec Stripe
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
+      const { error: stripeError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardNumberElement,
             billing_details: {
               name: cardName,
             },
           },
-        }
-      );
+        });
 
       if (stripeError) {
         // Gérer les erreurs Stripe (carte refusée, etc.)
@@ -284,7 +284,7 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
           body: JSON.stringify({
             paymentIntentId: paymentIntent.id,
           }),
-        }
+        },
       );
 
       const confirmData = await confirmResponse.json();
@@ -352,7 +352,10 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="flex items-center space-x-2 text-sm flex-wrap">
             <li>
-              <Link href={`/${countryCode}`} className="text-turquoise hover:underline">
+              <Link
+                href={`/${countryCode}`}
+                className="text-turquoise hover:underline"
+              >
                 Accueil
               </Link>
             </li>
@@ -385,7 +388,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold">
               ✓
             </div>
-            <span className="ml-2 text-green-600 font-medium">Informations</span>
+            <span className="ml-2 text-green-600 font-medium">
+              Informations
+            </span>
           </div>
           <div className="w-16 h-1 bg-turquoise mx-4" />
           <div className="flex items-center">
@@ -430,8 +435,8 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                         cardNumberError
                           ? "border-red-300 bg-red-50"
                           : cardNumberComplete
-                          ? "border-green-300 bg-green-50"
-                          : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
+                            ? "border-green-300 bg-green-50"
+                            : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
                       }`}
                     >
                       <div className="flex items-center">
@@ -455,7 +460,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                       </div>
                     </div>
                     {cardNumberError && (
-                      <p className="mt-1 text-sm text-red-600">{cardNumberError}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {cardNumberError}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -492,8 +499,8 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                         cardExpiryError
                           ? "border-red-300 bg-red-50"
                           : cardExpiryComplete
-                          ? "border-green-300 bg-green-50"
-                          : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
+                            ? "border-green-300 bg-green-50"
+                            : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
                       }`}
                     >
                       <CardExpiryElement
@@ -508,7 +515,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                       />
                     </div>
                     {cardExpiryError && (
-                      <p className="mt-1 text-sm text-red-600">{cardExpiryError}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {cardExpiryError}
+                      </p>
                     )}
                   </div>
 
@@ -523,8 +532,8 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                         cardCvcError
                           ? "border-red-300 bg-red-50"
                           : cardCvcComplete
-                          ? "border-green-300 bg-green-50"
-                          : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
+                            ? "border-green-300 bg-green-50"
+                            : "border-gray-300 focus-within:border-turquoise focus-within:ring-1 focus-within:ring-turquoise"
                       }`}
                     >
                       <CardCvcElement
@@ -539,7 +548,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                       />
                     </div>
                     {cardCvcError && (
-                      <p className="mt-1 text-sm text-red-600">{cardCvcError}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {cardCvcError}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -552,7 +563,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-green-700 font-medium mb-2">✅ Acceptées :</p>
+                      <p className="text-green-700 font-medium mb-2">
+                        ✅ Acceptées :
+                      </p>
                       <ul className="text-gray-600 space-y-1">
                         <li className="flex items-center">
                           <FaCcVisa className="mr-2 text-blue-600" />
@@ -572,7 +585,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                       </ul>
                     </div>
                     <div>
-                      <p className="text-red-700 font-medium mb-2">❌ Refusées :</p>
+                      <p className="text-red-700 font-medium mb-2">
+                        ❌ Refusées :
+                      </p>
                       <ul className="text-gray-600 space-y-1">
                         <li>4000 0000 0000 0002 (Refusée)</li>
                         <li>4000 0000 0000 9995 (Fonds insuffisants)</li>
@@ -592,7 +607,10 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                     onChange={(e) => setAcceptConditions(e.target.checked)}
                     className="w-5 h-5 text-turquoise rounded focus:ring-turquoise cursor-pointer shrink-0"
                   />
-                  <label htmlFor="acceptConditions" className="ml-3 text-[20px] text-gray-600 cursor-pointer">
+                  <label
+                    htmlFor="acceptConditions"
+                    className="ml-3 text-[20px] text-gray-600 cursor-pointer"
+                  >
                     J&apos;accepte les{" "}
                     <a href="#" className="text-turquoise hover:underline">
                       conditions générales de vente
@@ -637,7 +655,8 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 <div className="mt-6 pt-4 border-t text-center">
                   <p className="text-xs text-gray-500">
                     <FaLock className="inline mr-1" />
-                    Paiement sécurisé par Stripe. Vos données bancaires ne transitent jamais par nos serveurs.
+                    Paiement sécurisé par Stripe. Vos données bancaires ne
+                    transitent jamais par nos serveurs.
                   </p>
                   <div className="flex justify-center items-center gap-3 mt-3">
                     <FaCcVisa className="text-2xl text-gray-400" />
@@ -660,7 +679,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
               {/* Image hôtel */}
               <div className="mb-4">
                 <Image
-                  src={reservation.hotel.img_hotel || "/images/default-hotel.jpg"}
+                  src={
+                    reservation.hotel.img_hotel || "/images/default-hotel.jpg"
+                  }
                   alt={reservation.hotel.nom_hotel}
                   width={400}
                   height={200}
@@ -668,7 +689,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 />
               </div>
 
-              <h3 className="font-bold text-gray-800">{reservation.hotel.nom_hotel}</h3>
+              <h3 className="font-bold text-gray-800">
+                {reservation.hotel.nom_hotel}
+              </h3>
               <p className="text-sm text-gray-500 mb-3">
                 <FaMapMarkerAlt className="inline mr-1" />
                 {reservation.hotel.ville_hotel}, {reservation.hotel.pays_hotel}
@@ -680,11 +703,15 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Chambre</span>
-                  <span className="font-medium">{reservation.chambre.type_room}</span>
+                  <span className="font-medium">
+                    {reservation.chambre.type_room}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Offre</span>
-                  <span className="font-medium">{reservation.offre.nom_offre}</span>
+                  <span className="font-medium">
+                    {reservation.offre.nom_offre}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Arrivée</span>
@@ -695,19 +722,23 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Départ</span>
                   <span className="font-medium">
-                    {new Date(reservation.check_out).toLocaleDateString("fr-FR")}
+                    {new Date(reservation.check_out).toLocaleDateString(
+                      "fr-FR",
+                    )}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Durée</span>
                   <span className="font-medium">
-                    {reservation.nbre_nuits} nuit{reservation.nbre_nuits > 1 ? "s" : ""}
+                    {reservation.nbre_nuits} nuit
+                    {reservation.nbre_nuits > 1 ? "s" : ""}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Voyageurs</span>
                   <span className="font-medium">
-                    {reservation.nbre_adults} adulte{reservation.nbre_adults > 1 ? "s" : ""}
+                    {reservation.nbre_adults} adulte
+                    {reservation.nbre_adults > 1 ? "s" : ""}
                     {reservation.nbre_children > 0 &&
                       `, ${reservation.nbre_children} enfant${
                         reservation.nbre_children > 1 ? "s" : ""
@@ -721,9 +752,14 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 <>
                   <hr className="my-3" />
                   <div className="space-y-2 text-sm">
-                    <p className="font-medium text-gray-700">Services additionnels</p>
+                    <p className="font-medium text-gray-700">
+                      Services additionnels
+                    </p>
                     {reservation.services.map((service, index) => (
-                      <div key={index} className="flex justify-between text-gray-600">
+                      <div
+                        key={index}
+                        className="flex justify-between text-gray-600"
+                      >
                         <span>{service.nom_service}</span>
                         <span>{service.sous_total.toFixed(2)} €</span>
                       </div>
@@ -746,7 +782,9 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
 
               {/* Aide */}
               <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <h4 className="text-sm font-medium mb-1">Besoin d&apos;aide ?</h4>
+                <h4 className="text-sm font-medium mb-1">
+                  Besoin d&apos;aide ?
+                </h4>
                 <p className="text-xs text-gray-500">
                   <FaPhone className="inline mr-1" />
                   1-555-555-555

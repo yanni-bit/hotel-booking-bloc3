@@ -10,7 +10,7 @@ import prisma from "@lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -19,7 +19,7 @@ export async function GET(
     if (isNaN(reservationId)) {
       return NextResponse.json(
         { success: false, error: "ID de réservation invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function GET(
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -88,7 +88,7 @@ export async function GET(
     if (!reservation) {
       return NextResponse.json(
         { success: false, error: "Réservation non trouvée" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -96,7 +96,7 @@ export async function GET(
     if (reservation.id_user !== user.id_user) {
       return NextResponse.json(
         { success: false, error: "Non autorisé" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -155,7 +155,7 @@ export async function GET(
     console.error("Erreur récupération réservation:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

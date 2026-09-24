@@ -8,37 +8,37 @@
 // Environnement node (pas jsdom) : NextResponse a besoin des API Request/Response.
 // ============================================================================
 
-import { requireAdmin, unauthorized } from "../admin"
-import { getCurrentUser } from "../auth"
+import { requireAdmin, unauthorized } from "../admin";
+import { getCurrentUser } from "../auth";
 
 jest.mock("../auth", () => ({
   getCurrentUser: jest.fn(),
-}))
+}));
 
-const getCurrentUserMock = getCurrentUser as jest.Mock
+const getCurrentUserMock = getCurrentUser as jest.Mock;
 
 describe("requireAdmin", () => {
   it("renvoie null sans session", async () => {
-    getCurrentUserMock.mockResolvedValue(null)
-    expect(await requireAdmin()).toBeNull()
-  })
+    getCurrentUserMock.mockResolvedValue(null);
+    expect(await requireAdmin()).toBeNull();
+  });
 
   it("renvoie null pour un client connecté", async () => {
-    getCurrentUserMock.mockResolvedValue({ id_user: 4, role: "client" })
-    expect(await requireAdmin()).toBeNull()
-  })
+    getCurrentUserMock.mockResolvedValue({ id_user: 4, role: "client" });
+    expect(await requireAdmin()).toBeNull();
+  });
 
   it("renvoie l'utilisateur pour un admin", async () => {
-    const admin = { id_user: 1, role: "admin", prenom: "Yannick" }
-    getCurrentUserMock.mockResolvedValue(admin)
-    expect(await requireAdmin()).toEqual(admin)
-  })
-})
+    const admin = { id_user: 1, role: "admin", prenom: "Yannick" };
+    getCurrentUserMock.mockResolvedValue(admin);
+    expect(await requireAdmin()).toEqual(admin);
+  });
+});
 
 describe("unauthorized", () => {
   it("renvoie une réponse 401 avec un message", async () => {
-    const response = unauthorized()
-    expect(response.status).toBe(401)
-    expect(await response.json()).toEqual({ error: "Non autorisé" })
-  })
-})
+    const response = unauthorized();
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: "Non autorisé" });
+  });
+});

@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
 import Image from "next/image";
-import Link from "next/link"
-import { FaBuilding } from "react-icons/fa"
+import Link from "next/link";
+import { FaBuilding } from "react-icons/fa";
 
 // 1. On définit la structure des données que le composant va recevoir
 interface DestinationProps {
   destinations: {
-    ville: string
-    pays: string
-    count: number
-    image: string | null
-  }[]
+    ville: string;
+    pays: string;
+    count: number;
+    image: string | null;
+  }[];
 }
 
 // 2. On ajoute { destinations } comme paramètre (prop)
@@ -19,10 +19,13 @@ const Destinations = ({ destinations }: DestinationProps) => {
   return (
     <section className="destinations-section">
       <div className="max-w-[1200px] mx-auto px-4">
-        
         <div className="section-header">
-          <h2 className="section-title">Meilleures Destinations Autour du Monde</h2>
-          <p className="section-subtitle">Explorez nos destinations les plus populaires</p>
+          <h2 className="section-title">
+            Meilleures Destinations Autour du Monde
+          </h2>
+          <p className="section-subtitle">
+            Explorez nos destinations les plus populaires
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -49,7 +52,10 @@ const Destinations = ({ destinations }: DestinationProps) => {
                 </div>
               </div>
               <div className="destination-card-footer">
-                <Link href={`/hotels?city=${dest.ville}`} className="btn-destination">
+                <Link
+                  href={`/hotels?city=${dest.ville}`}
+                  className="btn-destination"
+                >
                   Voir les hôtels →
                 </Link>
               </div>
@@ -58,7 +64,7 @@ const Destinations = ({ destinations }: DestinationProps) => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Destinations
+export default Destinations;

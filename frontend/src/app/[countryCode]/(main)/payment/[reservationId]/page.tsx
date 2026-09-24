@@ -72,10 +72,7 @@ export default async function PaymentPage({ params }: PaymentPageProps) {
   };
 
   return (
-    <PaymentForm
-      reservation={reservationData}
-      countryCode={countryCode}
-    />
+    <PaymentForm reservation={reservationData} countryCode={countryCode} />
   );
 }
 

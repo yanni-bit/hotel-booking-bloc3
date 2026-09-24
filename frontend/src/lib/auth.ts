@@ -13,7 +13,7 @@ import prisma from "./prisma";
 // CONFIGURATION
 // ============================================================================
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "hotel-booking-secret-key-change-in-production"
+  process.env.JWT_SECRET || "hotel-booking-secret-key-change-in-production",
 );
 
 const COOKIE_NAME = "auth-token";
@@ -81,7 +81,7 @@ export async function hashPassword(password: string): Promise<string> {
  */
 export async function verifyPassword(
   password: string,
-  hashedPassword: string
+  hashedPassword: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }
@@ -91,7 +91,7 @@ export async function verifyPassword(
 // ============================================================================
 /**
  * Crée un JWT signé
- * 
+ *
  * Différence Angular → Next.js :
  * - Angular : localStorage.setItem('token', jwt) - vulnérable XSS
  * - Next.js : Cookie HttpOnly - sécurisé
@@ -232,7 +232,9 @@ export async function findUserById(id: number): Promise<AuthUser | null> {
 /**
  * Récupère le hash du mot de passe (pour login)
  */
-export async function getUserPasswordHash(email: string): Promise<string | null> {
+export async function getUserPasswordHash(
+  email: string,
+): Promise<string | null> {
   const user = await prisma.utilisateur.findUnique({
     where: { email_user: email },
     select: { mot_de_passe: true },

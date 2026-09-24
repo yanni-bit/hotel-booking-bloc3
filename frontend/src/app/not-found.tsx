@@ -1,11 +1,11 @@
-import { Metadata } from "next"
-import Link from "next/link"
-import { FaArrowRight } from "react-icons/fa"
+import { Metadata } from "next";
+import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa";
 
 export const metadata: Metadata = {
   title: "Page introuvable",
   description: "La page demandée n'existe pas.",
-}
+};
 
 export default function NotFound() {
   return (
@@ -22,5 +22,5 @@ export default function NotFound() {
         <FaArrowRight aria-hidden="true" />
       </Link>
     </div>
-  )
+  );
 }

@@ -19,7 +19,9 @@ export const metadata = {
   description: "Consultez et gérez vos réservations d'hôtels.",
 };
 
-export default async function MesReservationsPage({ params }: MesReservationsPageProps) {
+export default async function MesReservationsPage({
+  params,
+}: MesReservationsPageProps) {
   const { countryCode } = await params;
 
   // Vérifier l'authentification (Server-side)

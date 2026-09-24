@@ -13,7 +13,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FiMail, FiArrowLeft, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
+import {
+  FiMail,
+  FiArrowLeft,
+  FiCheckCircle,
+  FiAlertTriangle,
+} from "react-icons/fi";
 
 export default function ForgotPasswordForm() {
   // États (équivalent Angular: email: string = '', loading: boolean = false, etc.)
@@ -100,7 +105,8 @@ export default function ForgotPasswordForm() {
             🎓 Mode démonstration (projet d&apos;examen)
           </p>
           <p className="text-xs text-amber-700 mb-3">
-            Le lien ci-dessous a également été envoyé par email. Pour faciliter la présentation, vous pouvez cliquer directement ici :
+            Le lien ci-dessous a également été envoyé par email. Pour faciliter
+            la présentation, vous pouvez cliquer directement ici :
           </p>
           <a
             href={resetLink}

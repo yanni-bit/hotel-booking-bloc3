@@ -12,7 +12,9 @@ import { Prisma } from "@prisma/client";
 // ============================================================================
 export type OffreWithDetails = Awaited<ReturnType<typeof getOffreById>>;
 export type HotelServicesList = Awaited<ReturnType<typeof getHotelServices>>;
-export type ReservationWithDetails = Awaited<ReturnType<typeof getReservationById>>;
+export type ReservationWithDetails = Awaited<
+  ReturnType<typeof getReservationById>
+>;
 
 // Type pour la création de réservation
 export interface CreateReservationInput {
@@ -169,10 +171,10 @@ export async function chambreDisponible(
   idChambre: number,
   checkIn: Date,
   checkOut: Date,
-  idReservationAIgnorer?: number
+  idReservationAIgnorer?: number,
 ): Promise<boolean> {
   const limiteRetenue = new Date(
-    Date.now() - MINUTES_RETENUE_PROVISOIRE * 60 * 1000
+    Date.now() - MINUTES_RETENUE_PROVISOIRE * 60 * 1000,
   );
 
   const conflit = await prisma.reservation.findFirst({
@@ -236,7 +238,7 @@ export async function createReservation(data: CreateReservationInput) {
             service.type_service,
             service.quantite,
             data.nbre_nuits,
-            data.nbre_adults
+            data.nbre_adults,
           ),
         })),
       });
@@ -254,7 +256,7 @@ function calculateServiceTotal(
   typeService: string,
   quantite: number,
   nbreNuits: number,
-  nbreAdults: number
+  nbreAdults: number,
 ): number {
   let total = prixUnitaire * quantite;
 

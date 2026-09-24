@@ -7,6 +7,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FiArrowLeft, FiEdit2, FiTrash2, FiCheck, FiX } from "react-icons/fi"
@@ -376,11 +377,15 @@ export default function HotelDetail({ hotelId, countryCode }: HotelDetailProps) 
         <div className="space-y-6">
           {/* Image */}
           {hotel.img_hotel && (
-            <img
-              src={hotel.img_hotel}
-              alt={hotel.nom_hotel}
-              className="w-full h-44 object-cover rounded-rounded border border-gray-200"
-            />
+            <div className="relative w-full h-44 rounded-rounded border border-gray-200 overflow-hidden">
+              <Image
+                src={hotel.img_hotel}
+                alt={hotel.nom_hotel}
+                fill
+                sizes="(max-width: 768px) 100vw, 320px"
+                className="object-cover"
+              />
+            </div>
           )}
 
           {/* Statistiques */}

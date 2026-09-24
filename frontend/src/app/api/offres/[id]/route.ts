@@ -19,17 +19,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (isNaN(offreId)) {
       return NextResponse.json(
         { error: "ID d'offre invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const offre = await getOffreById(offreId);
 
     if (!offre) {
-      return NextResponse.json(
-        { error: "Offre non trouvée" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Offre non trouvée" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -40,7 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     console.error("Erreur récupération offre:", error);
     return NextResponse.json(
       { error: "Erreur lors de la récupération de l'offre" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

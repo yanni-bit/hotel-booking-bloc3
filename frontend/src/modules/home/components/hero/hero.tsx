@@ -365,7 +365,7 @@ const Hero = () => {
                       type="date"
                       id="checkin"
                       className={`form-input-date ${getValidationClass(
-                        "checkin"
+                        "checkin",
                       )}`}
                       value={checkinDate}
                       min={today}
@@ -386,7 +386,7 @@ const Hero = () => {
                       type="date"
                       id="checkout"
                       className={`form-input-date ${getValidationClass(
-                        "checkout"
+                        "checkout",
                       )}`}
                       value={checkoutDate}
                       min={checkinDate || today}
@@ -432,7 +432,7 @@ const Hero = () => {
                       type="number"
                       id="adults"
                       className={`form-input-number ${getValidationClass(
-                        "adults"
+                        "adults",
                       )}`}
                       value={adults}
                       min={1}

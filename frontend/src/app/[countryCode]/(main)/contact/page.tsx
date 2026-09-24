@@ -2,28 +2,34 @@
 // PAGE CONTACT - Next.js 15
 // Équivalent de contact.ts + contact.html Angular
 // ============================================================================
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { FiPhone, FiMail, FiSend, FiCheck, FiAlertTriangle } from 'react-icons/fi'
+import { useState } from "react";
+import Link from "next/link";
+import {
+  FiPhone,
+  FiMail,
+  FiSend,
+  FiCheck,
+  FiAlertTriangle,
+} from "react-icons/fi";
 
 // ============================================================================
 // TYPES
 // ============================================================================
 interface FormData {
-  name: string
-  email: string
-  phone: string
-  subject: string
-  message: string
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
 }
 
 interface FormErrors {
-  name?: string
-  email?: string
-  subject?: string
-  message?: string
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
 }
 
 // ============================================================================
@@ -36,18 +42,18 @@ export default function ContactPage() {
   // React: useState pour chaque état
   // ──────────────────────────────────────────────────────────────────────────
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [touched, setTouched] = useState<Record<string, boolean>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [showError, setShowError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // ──────────────────────────────────────────────────────────────────────────
   // VALIDATION - Équivalent Angular: Validators.required, Validators.email, etc.
@@ -55,66 +61,80 @@ export default function ContactPage() {
   // React: Fonction de validation manuelle
   // ──────────────────────────────────────────────────────────────────────────
   const validate = (): FormErrors => {
-    const newErrors: FormErrors = {}
+    const newErrors: FormErrors = {};
 
     // Nom: requis, min 2 caractères
     if (!formData.name.trim()) {
-      newErrors.name = 'Le nom est requis'
+      newErrors.name = "Le nom est requis";
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Le nom doit contenir au moins 2 caractères'
+      newErrors.name = "Le nom doit contenir au moins 2 caractères";
     }
 
     // Email: requis, format valide
     if (!formData.email.trim()) {
-      newErrors.email = "L'email est requis"
+      newErrors.email = "L'email est requis";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "L'email n'est pas valide"
+      newErrors.email = "L'email n'est pas valide";
     }
 
     // Sujet: requis
     if (!formData.subject) {
-      newErrors.subject = 'Veuillez sélectionner un sujet'
+      newErrors.subject = "Veuillez sélectionner un sujet";
     }
 
     // Message: requis, min 10 caractères
     if (!formData.message.trim()) {
-      newErrors.message = 'Le message est requis'
+      newErrors.message = "Le message est requis";
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Le message doit contenir au moins 10 caractères'
+      newErrors.message = "Le message doit contenir au moins 10 caractères";
     }
 
-    return newErrors
-  }
+    return newErrors;
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // HANDLERS - Équivalent Angular: formControlName binding
   // Angular: formControlName="name" (binding automatique)
   // React: onChange={(e) => setFormData({...})} (binding manuel)
   // ──────────────────────────────────────────────────────────────────────────
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Valider en temps réel si le champ a été touché
     if (touched[name]) {
-      const newErrors = validate()
-      setErrors(prev => ({ ...prev, [name]: newErrors[name as keyof FormErrors] }))
+      const newErrors = validate();
+      setErrors((prev) => ({
+        ...prev,
+        [name]: newErrors[name as keyof FormErrors],
+      }));
     }
-  }
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // BLUR HANDLER - Équivalent Angular: touched state
   // Angular: f['name'].touched (automatique)
   // React: onBlur pour marquer comme touché
   // ──────────────────────────────────────────────────────────────────────────
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name } = e.target
-    setTouched(prev => ({ ...prev, [name]: true }))
-    
+  const handleBlur = (
+    e: React.FocusEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
     // Valider le champ
-    const newErrors = validate()
-    setErrors(prev => ({ ...prev, [name]: newErrors[name as keyof FormErrors] }))
-  }
+    const newErrors = validate();
+    setErrors((prev) => ({
+      ...prev,
+      [name]: newErrors[name as keyof FormErrors],
+    }));
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // SUBMIT - Équivalent Angular: (ngSubmit)="onSubmit()" + subscribe()
@@ -122,66 +142,72 @@ export default function ContactPage() {
   // React: async/await avec fetch + try/catch
   // ──────────────────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Marquer tous les champs comme touchés (Angular: markAllAsTouched())
     setTouched({
       name: true,
       email: true,
       subject: true,
-      message: true
-    })
+      message: true,
+    });
 
     // Valider
-    const newErrors = validate()
-    setErrors(newErrors)
+    const newErrors = validate();
+    setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
-    setShowSuccess(false)
-    setShowError(false)
+    setIsSubmitting(true);
+    setShowSuccess(false);
+    setShowError(false);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nom: formData.name,
           email: formData.email,
           telephone: formData.phone || null,
           sujet: formData.subject,
-          message: formData.message
-        })
-      })
+          message: formData.message,
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
-        setShowSuccess(true)
+        setShowSuccess(true);
         // Reset form
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-        setTouched({})
-        setErrors({})
-        
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        });
+        setTouched({});
+        setErrors({});
+
         // Masquer après 5 secondes
-        setTimeout(() => setShowSuccess(false), 5000)
+        setTimeout(() => setShowSuccess(false), 5000);
       } else {
-        setShowError(true)
-        setErrorMessage(data.message || 'Une erreur est survenue')
-        setTimeout(() => setShowError(false), 5000)
+        setShowError(true);
+        setErrorMessage(data.message || "Une erreur est survenue");
+        setTimeout(() => setShowError(false), 5000);
       }
     } catch (error) {
-      console.error('Erreur envoi message:', error)
-      setShowError(true)
-      setErrorMessage('Une erreur est survenue. Veuillez réessayer plus tard.')
-      setTimeout(() => setShowError(false), 5000)
+      console.error("Erreur envoi message:", error);
+      setShowError(true);
+      setErrorMessage("Une erreur est survenue. Veuillez réessayer plus tard.");
+      setTimeout(() => setShowError(false), 5000);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // HELPER - Classes pour les inputs
@@ -189,16 +215,17 @@ export default function ContactPage() {
   // React: Fonction utilitaire pour construire les classes
   // ──────────────────────────────────────────────────────────────────────────
   const getInputClasses = (fieldName: keyof FormErrors) => {
-    const baseClasses = 'w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none'
-    
+    const baseClasses =
+      "w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none";
+
     if (touched[fieldName] && errors[fieldName]) {
-      return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200`
+      return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200`;
     }
     if (touched[fieldName] && !errors[fieldName]) {
-      return `${baseClasses} border-green-500 focus:border-green-500 focus:ring-2 focus:ring-green-200`
+      return `${baseClasses} border-green-500 focus:border-green-500 focus:ring-2 focus:ring-green-200`;
     }
-    return `${baseClasses} border-gray-200 focus:border-turquoise focus:ring-2 focus:ring-turquoise/20`
-  }
+    return `${baseClasses} border-gray-200 focus:border-turquoise focus:ring-2 focus:ring-turquoise/20`;
+  };
 
   // ──────────────────────────────────────────────────────────────────────────
   // RENDER - Équivalent Angular: Template HTML
@@ -208,7 +235,6 @@ export default function ContactPage() {
   return (
     <main className="pb-12 pt-8 bg-gray-50 min-h-[calc(100vh-200px)]">
       <div className="content-container">
-        
         {/* ═══════════════════════════════════════════════════════════════════
             BREADCRUMB - Fil d'Ariane
             Angular: <nav aria-label="breadcrumb">
@@ -216,7 +242,10 @@ export default function ContactPage() {
         <nav className="mb-4" aria-label="Fil d'Ariane">
           <ol className="flex items-center gap-2 text-sm">
             <li>
-              <Link href="/" className="text-turquoise hover:text-turquoise-dark hover:underline">
+              <Link
+                href="/"
+                className="text-turquoise hover:text-turquoise-dark hover:underline"
+              >
                 Accueil
               </Link>
             </li>
@@ -230,7 +259,9 @@ export default function ContactPage() {
             Angular: {{ 'contact.title' | translate }}
             ═══════════════════════════════════════════════════════════════════ */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Contactez-nous</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            Contactez-nous
+          </h1>
           <p className="text-gray-500 text-lg">
             Une question ? N&apos;hésitez pas à nous contacter
           </p>
@@ -242,12 +273,10 @@ export default function ContactPage() {
             React/Tailwind: grid avec lg:grid-cols-12
             ═══════════════════════════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
           {/* ─────────────────────────────────────────────────────────────────
               COLONNE GAUCHE (7/12) - Map + Cartes info
               ───────────────────────────────────────────────────────────────── */}
           <div className="lg:col-span-7 space-y-6">
-            
             {/* Google Maps */}
             <div className="rounded-xl overflow-hidden shadow-lg">
               <iframe
@@ -265,7 +294,6 @@ export default function ContactPage() {
 
             {/* Cartes Téléphone + Email */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
               {/* Carte Téléphone */}
               <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-4 mb-2">
@@ -274,9 +302,11 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-semibold text-gray-800">Téléphone</h3>
                 </div>
-                <p className="text-gray-500 text-sm mb-1">Du lundi au vendredi, 9h-18h</p>
-                <a 
-                  href="tel:+15555555555" 
+                <p className="text-gray-500 text-sm mb-1">
+                  Du lundi au vendredi, 9h-18h
+                </p>
+                <a
+                  href="tel:+15555555555"
                   className="text-turquoise font-semibold text-lg hover:text-turquoise-dark hover:underline"
                 >
                   1-555-555-5555
@@ -292,8 +322,8 @@ export default function ContactPage() {
                   <h3 className="font-semibold text-gray-800">Email</h3>
                 </div>
                 <p className="text-gray-500 text-sm mb-1">Réponse sous 24h</p>
-                <a 
-                  href="mailto:booking@mail.com" 
+                <a
+                  href="mailto:booking@mail.com"
                   className="text-turquoise font-semibold text-lg hover:text-turquoise-dark hover:underline"
                 >
                   booking@mail.com
@@ -314,14 +344,16 @@ export default function ContactPage() {
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                
                 {/* ═══════════════════════════════════════════════════════════
                     CHAMP NOM
                     Angular: formControlName="name" + [class.is-invalid]
                     React: name="name" value={} onChange={} + className dynamique
                     ═══════════════════════════════════════════════════════════ */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Nom <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -331,7 +363,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={getInputClasses('name')}
+                    className={getInputClasses("name")}
                   />
                   {/* Angular: *ngIf="f['name'].touched && f['name'].errors" */}
                   {touched.name && errors.name && (
@@ -341,7 +373,10 @@ export default function ContactPage() {
 
                 {/* CHAMP EMAIL */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -351,7 +386,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={getInputClasses('email')}
+                    className={getInputClasses("email")}
                   />
                   {touched.email && errors.email && (
                     <p className="mt-1 text-sm text-red-500">{errors.email}</p>
@@ -360,7 +395,10 @@ export default function ContactPage() {
 
                 {/* CHAMP TÉLÉPHONE (optionnel) */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Téléphone
                   </label>
                   <input
@@ -380,7 +418,10 @@ export default function ContactPage() {
                     React: <select name="subject" value={} onChange={}>
                     ═══════════════════════════════════════════════════════════ */}
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Sujet <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -389,22 +430,29 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={getInputClasses('subject')}
+                    className={getInputClasses("subject")}
                   >
                     <option value="">Sélectionnez un sujet</option>
                     <option value="reservation">Réservation</option>
-                    <option value="information">Demande d&apos;information</option>
+                    <option value="information">
+                      Demande d&apos;information
+                    </option>
                     <option value="reclamation">Réclamation</option>
                     <option value="autre">Autre</option>
                   </select>
                   {touched.subject && errors.subject && (
-                    <p className="mt-1 text-sm text-red-500">{errors.subject}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.subject}
+                    </p>
                   )}
                 </div>
 
                 {/* CHAMP MESSAGE (textarea) */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -414,10 +462,12 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`${getInputClasses('message')} resize-y min-h-[120px]`}
+                    className={`${getInputClasses("message")} resize-y min-h-[120px]`}
                   />
                   {touched.message && errors.message && (
-                    <p className="mt-1 text-sm text-red-500">{errors.message}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.message}
+                    </p>
                   )}
                 </div>
 
@@ -453,7 +503,8 @@ export default function ContactPage() {
                   <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg flex items-center gap-3">
                     <FiCheck className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <p className="text-green-700">
-                      Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.
+                      Votre message a été envoyé avec succès. Nous vous
+                      répondrons dans les plus brefs délais.
                     </p>
                   </div>
                 )}
@@ -464,13 +515,11 @@ export default function ContactPage() {
                     <p className="text-red-700">{errorMessage}</p>
                   </div>
                 )}
-
               </form>
             </div>
           </div>
-
         </div>
       </div>
     </main>
-  )
+  );
 }

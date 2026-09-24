@@ -4,38 +4,41 @@
 // Équivalent de hotel-header.component Angular
 // ============================================================================
 
-import type { Prisma } from "@prisma/client"
-import { FaStar, FaMapMarkerAlt } from "react-icons/fa"
+import type { Prisma } from "@prisma/client";
+import Image from "next/image";
+import { FaStar, FaMapMarkerAlt } from "react-icons/fa";
 
 // La note vient de Prisma (Decimal) côté serveur, ou d'un JSON (string/number)
 // côté API : on accepte les trois et on passe par Number() à l'affichage.
-type Note = Prisma.Decimal | number | string | null
+type Note = Prisma.Decimal | number | string | null;
 
 interface HotelHeaderProps {
   hotel: {
-    nom_hotel: string
-    img_hotel: string | null
-    nbre_etoile_hotel: number | null
-    note_moy_hotel: Note
-    nbre_avis_hotel: number
-    ville_hotel: string
-    pays_hotel: string
-  }
+    nom_hotel: string;
+    img_hotel: string | null;
+    nbre_etoile_hotel: number | null;
+    note_moy_hotel: Note;
+    nbre_avis_hotel: number;
+    ville_hotel: string;
+    pays_hotel: string;
+  };
 }
 
 export default function HotelHeader({ hotel }: HotelHeaderProps) {
   return (
     <div className="hotel-header">
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        
         {/* Image principale */}
         <div className="relative h-[400px]">
-          <img
+          <Image
             src={hotel.img_hotel || "/images/placeholder-hotel.jpg"}
             alt={hotel.nom_hotel}
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover"
           />
-          
+
           {/* Badge étoiles */}
           {hotel.nbre_etoile_hotel && (
             <div className="absolute top-4 left-4 bg-white px-3 py-2 rounded-full flex items-center shadow-md">
@@ -44,7 +47,7 @@ export default function HotelHeader({ hotel }: HotelHeaderProps) {
               ))}
             </div>
           )}
-          
+
           {/* Badge note */}
           {hotel.note_moy_hotel && (
             <div className="absolute top-4 right-4 bg-turquoise text-white px-4 py-2 rounded-full font-bold shadow-md">
@@ -52,19 +55,19 @@ export default function HotelHeader({ hotel }: HotelHeaderProps) {
             </div>
           )}
         </div>
-        
+
         {/* Infos hôtel */}
         <div className="p-5">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
             {hotel.nom_hotel}
           </h1>
-          
+
           <div className="flex items-center justify-between">
             <p className="text-gray-500 flex items-center">
               <FaMapMarkerAlt className="mr-2 text-turquoise" />
               {hotel.ville_hotel}, {hotel.pays_hotel}
             </p>
-            
+
             {hotel.nbre_avis_hotel > 0 && (
               <p className="text-sm text-gray-400">
                 {hotel.nbre_avis_hotel} avis
@@ -72,8 +75,7 @@ export default function HotelHeader({ hotel }: HotelHeaderProps) {
             )}
           </div>
         </div>
-        
       </div>
     </div>
-  )
+  );
 }

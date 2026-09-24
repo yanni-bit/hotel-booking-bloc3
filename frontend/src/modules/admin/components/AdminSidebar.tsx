@@ -7,6 +7,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useParams, usePathname } from "next/navigation"
 import { useAuth } from "@modules/auth/components/AuthProvider"
 import {
@@ -50,7 +51,13 @@ export default function AdminSidebar({ adminName }: AdminSidebarProps) {
       {/* En-tête */}
       <div className="px-6 py-5 border-b border-gray-200">
         <Link href={`/${countryCode}`} className="block">
-          <img src="/images/logo.png" alt="Book Your Travel" className="h-10 w-auto" />
+          <Image
+            src="/images/logo.png"
+            alt="Book Your Travel"
+            width={224}
+            height={50}
+            className="h-10 w-auto"
+          />
         </Link>
         <p className="mt-3 text-sm text-gris-moyen">
           Connecté en tant que <span className="font-semibold text-gris-fonce">{adminName}</span>

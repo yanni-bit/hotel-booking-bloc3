@@ -29,7 +29,7 @@ import prisma from "@lib/prisma";
 // ============================================================================
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     // ------------------------------------------------------------------
@@ -40,7 +40,7 @@ export async function POST(
     if (!user) {
       return NextResponse.json(
         { error: "Authentification requise" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -50,7 +50,7 @@ export async function POST(
     if (isNaN(reservationId)) {
       return NextResponse.json(
         { error: "ID de réservation invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(
     if (!paymentIntentId || typeof paymentIntentId !== "string") {
       return NextResponse.json(
         { error: "paymentIntentId requis" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -70,7 +70,7 @@ export async function POST(
     if (!reservation) {
       return NextResponse.json(
         { error: "Réservation non trouvée" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(
     if (reservation.id_user !== user.id_user) {
       return NextResponse.json(
         { error: "Accès refusé à cette réservation" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -88,7 +88,7 @@ export async function POST(
     if (reservation.id_statut === 2) {
       return NextResponse.json(
         { error: "Cette réservation est déjà confirmée" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -104,7 +104,7 @@ export async function POST(
     if (paiementExistant) {
       return NextResponse.json(
         { error: "Ce paiement a déjà été utilisé" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -121,7 +121,7 @@ export async function POST(
           error: "Le paiement n'a pas été confirmé par Stripe",
           status: paymentIntent.status,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -130,11 +130,11 @@ export async function POST(
 
     if (metadataReservationId !== String(reservationId)) {
       console.error(
-`PaymentIntent ${paymentIntentId} rattaché à la réservation ${metadataReservationId}, pas ${reservationId}`
+        `PaymentIntent ${paymentIntentId} rattaché à la réservation ${metadataReservationId}, pas ${reservationId}`,
       );
       return NextResponse.json(
         { error: "Ce paiement ne correspond pas à cette réservation" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -143,11 +143,14 @@ export async function POST(
 
     if (paymentIntent.amount !== expectedAmount) {
       console.error(
-`Montant différent: attendu ${expectedAmount}, reçu ${paymentIntent.amount}`
+        `Montant différent: attendu ${expectedAmount}, reçu ${paymentIntent.amount}`,
       );
       return NextResponse.json(
-        { error: "Le montant payé ne correspond pas au montant de la réservation" },
-        { status: 400 }
+        {
+          error:
+            "Le montant payé ne correspond pas au montant de la réservation",
+        },
+        { status: 400 },
       );
     }
 
@@ -155,7 +158,7 @@ export async function POST(
     if (paymentIntent.currency !== reservation.devise.toLowerCase()) {
       return NextResponse.json(
         { error: "Devise du paiement incohérente" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -179,7 +182,7 @@ export async function POST(
     await confirmReservation(
       reservationId,
       paiement.id_paiement,
-      paymentIntentId
+      paymentIntentId,
     );
 
     await updateConfirmationNumber(reservationId, confirmationNumber);
@@ -216,7 +219,7 @@ export async function POST(
 
     if (reservationComplete && reservationComplete.user) {
       const checkInDate = new Date(
-        reservationComplete.check_in
+        reservationComplete.check_in,
       ).toLocaleDateString("fr-FR", {
         weekday: "long",
         year: "numeric",
@@ -224,7 +227,7 @@ export async function POST(
         day: "numeric",
       });
       const checkOutDate = new Date(
-        reservationComplete.check_out
+        reservationComplete.check_out,
       ).toLocaleDateString("fr-FR", {
         weekday: "long",
         year: "numeric",
@@ -246,17 +249,17 @@ export async function POST(
           adults: reservationComplete.nbre_adults,
           children: reservationComplete.nbre_children,
           totalPrice: Number(reservationComplete.total_price),
-        }
+        },
       ).then((sent) => {
         if (sent) {
           console.log(
-"Email de confirmation envoyé à:",
-            reservationComplete.user?.email_user
+            "Email de confirmation envoyé à:",
+            reservationComplete.user?.email_user,
           );
         } else {
           console.error(
-"Échec envoi email de confirmation à:",
-            reservationComplete.user?.email_user
+            "Échec envoi email de confirmation à:",
+            reservationComplete.user?.email_user,
           );
         }
       });
@@ -280,7 +283,7 @@ export async function POST(
 
     return NextResponse.json(
       { error: "Erreur lors de la confirmation" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

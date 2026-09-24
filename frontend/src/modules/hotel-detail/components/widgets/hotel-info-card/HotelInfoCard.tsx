@@ -4,48 +4,47 @@
 // Équivalent de hotel-info-card.component Angular
 // ============================================================================
 
-import type { Prisma } from "@prisma/client"
-import { 
-  FaStar, 
-  FaMapMarkerAlt, 
-  FaPhone, 
-  FaEnvelope, 
+import type { Prisma } from "@prisma/client";
+import {
+  FaStar,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaEnvelope,
   FaGlobe,
   FaBed,
-  FaThumbsUp
-} from "react-icons/fa"
+  FaThumbsUp,
+} from "react-icons/fa";
 
 // La note vient de Prisma (Decimal) côté serveur, ou d'un JSON (string/number)
 // côté API : on accepte les trois et on passe par Number() à l'affichage.
-type Note = Prisma.Decimal | number | string | null
+type Note = Prisma.Decimal | number | string | null;
 
 interface HotelInfoCardProps {
   hotel: {
-    nom_hotel: string
-    nbre_etoile_hotel: number | null
-    note_moy_hotel: Note
-    nbre_avis_hotel: number
-    ville_hotel: string
-    pays_hotel: string
-    rue_hotel: string | null
-    code_postal_hotel: string | null
-    tel_hotel: string | null
-    email_hotel: string | null
-    site_web_hotel: string | null
+    nom_hotel: string;
+    nbre_etoile_hotel: number | null;
+    note_moy_hotel: Note;
+    nbre_avis_hotel: number;
+    ville_hotel: string;
+    pays_hotel: string;
+    rue_hotel: string | null;
+    code_postal_hotel: string | null;
+    tel_hotel: string | null;
+    email_hotel: string | null;
+    site_web_hotel: string | null;
     // Seul le nombre de chambres est utilisé ici
-    chambres?: { id_chambre: number }[]
-  }
+    chambres?: { id_chambre: number }[];
+  };
 }
 
 export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
   return (
     <div className="hotel-info-card bg-white rounded-lg shadow-sm p-5">
-      
       {/* En-tête */}
       <h3 className="text-lg font-bold text-gray-800 mb-4 pb-3 border-b">
         Informations
       </h3>
-      
+
       {/* Note moyenne */}
       {hotel.note_moy_hotel && (
         <div className="flex items-center justify-between mb-4 p-3 bg-turquoise/10 rounded-lg">
@@ -58,10 +57,9 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
           </span>
         </div>
       )}
-      
+
       {/* Infos liste */}
       <ul className="space-y-3 text-sm">
-        
         {/* Étoiles */}
         {hotel.nbre_etoile_hotel && (
           <li className="flex items-center text-gray-600">
@@ -69,17 +67,23 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
             <span>Hôtel {hotel.nbre_etoile_hotel} étoiles</span>
           </li>
         )}
-        
+
         {/* Adresse */}
         <li className="flex items-start text-gray-600">
           <FaMapMarkerAlt className="text-turquoise mr-3 mt-1 flex-shrink-0" />
           <span>
-            {hotel.rue_hotel && <>{hotel.rue_hotel}<br /></>}
-            {hotel.code_postal_hotel} {hotel.ville_hotel}<br />
+            {hotel.rue_hotel && (
+              <>
+                {hotel.rue_hotel}
+                <br />
+              </>
+            )}
+            {hotel.code_postal_hotel} {hotel.ville_hotel}
+            <br />
             {hotel.pays_hotel}
           </span>
         </li>
-        
+
         {/* Chambres */}
         {hotel.chambres && hotel.chambres.length > 0 && (
           <li className="flex items-center text-gray-600">
@@ -87,7 +91,7 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
             <span>{hotel.chambres.length} types de chambres</span>
           </li>
         )}
-        
+
         {/* Avis */}
         {hotel.nbre_avis_hotel > 0 && (
           <li className="flex items-center text-gray-600">
@@ -95,7 +99,7 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
             <span>{hotel.nbre_avis_hotel} avis clients</span>
           </li>
         )}
-        
+
         {/* Téléphone */}
         {hotel.tel_hotel && (
           <li className="flex items-center text-gray-600">
@@ -105,24 +109,27 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
             </a>
           </li>
         )}
-        
+
         {/* Email */}
         {hotel.email_hotel && (
           <li className="flex items-center text-gray-600">
             <FaEnvelope className="text-turquoise mr-3 flex-shrink-0" />
-            <a href={`mailto:${hotel.email_hotel}`} className="hover:text-turquoise truncate">
+            <a
+              href={`mailto:${hotel.email_hotel}`}
+              className="hover:text-turquoise truncate"
+            >
               {hotel.email_hotel}
             </a>
           </li>
         )}
-        
+
         {/* Site web */}
         {hotel.site_web_hotel && (
           <li className="flex items-center text-gray-600">
             <FaGlobe className="text-turquoise mr-3 flex-shrink-0" />
-            <a 
-              href={hotel.site_web_hotel} 
-              target="_blank" 
+            <a
+              href={hotel.site_web_hotel}
+              target="_blank"
               rel="noopener noreferrer"
               className="hover:text-turquoise truncate"
             >
@@ -130,9 +137,7 @@ export default function HotelInfoCard({ hotel }: HotelInfoCardProps) {
             </a>
           </li>
         )}
-        
       </ul>
-      
     </div>
-  )
+  );
 }

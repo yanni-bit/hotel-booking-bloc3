@@ -5,31 +5,31 @@
 // envoyé en POST au lieu d'une édition en place.
 // ============================================================================
 
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { FiArrowLeft, FiCheck } from "react-icons/fi"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FiArrowLeft, FiCheck } from "react-icons/fi";
 
 interface HotelCreateProps {
-  countryCode: string
+  countryCode: string;
 }
 
 // Champs envoyés à l'API, dans l'ordre d'affichage du formulaire
 type FormData = {
-  nom_hotel: string
-  nbre_etoile_hotel: number | null
-  rue_hotel: string
-  code_postal_hotel: string
-  ville_hotel: string
-  pays_hotel: string
-  email_hotel: string
-  tel_hotel: string
-  site_web_hotel: string
-  img_hotel: string
-  description_hotel: string
-}
+  nom_hotel: string;
+  nbre_etoile_hotel: number | null;
+  rue_hotel: string;
+  code_postal_hotel: string;
+  ville_hotel: string;
+  pays_hotel: string;
+  email_hotel: string;
+  tel_hotel: string;
+  site_web_hotel: string;
+  img_hotel: string;
+  description_hotel: string;
+};
 
 const FORM_VIDE: FormData = {
   nom_hotel: "",
@@ -43,7 +43,7 @@ const FORM_VIDE: FormData = {
   site_web_hotel: "",
   img_hotel: "",
   description_hotel: "",
-}
+};
 
 // Les trois champs sans lesquels un hôtel n'est pas exploitable.
 // L'API applique la même règle : la validation côté client ne fait
@@ -52,35 +52,35 @@ const CHAMPS_REQUIS: (keyof FormData)[] = [
   "nom_hotel",
   "ville_hotel",
   "pays_hotel",
-]
+];
 
 export default function HotelCreate({ countryCode }: HotelCreateProps) {
-  const router = useRouter()
-  const listUrl = `/${countryCode}/admin/hotels`
+  const router = useRouter();
+  const listUrl = `/${countryCode}/admin/hotels`;
 
-  const [formData, setFormData] = useState<FormData>(FORM_VIDE)
-  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState<FormData>(FORM_VIDE);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
-    type: "ok" | "error"
-    text: string
-  } | null>(null)
+    type: "ok" | "error";
+    text: string;
+  } | null>(null);
 
   const updateField = <K extends keyof FormData>(
     field: K,
-    value: FormData[K]
+    value: FormData[K],
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const manquants = CHAMPS_REQUIS.filter((c) => !String(formData[c]).trim())
-  const peutEnvoyer = manquants.length === 0 && !saving
+  const manquants = CHAMPS_REQUIS.filter((c) => !String(formData[c]).trim());
+  const peutEnvoyer = manquants.length === 0 && !saving;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!peutEnvoyer) return
+    e.preventDefault();
+    if (!peutEnvoyer) return;
 
-    setSaving(true)
-    setMessage(null)
+    setSaving(true);
+    setMessage(null);
 
     try {
       // Les champs laissés vides partent à null plutôt qu'en chaîne vide :
@@ -89,38 +89,38 @@ export default function HotelCreate({ countryCode }: HotelCreateProps) {
         Object.entries(formData).map(([k, v]) => [
           k,
           typeof v === "string" && v.trim() === "" ? null : v,
-        ])
-      )
+        ]),
+      );
 
       const response = await fetch("/api/admin/hotels", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!response.ok) {
         setMessage({
           type: "error",
           text: result.error || "Création impossible",
-        })
-        setSaving(false)
-        return
+        });
+        setSaving(false);
+        return;
       }
 
       // Direction la fiche du nouvel hôtel : l'administrateur y ajoute
       // ensuite chambres, offres et équipements.
-      router.push(`/${countryCode}/admin/hotels/${result.hotel.id_hotel}`)
+      router.push(`/${countryCode}/admin/hotels/${result.hotel.id_hotel}`);
     } catch {
-      setMessage({ type: "error", text: "Erreur réseau" })
-      setSaving(false)
+      setMessage({ type: "error", text: "Erreur réseau" });
+      setSaving(false);
     }
-  }
+  };
 
-  const labelClass = "block text-sm text-gris-moyen mb-1"
+  const labelClass = "block text-sm text-gris-moyen mb-1";
   const inputClass =
-    "w-full px-3 py-2 border border-gray-300 rounded-rounded text-sm focus:outline-none focus:border-turquoise focus:ring-1 focus:ring-turquoise"
+    "w-full px-3 py-2 border border-gray-300 rounded-rounded text-sm focus:outline-none focus:border-turquoise focus:ring-1 focus:ring-turquoise";
 
   // Appelé comme fonction et non comme composant : un composant défini dans
   // le rendu serait recréé à chaque frappe et l'input perdrait le focus.
@@ -128,9 +128,9 @@ export default function HotelCreate({ countryCode }: HotelCreateProps) {
     label: string,
     field: keyof FormData,
     type = "text",
-    placeholder?: string
+    placeholder?: string,
   ) => {
-    const requis = CHAMPS_REQUIS.includes(field)
+    const requis = CHAMPS_REQUIS.includes(field);
     return (
       <div>
         <label className={labelClass} htmlFor={field}>
@@ -153,13 +153,13 @@ export default function HotelCreate({ countryCode }: HotelCreateProps) {
                 ? e.target.value === ""
                   ? null
                   : parseInt(e.target.value, 10)
-                : e.target.value) as FormData[typeof field]
+                : e.target.value) as FormData[typeof field],
             )
           }
         />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -232,13 +232,13 @@ export default function HotelCreate({ countryCode }: HotelCreateProps) {
               "Site web",
               "site_web_hotel",
               "url",
-              "https://www.hotel.fr"
+              "https://www.hotel.fr",
             )}
             {renderField(
               "Image principale",
               "img_hotel",
               "text",
-              "/images/hotel.jpg"
+              "/images/hotel.jpg",
             )}
           </div>
         </section>
@@ -267,5 +267,5 @@ export default function HotelCreate({ countryCode }: HotelCreateProps) {
         </div>
       </form>
     </div>
-  )
+  );
 }

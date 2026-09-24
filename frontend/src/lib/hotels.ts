@@ -147,7 +147,7 @@ export async function getDestinations() {
 
   return configDestinations.map((dest) => {
     const countData = hotelCounts.find(
-      (h) => h.ville_hotel.toLowerCase() === dest.nom_ville.toLowerCase()
+      (h) => h.ville_hotel.toLowerCase() === dest.nom_ville.toLowerCase(),
     );
 
     return {

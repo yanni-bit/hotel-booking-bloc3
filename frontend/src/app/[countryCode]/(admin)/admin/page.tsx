@@ -5,51 +5,72 @@
 // API intermédiaire nécessaire pour de la lecture seule.
 // ============================================================================
 
-import Link from "next/link"
-import prisma from "@lib/prisma"
-import { FiHome, FiCalendar, FiUsers, FiClock } from "react-icons/fi"
+import Link from "next/link";
+import prisma from "@lib/prisma";
+import { FiHome, FiCalendar, FiUsers, FiClock } from "react-icons/fi";
 
 // Statut "En attente" (voir table statut, id 1)
-const STATUT_EN_ATTENTE = 1
+const STATUT_EN_ATTENTE = 1;
 
 interface DashboardPageProps {
-  params: Promise<{ countryCode: string }>
+  params: Promise<{ countryCode: string }>;
 }
 
-export default async function AdminDashboardPage({ params }: DashboardPageProps) {
-  const { countryCode } = await params
-  const base = `/${countryCode}/admin`
+export default async function AdminDashboardPage({
+  params,
+}: DashboardPageProps) {
+  const { countryCode } = await params;
+  const base = `/${countryCode}/admin`;
 
-  const [hotels, reservations, users, enAttente, dernieres] = await Promise.all([
-    prisma.hotel.count(),
-    prisma.reservation.count(),
-    prisma.utilisateur.count({ where: { actif: true } }),
-    prisma.reservation.count({ where: { id_statut: STATUT_EN_ATTENTE } }),
-    prisma.reservation.findMany({
-      take: 5,
-      orderBy: { date_reservation: "desc" },
-      select: {
-        id_reservation: true,
-        num_confirmation: true,
-        check_in: true,
-        total_price: true,
-        hotel: { select: { nom_hotel: true } },
-        user: { select: { prenom_user: true, nom_user: true } },
-        statut: { select: { nom_statut: true, couleur: true } },
-      },
-    }),
-  ])
+  const [hotels, reservations, users, enAttente, dernieres] = await Promise.all(
+    [
+      prisma.hotel.count(),
+      prisma.reservation.count(),
+      prisma.utilisateur.count({ where: { actif: true } }),
+      prisma.reservation.count({ where: { id_statut: STATUT_EN_ATTENTE } }),
+      prisma.reservation.findMany({
+        take: 5,
+        orderBy: { date_reservation: "desc" },
+        select: {
+          id_reservation: true,
+          num_confirmation: true,
+          check_in: true,
+          total_price: true,
+          hotel: { select: { nom_hotel: true } },
+          user: { select: { prenom_user: true, nom_user: true } },
+          statut: { select: { nom_statut: true, couleur: true } },
+        },
+      }),
+    ],
+  );
 
   const cards = [
     { label: "Hôtels", value: hotels, icon: FiHome, href: `${base}/hotels` },
-    { label: "Réservations", value: reservations, icon: FiCalendar, href: `${base}/reservations` },
-    { label: "Utilisateurs actifs", value: users, icon: FiUsers, href: `${base}/users` },
-    { label: "Réservations en attente", value: enAttente, icon: FiClock, href: `${base}/reservations?statut=${STATUT_EN_ATTENTE}` },
-  ]
+    {
+      label: "Réservations",
+      value: reservations,
+      icon: FiCalendar,
+      href: `${base}/reservations`,
+    },
+    {
+      label: "Utilisateurs actifs",
+      value: users,
+      icon: FiUsers,
+      href: `${base}/users`,
+    },
+    {
+      label: "Réservations en attente",
+      value: enAttente,
+      icon: FiClock,
+      href: `${base}/reservations?statut=${STATUT_EN_ATTENTE}`,
+    },
+  ];
 
   return (
     <div className="max-w-6xl">
-      <h1 className="text-2xl font-bold text-gris-fonce mb-6">Tableau de bord</h1>
+      <h1 className="text-2xl font-bold text-gris-fonce mb-6">
+        Tableau de bord
+      </h1>
 
       {/* Compteurs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -71,8 +92,13 @@ export default async function AdminDashboardPage({ params }: DashboardPageProps)
       {/* Dernières réservations */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-gris-fonce">Dernières réservations</h2>
-          <Link href={`${base}/reservations`} className="text-sm text-turquoise hover:underline">
+          <h2 className="text-lg font-semibold text-gris-fonce">
+            Dernières réservations
+          </h2>
+          <Link
+            href={`${base}/reservations`}
+            className="text-sm text-turquoise hover:underline"
+          >
             Tout voir
           </Link>
         </div>
@@ -92,7 +118,10 @@ export default async function AdminDashboardPage({ params }: DashboardPageProps)
             <tbody className="divide-y divide-gray-100">
               {dernieres.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gris-moyen">
+                  <td
+                    colSpan={6}
+                    className="px-4 py-8 text-center text-gris-moyen"
+                  >
                     Aucune réservation pour le moment.
                   </td>
                 </tr>
@@ -100,14 +129,23 @@ export default async function AdminDashboardPage({ params }: DashboardPageProps)
               {dernieres.map((r) => (
                 <tr key={r.id_reservation} className="hover:bg-gris-clair">
                   <td className="px-4 py-3">
-                    <Link href={`${base}/reservations/${r.id_reservation}`} className="text-turquoise hover:underline">
+                    <Link
+                      href={`${base}/reservations/${r.id_reservation}`}
+                      className="text-turquoise hover:underline"
+                    >
                       {r.num_confirmation ?? `#${r.id_reservation}`}
                     </Link>
                   </td>
-                  <td className="px-4 py-3">{r.user.prenom_user} {r.user.nom_user}</td>
+                  <td className="px-4 py-3">
+                    {r.user.prenom_user} {r.user.nom_user}
+                  </td>
                   <td className="px-4 py-3">{r.hotel.nom_hotel}</td>
-                  <td className="px-4 py-3">{new Date(r.check_in).toLocaleDateString("fr-FR")}</td>
-                  <td className="px-4 py-3 text-right">{Number(r.total_price).toFixed(2)} €</td>
+                  <td className="px-4 py-3">
+                    {new Date(r.check_in).toLocaleDateString("fr-FR")}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {Number(r.total_price).toFixed(2)} €
+                  </td>
                   <td className="px-4 py-3">
                     <span className="inline-block px-2 py-0.5 rounded-full text-xs bg-gris-clair text-gris-fonce">
                       {r.statut?.nom_statut ?? "—"}
@@ -120,5 +158,5 @@ export default async function AdminDashboardPage({ params }: DashboardPageProps)
         </div>
       </section>
     </div>
-  )
+  );
 }

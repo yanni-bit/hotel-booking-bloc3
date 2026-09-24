@@ -14,19 +14,20 @@
   --turquoise-dark: rgba(95, 200, 194, 0.85);
   --turquoise-clair: #C9FAFF;
   --turquoise-badge: #90cfd6;
-  
+
   /* === Couleurs neutres === */
   --gris-clair: #f7f7f7;
-  --gris-moyen: #6b6b6b; /* 5.6:1 sur blanc (RGAA : 4.5 min), ex-#858585 à 3.5:1 */
+  --gris-moyen: #6b6b6b;
+  /* 5.6:1 sur blanc (RGAA : 4.5 min), ex-#858585 à 3.5:1 */
   --gris-fonce: #333333;
   --blanc: #ffffff;
   --noir: #000000;
-  
+
   /* === Couleurs secondaires === */
   --marron: #d6c8c0;
   --marron-clair: #E9E6E0;
   --marron-fonce: #AB9A8F;
-  
+
   /* === Couleurs d'état === */
   --vert-validation: #3cb878;
   --rouge-erreur: #e74c3c;
@@ -89,7 +90,7 @@ body.dyslexie-mode * {
    ========================================================== */
 
 @layer components {
-  
+
   /* === CLASSES MEDUSA (existantes) === */
   .content-container {
     @apply max-w-[1440px] w-full mx-auto px-6;
@@ -156,24 +157,15 @@ body.dyslexie-mode * {
      ============================================== */
 
   .form-input {
-    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded 
-           bg-white text-gris-fonce transition-all duration-200 
-           hover:border-gray-400 
-           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded bg-white text-gris-fonce transition-all duration-200 hover:border-gray-400 focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
   }
 
   .form-input-date {
-    @apply w-full py-2 px-2 text-[0.85rem] border border-gray-300 rounded 
-           bg-white text-gris-fonce transition-all duration-200 
-           hover:border-gray-400 
-           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+    @apply w-full py-2 px-2 text-[0.85rem] border border-gray-300 rounded bg-white text-gris-fonce transition-all duration-200 hover:border-gray-400 focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
   }
 
   .form-input-number {
-    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded 
-           bg-white text-gris-fonce text-center transition-all duration-200 
-           hover:border-gray-400 
-           focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
+    @apply w-full py-2.5 px-3 text-[0.9rem] border border-gray-300 rounded bg-white text-gris-fonce text-center transition-all duration-200 hover:border-gray-400 focus:outline-none focus:border-turquoise focus:ring-[3px] focus:ring-turquoise/15;
   }
 
   .form-label {
@@ -197,15 +189,11 @@ body.dyslexie-mode * {
      ============================================== */
 
   .btn-primary {
-    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold 
-           py-2 px-10 rounded transition-colors duration-300 
-           uppercase tracking-wider cursor-pointer border-none;
+    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold py-2 px-10 rounded transition-colors duration-300 uppercase tracking-wider cursor-pointer border-none;
   }
 
   .btn-search {
-    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold 
-           py-2 px-10 rounded-t-[10px] transition-colors duration-300 
-           uppercase tracking-wider cursor-pointer border-none text-base;
+    @apply bg-turquoise hover:bg-turquoise-hover text-white font-semibold py-2 px-10 rounded-t-[10px] transition-colors duration-300 uppercase tracking-wider cursor-pointer border-none text-base;
   }
 
   /* ==============================================
@@ -221,11 +209,7 @@ body.dyslexie-mode * {
   }
 
   .carousel-nav-btn {
-    @apply absolute top-1/2 -translate-y-1/2 z-20 
-           bg-black/40 hover:bg-black/70 text-white 
-           border-none py-4 px-3 cursor-pointer text-2xl 
-           transition-colors duration-300 rounded 
-           focus:outline-2 focus:outline-turquoise focus:outline-offset-2;
+    @apply absolute top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/70 text-white border-none py-4 px-3 cursor-pointer text-2xl transition-colors duration-300 rounded focus:outline-2 focus:outline-turquoise focus:outline-offset-2;
   }
 
   .carousel-dot {
@@ -249,8 +233,7 @@ body.dyslexie-mode * {
   }
 
   .search-content {
-    @apply bg-white/[0.97] backdrop-blur-sm rounded-t-lg w-full max-w-[1200px] 
-           shadow-[0_-4px_20px_rgba(0,0,0,0.15)] overflow-hidden;
+    @apply bg-white/[0.97] backdrop-blur-sm rounded-t-lg w-full max-w-[1200px] shadow-[0_-4px_20px_rgba(0, 0, 0, 0.15)] overflow-hidden;
   }
 
   .search-grid {
@@ -262,8 +245,7 @@ body.dyslexie-mode * {
   }
 
   .search-column-title {
-    @apply bg-gray-100 m-0 py-2.5 px-4 text-[0.95rem] font-semibold 
-           text-gris-fonce border-b border-gray-200;
+    @apply bg-gray-100 m-0 py-2.5 px-4 text-[0.95rem] font-semibold text-gris-fonce border-b border-gray-200;
   }
 
   .search-column-number {
@@ -279,8 +261,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .radio-label {
-    @apply flex items-center gap-2 text-[0.85rem] cursor-pointer 
-           transition-colors duration-200 text-gris-fonce hover:text-turquoise;
+    @apply flex items-center gap-2 text-[0.85rem] cursor-pointer transition-colors duration-200 text-gris-fonce hover:text-turquoise;
   }
 
   .radio-label-disabled {
@@ -304,9 +285,7 @@ body.dyslexie-mode * {
   }
 
   .header-grid {
-    @apply grid grid-cols-[2fr_auto_1.5fr_1.5fr] gap-5 items-center pr-40 
-           max-lg:grid-cols-2 max-lg:pr-[150px] max-lg:gap-4 
-           max-md:flex max-md:flex-col max-md:gap-2.5 max-md:pr-0 max-md:items-start;
+    @apply grid grid-cols-[2fr_auto_1.5fr_1.5fr] gap-5 items-center pr-40 max-lg:grid-cols-2 max-lg:pr-[150px] max-lg:gap-4 max-md:flex max-md:flex-col max-md:gap-2.5 max-md:pr-0 max-md:items-start;
   }
 
   /* ==============================================
@@ -314,10 +293,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .ribbon {
-    @apply absolute top-0 right-[1.5%] w-[140px] min-h-[150px] 
-           bg-turquoise py-4 px-2.5 text-center z-[1000] 
-           max-lg:w-[120px] max-lg:py-3 max-lg:px-2 
-           max-md:right-[3px] max-md:w-[120px] max-md:min-h-0 max-md:py-2.5 max-md:px-2;
+    @apply absolute top-0 right-[1.5%] w-[140px] min-h-[150px] bg-turquoise py-4 px-2.5 text-center z-[1000] max-lg:w-[120px] max-lg:py-3 max-lg:px-2 max-md:right-[3px] max-md:w-[120px] max-md:min-h-0 max-md:py-2.5 max-md:px-2;
   }
 
   .ribbon-nav {
@@ -329,9 +305,7 @@ body.dyslexie-mode * {
   }
 
   .ribbon-btn {
-    @apply block w-full bg-transparent border-none text-white text-xs font-semibold 
-           py-2.5 px-1.5 cursor-pointer no-underline transition-colors duration-200 
-           hover:bg-black/10 max-lg:text-[11px] max-lg:py-2 max-lg:px-1;
+    @apply block w-full bg-transparent border-none text-white text-xs font-semibold py-2.5 px-1.5 cursor-pointer no-underline transition-colors duration-200 hover:bg-black/10 max-lg:text-[11px] max-lg:py-2 max-lg:px-1;
   }
 
   /* ==============================================
@@ -347,10 +321,7 @@ body.dyslexie-mode * {
   }
 
   .navbar-link {
-    @apply block text-white no-underline py-3 px-6 text-sm font-bold 
-           uppercase tracking-wide transition-colors duration-200 
-           hover:bg-black/10 
-           max-md:text-center max-md:py-4 max-md:px-5 max-md:border-b max-md:border-white/20;
+    @apply block text-white no-underline py-3 px-6 text-sm font-bold uppercase tracking-wide transition-colors duration-200 hover:bg-black/10 max-md:text-center max-md:py-4 max-md:px-5 max-md:border-b max-md:border-white/20;
   }
 
   /* ==============================================
@@ -358,9 +329,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .contact-icon {
-    @apply w-[46px] h-[46px] min-w-[46px] rounded-full bg-turquoise text-white 
-           flex items-center justify-center text-xl 
-           max-md:w-[38px] max-md:h-[38px] max-md:min-w-[38px] max-md:text-base;
+    @apply w-[46px] h-[46px] min-w-[46px] rounded-full bg-turquoise text-white flex items-center justify-center text-xl max-md:w-[38px] max-md:h-[38px] max-md:min-w-[38px] max-md:text-base;
   }
 
   /* ==============================================
@@ -368,9 +337,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .search-bar-input {
-    @apply w-full rounded-[25px] py-2.5 pr-[45px] pl-5 border border-gray-300 
-           text-sm h-10 outline-none transition-colors duration-200 
-           focus:border-turquoise focus:shadow-[0_0_0_2px_rgba(95,200,194,0.2)];
+    @apply w-full rounded-[25px] py-2.5 pr-[45px] pl-5 border border-gray-300 text-sm h-10 outline-none transition-colors duration-200 focus:border-turquoise focus:shadow-[0_0_0_2px_rgba(95, 200, 194, 0.2)];
   }
 
   /* ==============================================
@@ -378,8 +345,7 @@ body.dyslexie-mode * {
      ============================================== */
 
   .skip-link {
-    @apply absolute -top-10 left-0 bg-turquoise text-white py-2 px-4 
-           z-[10000] no-underline font-semibold transition-all duration-300 focus:top-0;
+    @apply absolute -top-10 left-0 bg-turquoise text-white py-2 px-4 z-[10000] no-underline font-semibold transition-all duration-300 focus:top-0;
   }
 
   /* ==============================================
@@ -415,8 +381,7 @@ body.dyslexie-mode * {
   }
 
   .offre-card {
-    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col
-           hover:-translate-y-1 hover:shadow-xl;
+    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col hover:-translate-y-1 hover:shadow-xl;
   }
 
   .offre-card-image {
@@ -432,8 +397,7 @@ body.dyslexie-mode * {
   }
 
   .offre-badge {
-    @apply absolute top-4 right-4 bg-turquoise text-white py-1 px-4 rounded-full text-xs font-bold uppercase
-           shadow-[0_2px_8px_rgba(95,200,194,0.4)];
+    @apply absolute top-4 right-4 bg-turquoise text-white py-1 px-4 rounded-full text-xs font-bold uppercase shadow-[0_2px_8px_rgba(95, 200, 194, 0.4)];
   }
 
   .offre-card-body {
@@ -449,9 +413,7 @@ body.dyslexie-mode * {
   }
 
   .btn-offre {
-    @apply bg-turquoise text-white border-2 border-turquoise rounded-full py-2 px-6 text-sm font-semibold 
-           uppercase transition-all duration-300 no-underline inline-block text-center
-           hover:-translate-y-0.5 hover:shadow-lg;
+    @apply bg-turquoise text-white border-2 border-turquoise rounded-full py-2 px-6 text-sm font-semibold uppercase transition-all duration-300 no-underline inline-block text-center hover:-translate-y-0.5 hover:shadow-lg;
   }
 
   /* ==============================================
@@ -463,8 +425,7 @@ body.dyslexie-mode * {
   }
 
   .destination-card {
-    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col
-           hover:-translate-y-1 hover:shadow-xl;
+    @apply bg-white rounded-[10px] overflow-hidden shadow-md transition-all duration-300 h-full flex flex-col hover:-translate-y-1 hover:shadow-xl;
   }
 
   .destination-card-image {
@@ -481,11 +442,11 @@ body.dyslexie-mode * {
 
   .destination-overlay {
     @apply absolute inset-0 flex items-end p-5 transition-all duration-300;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.3) 80%, rgba(0,0,0,0.8) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.3) 80%, rgba(0, 0, 0, 0.8) 100%);
   }
 
   .destination-card:hover .destination-overlay {
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 75%, rgba(95,200,194,0.9) 100%);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 75%, rgba(95, 200, 194, 0.9) 100%);
   }
 
   .destination-info {
@@ -509,8 +470,7 @@ body.dyslexie-mode * {
   }
 
   .btn-destination {
-    @apply text-turquoise text-sm font-semibold no-underline inline-flex items-center gap-1 transition-all duration-300
-           hover:text-turquoise-hover hover:gap-2;
+    @apply text-turquoise text-sm font-semibold no-underline inline-flex items-center gap-1 transition-all duration-300 hover:text-turquoise-hover hover:gap-2;
   }
 
   /* ==============================================
@@ -522,9 +482,8 @@ body.dyslexie-mode * {
   }
 
   .info-card {
-    @apply h-full border border-gray-200 rounded-[10px] shadow-sm transition-all duration-300
-           hover:-translate-y-1 hover:shadow-md;
-    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(242,242,242,1) 100%);
+    @apply h-full border border-gray-200 rounded-[10px] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(242, 242, 242, 1) 100%);
   }
 
   .info-card-body {
@@ -577,21 +536,16 @@ body.dyslexie-mode * {
 
   /* Réseaux sociaux */
   .social-icon {
-    @apply inline-flex items-center justify-center w-9 h-9 rounded-full 
-           bg-marron text-white text-lg transition-all duration-300 
-           hover:bg-marron-clair hover:text-turquoise hover:scale-110;
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-full bg-marron text-white text-lg transition-all duration-300 hover:bg-marron-clair hover:text-turquoise hover:scale-110;
   }
 
   /* Newsletter */
   .newsletter-input {
-    @apply flex-1 py-2 px-3 border border-gray-300 rounded-l text-sm 
-           outline-none focus:border-turquoise;
+    @apply flex-1 py-2 px-3 border border-gray-300 rounded-l text-sm outline-none focus:border-turquoise;
   }
 
   .newsletter-btn {
-    @apply bg-marron text-white px-4 py-2 border-none rounded-r font-semibold 
-           cursor-pointer transition-all duration-300 
-           hover:bg-marron-clair hover:text-turquoise hover:scale-105;
+    @apply bg-marron text-white px-4 py-2 border-none rounded-r font-semibold cursor-pointer transition-all duration-300 hover:bg-marron-clair hover:text-turquoise hover:scale-105;
   }
 
   /* Barre du bas */
@@ -600,11 +554,12 @@ body.dyslexie-mode * {
   }
 
   .footer-bottom-link {
-    @apply text-gris-moyen no-underline font-light transition-colors duration-300 
-           hover:text-turquoise;
+    @apply text-gris-moyen no-underline font-light transition-colors duration-300 hover:text-turquoise;
   }
 
-} /* FIN @layer components */
+}
+
+/* FIN @layer components */
 
 /* ==========================================================
    TRIANGLES DU RUBAN (pseudo-éléments - hors @layer)
@@ -654,6 +609,7 @@ body.dyslexie-mode * {
    ========================================================== */
 
 @media (max-width: 480px) {
+
   .ribbon-triangle::before,
   .ribbon-triangle::after {
     display: none;
@@ -694,6 +650,7 @@ body.dyslexie-mode * {
    ========================================================== */
 
 @media (max-width: 1024px) {
+
   /* Le carousel reprend une hauteur normale */
   .carousel-container {
     height: auto;
@@ -702,7 +659,7 @@ body.dyslexie-mode * {
   }
 
   /* Le conteneur des slides */
-  .carousel-container > div:first-child {
+  .carousel-container>div:first-child {
     height: 50vh;
     min-height: 350px;
     position: relative;

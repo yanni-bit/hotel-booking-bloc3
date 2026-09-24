@@ -7,7 +7,12 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, verifyPassword, getUserPasswordHash, removeAuthCookie } from "@lib/auth";
+import {
+  getCurrentUser,
+  verifyPassword,
+  getUserPasswordHash,
+  removeAuthCookie,
+} from "@lib/auth";
 import prisma from "@lib/prisma";
 import { sendAccountDeletionEmail } from "@lib/email";
 
@@ -18,11 +23,11 @@ export async function GET() {
   try {
     // Vérifier l'authentification
     const currentUser = await getCurrentUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -60,7 +65,7 @@ export async function GET() {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Utilisateur non trouvé" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -91,7 +96,7 @@ export async function GET() {
     console.error("Erreur GET /api/auth/profile:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -103,11 +108,11 @@ export async function PUT(request: NextRequest) {
   try {
     // Vérifier l'authentification
     const currentUser = await getCurrentUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -118,7 +123,7 @@ export async function PUT(request: NextRequest) {
     if (!nom || !prenom) {
       return NextResponse.json(
         { success: false, error: "Le nom et le prénom sont obligatoires" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -199,7 +204,7 @@ export async function PUT(request: NextRequest) {
     console.error("Erreur PUT /api/auth/profile:", error);
     return NextResponse.json(
       { success: false, error: "Erreur serveur" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -217,11 +222,11 @@ export async function DELETE(request: NextRequest) {
   try {
     // Vérifier l'authentification
     const currentUser = await getCurrentUser();
-    
+
     if (!currentUser) {
       return NextResponse.json(
         { success: false, error: "Non authentifié" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -231,8 +236,11 @@ export async function DELETE(request: NextRequest) {
     // Validation : mot de passe requis pour sécurité
     if (!password) {
       return NextResponse.json(
-        { success: false, error: "Le mot de passe est requis pour confirmer la suppression" },
-        { status: 400 }
+        {
+          success: false,
+          error: "Le mot de passe est requis pour confirmer la suppression",
+        },
+        { status: 400 },
       );
     }
 
@@ -241,7 +249,7 @@ export async function DELETE(request: NextRequest) {
     if (!passwordHash) {
       return NextResponse.json(
         { success: false, error: "Utilisateur non trouvé" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -249,7 +257,7 @@ export async function DELETE(request: NextRequest) {
     if (!isPasswordValid) {
       return NextResponse.json(
         { success: false, error: "Mot de passe incorrect" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -267,7 +275,7 @@ export async function DELETE(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Utilisateur non trouvé" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -280,7 +288,7 @@ export async function DELETE(request: NextRequest) {
     // ========================================================================
     const timestamp = Date.now();
     const anonymizedEmail = `deleted_${user.id_user}_${timestamp}@supprime.local`;
-    
+
     // Générer un hash aléatoire pour le mot de passe (impossible de se reconnecter)
     const randomPassword = crypto.randomUUID() + crypto.randomUUID();
     const { hashPassword } = await import("@lib/auth");
@@ -295,7 +303,7 @@ export async function DELETE(request: NextRequest) {
           where: { id_user: user.id_user },
           data: { id_adress_user: null },
         });
-        
+
         // Puis supprimer l'adresse
         await tx.adresseUser.delete({
           where: { id_adress_user: user.id_adress_user },
@@ -347,7 +355,7 @@ export async function DELETE(request: NextRequest) {
     console.error("Erreur DELETE /api/auth/profile:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de la suppression du compte" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

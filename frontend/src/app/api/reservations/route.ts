@@ -43,7 +43,7 @@ function totalService(
   typeService: string,
   quantite: number,
   nbreNuits: number,
-  nbreAdults: number
+  nbreAdults: number,
 ): number {
   let total = prixUnitaire * quantite;
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { error: "Authentification requise" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     if (!body.check_in || !body.check_out) {
       return NextResponse.json(
         { error: "Dates de séjour requises: check_in, check_out" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -99,8 +99,10 @@ export async function POST(request: NextRequest) {
 
     if (checkOut <= checkIn) {
       return NextResponse.json(
-        { error: "La date de départ doit être postérieure à la date d'arrivée" },
-        { status: 400 }
+        {
+          error: "La date de départ doit être postérieure à la date d'arrivée",
+        },
+        { status: 400 },
       );
     }
 
@@ -110,13 +112,13 @@ export async function POST(request: NextRequest) {
     if (checkIn < aujourdhui) {
       return NextResponse.json(
         { error: "La date d'arrivée ne peut pas être dans le passé" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Le nombre de nuits est déduit des dates, pas repris du client
     const nbreNuits = Math.round(
-      (checkOut.getTime() - checkIn.getTime()) / MS_PAR_JOUR
+      (checkOut.getTime() - checkIn.getTime()) / MS_PAR_JOUR,
     );
 
     const nbreAdults = Number(body.nbre_adults);
@@ -125,14 +127,14 @@ export async function POST(request: NextRequest) {
     if (!Number.isInteger(nbreAdults) || nbreAdults < 1) {
       return NextResponse.json(
         { error: "Nombre d'adultes invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!Number.isInteger(nbreChildren) || nbreChildren < 0) {
       return NextResponse.json(
         { error: "Nombre d'enfants invalide" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -154,7 +156,7 @@ export async function POST(request: NextRequest) {
         {
           error: `Cette chambre accueille au maximum ${offre.chambre.nbre_adults_max} adulte(s)`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -163,7 +165,7 @@ export async function POST(request: NextRequest) {
         {
           error: `Cette chambre accueille au maximum ${offre.chambre.nbre_children_max} enfant(s)`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -174,13 +176,15 @@ export async function POST(request: NextRequest) {
     const disponible = await chambreDisponible(
       offre.id_chambre,
       checkIn,
-      checkOut
+      checkOut,
     );
 
     if (!disponible) {
       return NextResponse.json(
-        { error: "Cette chambre n'est plus disponible sur les dates demandées" },
-        { status: 409 }
+        {
+          error: "Cette chambre n'est plus disponible sur les dates demandées",
+        },
+        { status: 409 },
       );
     }
 
@@ -217,7 +221,7 @@ export async function POST(request: NextRequest) {
       for (const demande of servicesDemandes) {
         const hs = hotelServices.find(
           (h: HotelServiceRow) =>
-            h.id_hotel_service === Number(demande.id_hotel_service)
+            h.id_hotel_service === Number(demande.id_hotel_service),
         );
 
         // Service inconnu, indisponible ou rattaché à un autre hôtel : ignoré
@@ -240,7 +244,7 @@ export async function POST(request: NextRequest) {
           typeService,
           quantite,
           nbreNuits,
-          nbreAdults
+          nbreAdults,
         );
       }
     }
@@ -289,7 +293,7 @@ export async function POST(request: NextRequest) {
     console.error("Erreur création réservation:", error);
     return NextResponse.json(
       { error: "Erreur lors de la création de la réservation" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

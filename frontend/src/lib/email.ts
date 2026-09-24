@@ -54,7 +54,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 // ============================================================================
 export async function sendWelcomeEmail(
   to: string,
-  prenom: string
+  prenom: string,
 ): Promise<boolean> {
   const subject = "Bienvenue sur Hotel Booking ! 🎉";
 
@@ -193,7 +193,7 @@ export async function sendWelcomeEmail(
 export async function sendPasswordResetEmail(
   to: string,
   prenom: string,
-  resetLink: string
+  resetLink: string,
 ): Promise<boolean> {
   const subject = "Réinitialisation de votre mot de passe - Hotel Booking";
 
@@ -328,7 +328,7 @@ export async function sendReservationConfirmationEmail(
     adults: number;
     children: number;
     totalPrice: number;
-  }
+  },
 ): Promise<boolean> {
   const subject = `Confirmation de réservation #${reservation.numConfirmation} - Hotel Booking`;
 
@@ -461,18 +461,18 @@ export async function sendReservationConfirmationEmail(
           <div class="detail-row">
             <span class="detail-label">🌙 Durée</span>
             <span class="detail-value">${reservation.nights} nuit${
-    reservation.nights > 1 ? "s" : ""
-  }</span>
+              reservation.nights > 1 ? "s" : ""
+            }</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">👥 Voyageurs</span>
             <span class="detail-value">${reservation.adults} adulte${
-    reservation.adults > 1 ? "s" : ""
-  }${
-    reservation.children > 0
-      ? `, ${reservation.children} enfant${reservation.children > 1 ? "s" : ""}`
-      : ""
-  }</span>
+              reservation.adults > 1 ? "s" : ""
+            }${
+              reservation.children > 0
+                ? `, ${reservation.children} enfant${reservation.children > 1 ? "s" : ""}`
+                : ""
+            }</span>
           </div>
           
           <div class="total-row">
@@ -511,8 +511,8 @@ export async function sendReservationConfirmationEmail(
     Départ : ${reservation.checkOut}
     Durée : ${reservation.nights} nuit(s)
     Voyageurs : ${reservation.adults} adulte(s)${
-    reservation.children > 0 ? `, ${reservation.children} enfant(s)` : ""
-  }
+      reservation.children > 0 ? `, ${reservation.children} enfant(s)` : ""
+    }
     
     Total payé : ${reservation.totalPrice.toFixed(2)} €
 
@@ -533,7 +533,7 @@ export async function sendReservationConfirmationEmail(
 // ============================================================================
 export async function sendAccountDeletionEmail(
   to: string,
-  prenom: string
+  prenom: string,
 ): Promise<boolean> {
   const subject = "Confirmation de suppression de compte - Hotel Booking";
 
@@ -676,7 +676,7 @@ export async function sendReservationCancellationEmail(
     checkOut: string;
     nights: number;
     totalPrice: number;
-  }
+  },
 ): Promise<boolean> {
   const subject = `Confirmation d'annulation #${reservation.numConfirmation} - Hotel Booking`;
 
@@ -804,8 +804,8 @@ export async function sendReservationCancellationEmail(
           <div class="detail-row">
             <span class="detail-label">🌙 Durée</span>
             <span class="detail-value">${reservation.nights} nuit${
-    reservation.nights > 1 ? "s" : ""
-  }</span>
+              reservation.nights > 1 ? "s" : ""
+            }</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">N° confirmation</span>
@@ -871,7 +871,7 @@ export async function sendContactConfirmationEmail(
   to: string,
   nom: string,
   sujet: string,
-  message: string
+  message: string,
 ): Promise<boolean> {
   const subject = "Nous avons bien reçu votre message - Hotel Booking";
 
@@ -1012,7 +1012,7 @@ export async function sendContactConfirmationEmail(
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-      }
+      },
     )}</td>
   </tr>
 </table>

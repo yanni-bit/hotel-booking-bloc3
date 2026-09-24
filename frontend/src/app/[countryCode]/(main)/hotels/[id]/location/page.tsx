@@ -4,33 +4,33 @@
 // Équivalent de hotel-location.component Angular
 // ============================================================================
 
-import { notFound } from "next/navigation"
-import { getHotelById } from "@lib/hotels"
-import { 
+import { notFound } from "next/navigation";
+import { getHotelById } from "@lib/hotels";
+import {
   FaMapMarkerAlt,
   FaMap,
   FaDirections,
   FaPhone,
   FaEnvelope,
-  FaGlobe
-} from "react-icons/fa"
+  FaGlobe,
+} from "react-icons/fa";
 
 interface LocationPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export default async function LocationPage({ params }: LocationPageProps) {
-  const { id } = await params
-  const hotelId = parseInt(id)
-  
+  const { id } = await params;
+  const hotelId = parseInt(id);
+
   if (isNaN(hotelId)) {
-    notFound()
+    notFound();
   }
-  
-  const hotel = await getHotelById(hotelId)
-  
+
+  const hotel = await getHotelById(hotelId);
+
   if (!hotel) {
-    notFound()
+    notFound();
   }
 
   // Construire l'adresse complète
@@ -38,26 +38,27 @@ export default async function LocationPage({ params }: LocationPageProps) {
     hotel.rue_hotel,
     hotel.code_postal_hotel,
     hotel.ville_hotel,
-    hotel.pays_hotel
-  ].filter(Boolean).join(", ")
+    hotel.pays_hotel,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   // URL Google Maps
-  const googleMapsUrl = hotel.latitude && hotel.longitude
-    ? `https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adresseComplete)}`
+  const googleMapsUrl =
+    hotel.latitude && hotel.longitude
+      ? `https://www.google.com/maps?q=${hotel.latitude},${hotel.longitude}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adresseComplete)}`;
 
   return (
     <div className="hotel-location">
-      
       {/* Titre section */}
       <h2 className="text-xl font-semibold mb-4 pb-2 border-b text-gray-700 flex items-center">
         <FaMapMarkerAlt className="mr-3 text-turquoise" />
         Localisation
       </h2>
-      
+
       {/* Carte */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
-        
         {/* Map iframe ou placeholder */}
         <div className="h-[400px] bg-gray-200 relative">
           {hotel.latitude && hotel.longitude ? (
@@ -80,52 +81,58 @@ export default async function LocationPage({ params }: LocationPageProps) {
             </div>
           )}
         </div>
-        
       </div>
-      
+
       {/* Informations de localisation */}
       <div className="bg-white p-5 rounded-lg shadow-sm">
-        
         <h3 className="text-lg font-semibold text-gray-700 mb-4">
           Adresse & Contact
         </h3>
-        
+
         <div className="space-y-4">
-          
           {/* Adresse */}
           <div className="flex items-start">
             <FaMapMarkerAlt className="text-turquoise mr-4 mt-1 text-lg flex-shrink-0" />
             <div>
               <h4 className="font-medium text-gray-700 mb-1">Adresse</h4>
               <p className="text-gray-600">
-                {hotel.rue_hotel && <>{hotel.rue_hotel}<br /></>}
-                {hotel.code_postal_hotel} {hotel.ville_hotel}<br />
+                {hotel.rue_hotel && (
+                  <>
+                    {hotel.rue_hotel}
+                    <br />
+                  </>
+                )}
+                {hotel.code_postal_hotel} {hotel.ville_hotel}
+                <br />
                 {hotel.pays_hotel}
               </p>
             </div>
           </div>
-          
+
           {/* Coordonnées GPS */}
           {hotel.latitude && hotel.longitude && (
             <div className="flex items-start">
               <FaMap className="text-turquoise mr-4 mt-1 text-lg flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-700 mb-1">Coordonnées GPS</h4>
+                <h4 className="font-medium text-gray-700 mb-1">
+                  Coordonnées GPS
+                </h4>
                 <p className="text-gray-600 text-sm">
-                  Latitude: {Number(hotel.latitude).toFixed(6)}<br />
+                  Latitude: {Number(hotel.latitude).toFixed(6)}
+                  <br />
                   Longitude: {Number(hotel.longitude).toFixed(6)}
                 </p>
               </div>
             </div>
           )}
-          
+
           {/* Téléphone */}
           {hotel.tel_hotel && (
             <div className="flex items-start">
               <FaPhone className="text-turquoise mr-4 mt-1 text-lg flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-gray-700 mb-1">Téléphone</h4>
-                <a 
+                <a
                   href={`tel:${hotel.tel_hotel}`}
                   className="text-turquoise hover:underline"
                 >
@@ -134,14 +141,14 @@ export default async function LocationPage({ params }: LocationPageProps) {
               </div>
             </div>
           )}
-          
+
           {/* Email */}
           {hotel.email_hotel && (
             <div className="flex items-start">
               <FaEnvelope className="text-turquoise mr-4 mt-1 text-lg flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-gray-700 mb-1">Email</h4>
-                <a 
+                <a
                   href={`mailto:${hotel.email_hotel}`}
                   className="text-turquoise hover:underline"
                 >
@@ -150,14 +157,14 @@ export default async function LocationPage({ params }: LocationPageProps) {
               </div>
             </div>
           )}
-          
+
           {/* Site web */}
           {hotel.site_web_hotel && (
             <div className="flex items-start">
               <FaGlobe className="text-turquoise mr-4 mt-1 text-lg flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-gray-700 mb-1">Site web</h4>
-                <a 
+                <a
                   href={hotel.site_web_hotel}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -168,9 +175,8 @@ export default async function LocationPage({ params }: LocationPageProps) {
               </div>
             </div>
           )}
-          
         </div>
-        
+
         {/* Bouton itinéraire */}
         <div className="mt-6 pt-4 border-t">
           <a
@@ -183,9 +189,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
             Obtenir l&apos;itinéraire
           </a>
         </div>
-        
       </div>
-      
     </div>
-  )
+  );
 }
