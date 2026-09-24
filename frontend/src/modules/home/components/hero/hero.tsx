@@ -1,5 +1,23 @@
 "use client";
 
+// src/modules/home/components/hero/hero.tsx
+// ============================================================================
+// Bandeau d'accueil : carrousel + formulaire de recherche
+//
+// Deux blocs indépendants dans un même composant :
+//
+// - Le carrousel, trois visuels qui défilent toutes les 5 secondes
+//   (setInterval nettoyé au démontage). La première image porte `priority`
+//   afin d'être préchargée : c'est le plus grand élément visible de la page,
+//   donc celui qui détermine le LCP mesuré par Lighthouse.
+//
+// - Le formulaire, dont les villes proviennent de /api/destinations. La
+//   validation est immédiate, champ par champ : `errors` porte les messages,
+//   `touched` retient ce que l'utilisateur a déjà quitté, de sorte qu'aucune
+//   erreur ne s'affiche avant qu'il ait eu l'occasion de saisir.
+//   La soumission ne fait aucun appel réseau : elle compose une chaîne de
+//   requête et redirige vers /hotels, qui se charge de l'interrogation.
+// ============================================================================
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
