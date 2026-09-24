@@ -18,6 +18,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   createReservation,
+  chambreDisponible,
   type CreateReservationInput,
   type ServiceSelection,
 } from "@lib/reservations";
@@ -166,11 +167,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ------------------------------------------------------------------
+    // 4. DISPONIBILITÉ
+    // Une chambre déjà retenue sur tout ou partie de la période est refusée.
+    // ------------------------------------------------------------------
+    const disponible = await chambreDisponible(
+      offre.id_chambre,
+      checkIn,
+      checkOut
+    );
+
+    if (!disponible) {
+      return NextResponse.json(
+        { error: "Cette chambre n'est plus disponible sur les dates demandées" },
+        { status: 409 }
+      );
+    }
+
     const prixNuit = Number(offre.prix_nuit);
     let totalPrice = prixNuit * nbreNuits;
 
     // ------------------------------------------------------------------
-    // 4. SERVICES ADDITIONNELS
+    // 5. SERVICES ADDITIONNELS
     // Seuls les services réellement proposés par cet hôtel sont retenus,
     // et leur prix est celui de la base, pas celui envoyé par le client.
     // ------------------------------------------------------------------
@@ -231,7 +249,7 @@ export async function POST(request: NextRequest) {
     totalPrice = Math.round(totalPrice * 100) / 100;
 
     // ------------------------------------------------------------------
-    // 5. CRÉATION
+    // 6. CRÉATION
     // id_statut est forcé à 1 (En attente) : seul le paiement confirme.
     // ------------------------------------------------------------------
     const donnees: CreateReservationInput = {

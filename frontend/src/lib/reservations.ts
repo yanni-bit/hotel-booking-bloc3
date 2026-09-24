@@ -129,6 +129,58 @@ export function generateConfirmationNumber(): string {
   return `RES-${year}-${random}`;
 }
 
+// ============================================================================
+// DISPONIBILITÉ
+// ============================================================================
+
+/** Statuts qui rendent une chambre indisponible de façon ferme. */
+const STATUTS_BLOQUANTS = [2, 6]; // Confirmée, En cours
+
+/** Durée pendant laquelle une réservation non payée retient la chambre. */
+const MINUTES_RETENUE_PROVISOIRE = 30;
+
+/**
+ * Vérifie qu'aucune réservation ne chevauche la période demandée pour cette
+ * chambre.
+ *
+ * Deux séjours se chevauchent dès que l'un commence avant que l'autre ne
+ * finisse : check_in < checkOut ET check_out > checkIn. Les comparaisons sont
+ * strictes, ce qui permet à une chambre libérée le matin d'être reprise le
+ * soir même — l'usage hôtelier courant.
+ *
+ * Une réservation encore « En attente » ne retient la chambre que le temps du
+ * paiement : sans cette limite, un parcours abandonné la bloquerait pour
+ * toujours.
+ */
+export async function chambreDisponible(
+  idChambre: number,
+  checkIn: Date,
+  checkOut: Date,
+  idReservationAIgnorer?: number
+): Promise<boolean> {
+  const limiteRetenue = new Date(
+    Date.now() - MINUTES_RETENUE_PROVISOIRE * 60 * 1000
+  );
+
+  const conflit = await prisma.reservation.findFirst({
+    where: {
+      id_chambre: idChambre,
+      check_in: { lt: checkOut },
+      check_out: { gt: checkIn },
+      ...(idReservationAIgnorer
+        ? { id_reservation: { not: idReservationAIgnorer } }
+        : {}),
+      OR: [
+        { id_statut: { in: STATUTS_BLOQUANTS } },
+        { id_statut: 1, date_reservation: { gte: limiteRetenue } },
+      ],
+    },
+    select: { id_reservation: true },
+  });
+
+  return conflit === null;
+}
+
 /**
  * Crée une réservation avec ses services additionnels
  */

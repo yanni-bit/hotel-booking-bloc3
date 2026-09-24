@@ -113,6 +113,7 @@ export default function BookingForm({
   // UI State
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [indisponible, setIndisponible] = useState("");
 
   // ============================================================================
   // INITIALISATION DES DATES
@@ -249,6 +250,7 @@ export default function BookingForm({
   // ============================================================================
   async function handleSubmit() {
     setError("");
+    setIndisponible("");
 
     // Vérifier si l'utilisateur est connecté
     if (!isAuthenticated || !user) {
@@ -298,15 +300,21 @@ export default function BookingForm({
 
       const result = await response.json();
 
+      // 409 : la chambre est déjà prise sur ces dates. C'est une réponse
+      // métier attendue, pas une panne : on l'affiche comme une information
+      // et on laisse le formulaire rempli pour que l'utilisateur ajuste.
+      if (response.status === 409) {
+        setIndisponible(result.error || "Ces dates ne sont plus disponibles");
+        setSubmitting(false);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(result.error || "Erreur lors de la réservation");
       }
 
-      console.log("Réservation créée:", result.data);
-
       router.push(`/${countryCode}/payment/${result.data.id_reservation}`);
     } catch (err) {
-      console.error("Erreur:", err);
       setError(
         err instanceof Error ? err.message : "Erreur lors de la réservation"
       );
@@ -361,6 +369,16 @@ export default function BookingForm({
         </h1>
 
         {/* Erreur */}
+        {indisponible && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-300 text-amber-900 rounded-lg">
+            <p className="font-semibold">Dates non disponibles</p>
+            <p className="text-sm mt-1">
+              {indisponible} &mdash; choisissez d&apos;autres dates, ou une
+              autre chambre dans cet hôtel.
+            </p>
+          </div>
+        )}
+
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
             {error}
