@@ -91,7 +91,7 @@ export default function ForgotPasswordForm() {
               <p className="text-green-700">{successMessage}</p>
               <hr className="my-3 border-green-200" />
               <p className="text-sm text-green-600">
-                📧 Vérifiez votre boîte de réception (et vos spams)
+                Vérifiez votre boîte de réception (et vos spams)
               </p>
             </div>
           </div>
@@ -102,7 +102,7 @@ export default function ForgotPasswordForm() {
       {resetLink && (
         <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
           <p className="text-sm font-semibold text-amber-800 mb-2">
-            🎓 Mode démonstration (projet d&apos;examen)
+            Mode démonstration (projet d&apos;examen)
           </p>
           <p className="text-xs text-amber-700 mb-3">
             Le lien ci-dessous a également été envoyé par email. Pour faciliter

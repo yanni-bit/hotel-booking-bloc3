@@ -558,7 +558,6 @@ function PaymentFormContent({ reservation, countryCode }: PaymentFormProps) {
                 {/* ========== CARTES DE TEST ========== */}
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                   <h3 className="text-sm font-semibold text-blue-800 mb-3 flex items-center">
-                    <span className="mr-2">🧪</span>
                     Cartes de test Stripe
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">

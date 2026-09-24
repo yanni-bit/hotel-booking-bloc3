@@ -168,7 +168,7 @@ export default function LoginForm() {
       {/* Comptes de démonstration (projet d'examen) */}
       <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4 text-sm">
         <p className="font-medium text-cyan-800 mb-2">
-          🎓 Mode démonstration — comptes de test
+          Mode démonstration — comptes de test
         </p>
         <ul className="space-y-2">
           {DEMO_ACCOUNTS.map((account) => (

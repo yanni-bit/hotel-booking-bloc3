@@ -41,10 +41,10 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Email envoyé:", info.messageId);
+    console.log("Email envoyé:", info.messageId);
     return true;
   } catch (error) {
-    console.error("❌ Erreur envoi email:", error);
+    console.error("Erreur envoi email:", error);
     return false;
   }
 }
