@@ -1,4 +1,4 @@
-﻿// src/modules/admin/components/AdminReservationDetail.tsx
+// src/modules/admin/components/AdminReservationDetail.tsx
 // ============================================================================
 // Admin : fiche d'une réservation (client, hôtel, séjour, services, paiement)
 // avec changement de statut.
