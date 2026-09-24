@@ -120,13 +120,26 @@ export async function getHotelServices(hotelId: number) {
 // ============================================================================
 
 /**
- * Génère un numéro de confirmation unique
- * Format: RES-2025-XXXXX (où XXXXX est un nombre aléatoire)
+ * Génère un numéro de confirmation unique.
+ *
+ * Format : HB-AAAAMMJJ-XXXXX, où XXXXX est tiré d'un alphabet sans 0, O, 1
+ * ni I — un client qui dicte son numéro au téléphone ne peut pas les
+ * confondre. Source unique : la confirmation de paiement réutilise cette
+ * même fonction, pour qu'une réservation garde son numéro de bout en bout.
  */
 export function generateConfirmationNumber(): string {
-  const year = new Date().getFullYear();
-  const random = Math.floor(10000 + Math.random() * 90000); // 5 chiffres
-  return `RES-${year}-${random}`;
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let random = "";
+  for (let i = 0; i < 5; i++) {
+    random += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return `HB-${year}${month}${day}-${random}`;
 }
 
 // ============================================================================
@@ -316,19 +329,6 @@ export async function getUserReservations(userId: number) {
       },
       statut: true,
     },
-  });
-}
-
-/**
- * Met à jour le statut d'une réservation
- */
-export async function updateReservationStatus(
-  reservationId: number,
-  newStatusId: number
-) {
-  return prisma.reservation.update({
-    where: { id_reservation: reservationId },
-    data: { id_statut: newStatusId },
   });
 }
 

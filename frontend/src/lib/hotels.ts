@@ -198,24 +198,6 @@ export async function getOffres(limit = 6) {
 // AVIS
 // ============================================================================
 
-/**
- * Derniers avis
- */
-export async function getRecentAvis(limit = 5) {
-  return prisma.avis.findMany({
-    orderBy: { date_avis: "desc" },
-    take: limit,
-    include: {
-      hotel: {
-        select: { nom_hotel: true, ville_hotel: true },
-      },
-      user: {
-        select: { prenom_user: true },
-      },
-    },
-  });
-}
-
 // ============================================================================
 // SEARCH (pour la recherche)
 // ============================================================================

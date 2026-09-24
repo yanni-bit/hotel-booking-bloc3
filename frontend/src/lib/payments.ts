@@ -197,25 +197,10 @@ export async function confirmReservation(
 // ============================================================================
 // GÉNÉRER UN NUMÉRO DE CONFIRMATION
 // ============================================================================
-/**
- * Génère un numéro de confirmation unique
- * Format : HB-YYYYMMDD-XXXXX (ex: HB-20250115-A3F7K)
- */
-export function generateConfirmationNumber(): string {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  
-  // Générer 5 caractères alphanumériques aléatoires
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Sans 0, O, 1, I pour éviter confusion
-  let random = "";
-  for (let i = 0; i < 5; i++) {
-    random += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  
-  return `HB-${year}${month}${day}-${random}`;
-}
+// Le numéro de confirmation est généré par lib/reservations.ts : une seule
+// implémentation, donc un seul format sur tout le parcours. Réexporté ici
+// pour ne pas changer les imports existants.
+export { generateConfirmationNumber } from "./reservations";
 
 // ============================================================================
 // METTRE À JOUR LE NUMÉRO DE CONFIRMATION
