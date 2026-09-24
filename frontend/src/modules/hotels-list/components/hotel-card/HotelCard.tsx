@@ -61,9 +61,9 @@ export default function HotelCard({ hotel, countryCode }: HotelCardProps) {
       {/* Corps de la carte */}
       <div className="p-5 flex flex-col flex-1">
         {/* Titre */}
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">
+        <h2 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">
           {hotel.nom_hotel}
-        </h3>
+        </h2>
 
         {/* Étoiles */}
         {hotel.nbre_etoile_hotel && (

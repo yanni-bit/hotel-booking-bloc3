@@ -24,17 +24,17 @@ interface HotelsPageProps {
 export async function generateMetadata({ searchParams }: HotelsPageProps) {
   const { city, search } = await searchParams;
 
+  // Le suffixe « | Hotel Booking » est ajouté par le template défini dans
+  // le layout racine (title.template) : il ne doit pas être répété ici.
   if (search) {
     return {
-      title: `Résultats pour "${search}" | Hotel Booking`,
+      title: `Résultats pour "${search}"`,
       description: `Résultats de recherche pour "${search}". Trouvez votre hôtel idéal.`,
     };
   }
 
   return {
-    title: city
-      ? `Hôtels à ${city} | Hotel Booking`
-      : "Tous les hôtels | Hotel Booking",
+    title: city ? `Hôtels à ${city}` : "Tous les hôtels",
     description: city
       ? `Découvrez les meilleurs hôtels à ${city}. Réservez au meilleur prix.`
       : "Trouvez et réservez votre hôtel idéal parmi notre sélection.",

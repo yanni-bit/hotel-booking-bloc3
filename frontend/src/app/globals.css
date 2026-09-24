@@ -553,8 +553,10 @@ body.dyslexie-mode * {
     @apply w-full p-4 text-[13px] text-gris-moyen bg-gris-clair;
   }
 
+    /* inline-flex + min-h : la zone cliquable atteint 48 px de haut sur mobile,
+     seuil de l'audit « tap targets » (WCAG 2.5.8 impose 24 px au minimum). */
   .footer-bottom-link {
-    @apply text-gris-moyen no-underline font-light transition-colors duration-300 hover:text-turquoise;
+    @apply inline-flex items-center min-h-[48px] px-2 text-gris-moyen no-underline font-light transition-colors duration-300 hover:text-turquoise;
   }
 
 }
