@@ -1,3 +1,25 @@
+// src/middleware.ts
+// ============================================================================
+// Middleware applicatif - Hotel Booking Bloc 3
+//
+// Exécuté avant le rendu de chaque page, il remplit deux rôles :
+//   1. préfixe de locale — toute URL sans code pays est redirigée vers /fr/… ;
+//   2. gardes de route — vérification du cookie JWT selon trois listes
+//      (routes protégées, routes admin, routes réservées aux visiteurs).
+//
+// Deux points structurants, souvent mal compris :
+//
+// - Le JWT est vérifié avec `jose` et non `jsonwebtoken`. Le middleware
+//   s'exécute dans l'Edge Runtime, qui ne dispose pas des modules Node.js ;
+//   `jose` repose sur l'API Web Crypto, disponible dans les deux
+//   environnements.
+//
+// - Le `matcher` en bas de fichier EXCLUT /api. Les routes API ne passent
+//   donc jamais par ici : chacune vérifie la session elle-même, via
+//   getCurrentUser() ou requireAdmin(). Ce middleware filtre des URL, il ne
+//   protège pas des données — c'est la vérification côté serveur qui le fait.
+// ============================================================================
+
 import { NextRequest, NextResponse } from "next/server"
 import { jwtVerify } from "jose"
 
