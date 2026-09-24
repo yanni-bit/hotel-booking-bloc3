@@ -8,7 +8,8 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { FiSearch, FiChevronLeft, FiChevronRight, FiStar } from "react-icons/fi"
+import Link from "next/link"
+import { FiSearch, FiChevronLeft, FiChevronRight, FiStar, FiPlus } from "react-icons/fi"
 
 interface Hotel {
   id_hotel: number
@@ -110,6 +111,12 @@ export default function HotelsTable() {
         <span className="text-sm text-gris-moyen">
           {pagination ? `${pagination.total} hôtel${pagination.total > 1 ? "s" : ""}` : ""}
         </span>
+        <Link
+          href={`/${countryCode}/admin/hotels/nouveau`}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-turquoise text-white rounded-rounded text-sm hover:bg-turquoise-hover sm:ml-auto"
+        >
+          <FiPlus aria-hidden="true" /> Nouvel hôtel
+        </Link>
       </div>
 
       {/* Tableau */}

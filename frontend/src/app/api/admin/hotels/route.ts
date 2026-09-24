@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
         pays_hotel: data.pays_hotel,
         tel_hotel: data.tel_hotel,
         email_hotel: data.email_hotel,
+        site_web_hotel: data.site_web_hotel,
         nbre_etoile_hotel: data.nbre_etoile_hotel,
         img_hotel: data.img_hotel,
       },
