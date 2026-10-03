@@ -52,16 +52,16 @@ Ce qui est couvert :
 - paiement par carte via Stripe, en mode test
 - comptes utilisateurs : inscription, connexion, profil, mot de passe oublié, historique des réservations, annulation
 - courriels transactionnels : bienvenue, confirmation de réservation, annulation, réinitialisation de mot de passe
-- back-office administrateur : hôtels, réservations, utilisateurs
+- back-office administrateur : création et édition des hôtels, suivi des réservations et changement de statut, gestion des comptes et des rôles
 - interface adaptative mobile et bureau
 
 Ce qui ne l'est pas, et pourquoi, fait l'objet de la section 12.
 
 ### 1.4 Chiffres du projet
 
-- 126 fichiers TypeScript et TSX dans `src/`
+- 129 fichiers TypeScript et TSX dans `src/`
 - 20 modèles de données, 5 migrations versionnées
-- 28 pages et 29 routes d'API
+- 29 pages et 29 routes d'API
 - 58 tests unitaires répartis en 9 suites
 - 103 ko de JavaScript partagé par toutes les pages
 
@@ -937,8 +937,8 @@ L'infrastructure d'URL est prête ; ce qui manque est un dictionnaire de traduct
 | Hébergement | Vercel (application), Neon (base, Francfort) |
 | Modèles | 20 |
 | Migrations | 5 |
-| Pages | 28 |
+| Pages | 29 |
 | Routes d'API | 29 |
 | JavaScript partagé | 103 ko |
-| Fichiers TypeScript | 126 |
+| Fichiers TypeScript | 129 |
 
