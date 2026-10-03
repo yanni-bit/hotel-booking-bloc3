@@ -6,8 +6,8 @@ import { AuthProvider } from "@modules/auth/components/AuthProvider";
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
   title: {
-    default: "Hotel Booking",
-    template: "%s | Hotel Booking",
+    default: "Book Your Travel",
+    template: "%s | Book Your Travel",
   },
   description:
     "Réservez votre hôtel en ligne parmi plus de 100 établissements.",
