@@ -71,8 +71,6 @@ frontend/
 │   ├── hotel_booking_postgres.sql # Dump d'origine (Bloc 2, converti MySQL → PostgreSQL)
 │   ├── import_data.sql            # Import des données (102 hôtels, 408 chambres, 1 320 offres, 472 avis)
 │   └── seed.ts                    # Destinations et images (idempotent)
-├── docs/
-│   └── lighthouse/                # Rapports Lighthouse avant / après optimisation
 ├── public/images/                 # Photos hôtels, destinations, logo
 └── src/
     ├── middleware.ts              # Préfixe /fr + guards d'authentification (équivalent CanActivate)
@@ -95,9 +93,12 @@ Le `matcher` du middleware **exclut `/api`** : chaque Route Handler vérifie la 
 
 ## Documentation
 
-Les rapports de mesure sont dans [`frontend/docs/lighthouse/`](frontend/docs/lighthouse/) : les audits Lighthouse avant et après optimisation, et l'analyse détaillée des contrastes de couleur.
+La documentation du projet est à la racine du dépôt, dans [`docs/`](docs/) :
 
-La documentation technique, le schéma de base de données et le guide utilisateur sont en cours de rédaction et rejoindront `frontend/docs/`.
+- [`documentation-technique.md`](docs/documentation-technique.md) — architecture, modèle de données, parcours de réservation, sécurité, tests, déploiement
+- [`guide-utilisateur.md`](docs/guide-utilisateur.md) — site public et back-office, comptes de démonstration, carte de test
+- [`diagrammes/`](docs/diagrammes/) — MCD complet, MCD du cœur du domaine, architecture, séquence de réservation
+- [`lighthouse/`](docs/lighthouse/) — audits Lighthouse avant et après optimisation, analyse des contrastes
 
 ## Installation
 
