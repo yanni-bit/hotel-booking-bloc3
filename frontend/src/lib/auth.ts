@@ -56,6 +56,7 @@ export interface AuthUser {
   nom_user: string;
   prenom_user: string;
   tel_user: string | null;
+  actif: boolean;
   role: {
     id_role: number;
     code_role: string;
@@ -206,6 +207,7 @@ export async function findUserByEmail(email: string): Promise<AuthUser | null> {
     nom_user: user.nom_user,
     prenom_user: user.prenom_user,
     tel_user: user.tel_user,
+    actif: user.actif,
     role: user.role,
   };
 }
@@ -235,6 +237,7 @@ export async function findUserById(id: number): Promise<AuthUser | null> {
     nom_user: user.nom_user,
     prenom_user: user.prenom_user,
     tel_user: user.tel_user,
+    actif: user.actif,
     role: user.role,
   };
 }
@@ -286,6 +289,7 @@ export async function createUser(data: RegisterData): Promise<AuthUser> {
     nom_user: user.nom_user,
     prenom_user: user.prenom_user,
     tel_user: user.tel_user,
+    actif: user.actif,
     role: user.role,
   };
 }

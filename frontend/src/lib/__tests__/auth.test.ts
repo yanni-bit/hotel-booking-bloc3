@@ -33,6 +33,7 @@ const user: AuthUser = {
   nom_user: "Franchaisse",
   prenom_user: "Yannick",
   tel_user: null,
+  actif: true,
   role: {
     id_role: ROLES.ADMIN,
     code_role: "admin",

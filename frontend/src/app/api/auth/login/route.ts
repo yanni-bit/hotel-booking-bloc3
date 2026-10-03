@@ -55,6 +55,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 3 bis. Vérifier que le compte est actif
+    // Le contrôle vient APRÈS la vérification du mot de passe. Placé avant,
+    // il distinguerait un compte désactivé d'un compte inexistant et
+    // permettrait donc d'énumérer les comptes.
+    if (!user.actif) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Ce compte a été désactivé. Contactez l'administrateur.",
+        },
+        { status: 403 },
+      );
+    }
+
     // 4. Créer le token JWT
     const token = await createToken(user);
 
