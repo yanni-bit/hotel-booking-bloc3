@@ -18,11 +18,12 @@ Démonstration : https://hotel-booking-bloc3.vercel.app
 5. Organisation du code
 6. Authentification et autorisation
 7. Le parcours de réservation
-8. Sécurité
-9. Tests et débogage
-10. Performance et accessibilité
-11. Déploiement
-12. Limites assumées et pistes d'évolution
+8. Le back-office
+9. Sécurité
+10. Tests et débogage
+11. Performance et accessibilité
+12. Déploiement
+13. Limites assumées et pistes d'évolution
 
 ---
 
@@ -55,7 +56,7 @@ Ce qui est couvert :
 - back-office administrateur : création et édition des hôtels, suivi des réservations et changement de statut, gestion des comptes et des rôles
 - interface adaptative mobile et bureau
 
-Ce qui ne l'est pas, et pourquoi, fait l'objet de la section 12.
+Ce qui ne l'est pas, et pourquoi, fait l'objet de la section 13.
 
 ### 1.4 Chiffres du projet
 
@@ -162,7 +163,7 @@ La distinction structure tout le projet.
 
 **Côté client** s'exécutent uniquement les composants marqués `"use client"` : les formulaires, les tableaux de l'administration avec leur recherche et leur pagination, le champ de saisie de carte bancaire. Ils ne parlent jamais à la base ; ils appellent les routes d'API en `fetch`.
 
-Une conséquence importante : un contrôle écrit dans un Client Component n'est pas une sécurité, c'est un confort d'utilisation. Toute règle qui compte est revérifiée côté serveur. La section 8 détaille ce que cela implique.
+Une conséquence importante : un contrôle écrit dans un Client Component n'est pas une sécurité, c'est un confort d'utilisation. Toute règle qui compte est revérifiée côté serveur. La section 9 détaille ce que cela implique.
 
 ### 3.3 Le middleware, et ce qu'il ne fait pas
 
@@ -600,11 +601,65 @@ La fonction est définie une seule fois, dans `src/lib/reservations.ts`, et rée
 
 ---
 
-## 8. Sécurité
+## 8. Le back-office
+
+Le parcours décrit en section 7 produit des réservations. Quelqu'un doit ensuite les suivre, corriger un hôtel, changer le rôle d'un compte. C'est l'autre moitié de l'application, et elle représente huit des vingt-neuf pages.
+
+### 8.1 Un groupe de routes, une mise en page distincte
+
+L'administration vit sous `src/app/[countryCode]/(admin)/admin/`. Les parenthèses de `(admin)` définissent un groupe de routes : elles n'apparaissent pas dans l'URL, mais elles permettent une mise en page propre au groupe. Le site public garde son en-tête et son pied de page, l'administration reçoit une barre latérale et rien d'autre.
+
+Sans ce mécanisme, il aurait fallu soit un test conditionnel dans une mise en page unique, soit deux arborescences parallèles. En Angular, l'équivalent serait un composant `AdminLayout` portant son propre `router-outlet`.
+
+### 8.2 Un seul point de contrôle
+
+`src/lib/admin.ts` tient en deux fonctions. `requireAdmin()` lit la session et renvoie l'utilisateur s'il porte le rôle administrateur, `null` sinon. `unauthorized()` produit la réponse de refus des routes d'API.
+
+Ces deux fonctions sont le seul endroit où la question « qui est administrateur ? » reçoit une réponse. La mise en page du groupe `(admin)` appelle `requireAdmin()` avant de rendre quoi que ce soit et redirige vers la connexion si elle obtient `null` ; les six routes `api/admin/*` l'appellent avant de toucher à la base.
+
+Cette redondance est voulue. Le `matcher` du middleware exclut `/api` : si seul le middleware protégeait l'administration, un appel direct aux routes d'API passerait. Le middleware filtre des URL, `requireAdmin()` protège des données. Les deux étages sont nécessaires, et le second est celui qui compte.
+
+### 8.3 Lire par le serveur ou par l'API
+
+Deux manières de charger des données coexistent dans l'administration, et le choix n'est pas arbitraire.
+
+Le tableau de bord est un Server Component. Il exécute quatre comptages et une lecture des cinq dernières réservations dans un seul `Promise.all`, directement via Prisma, et renvoie du HTML déjà peuplé. Aucune route d'API n'existe pour lui : ce serait une couche de plus pour une lecture seule qui ne sert qu'à cette page.
+
+Les trois tableaux — hôtels, réservations, utilisateurs — sont des Client Components. Ils portent une recherche, un filtre, une pagination et des écritures en ligne, donc un état qui change à chaque frappe. Ils appellent les routes `api/admin/*` en `fetch`.
+
+La règle qui se dégage : ce qui est lu une fois passe par le serveur, ce qui réagit à l'utilisateur passe par l'API. En Angular, les deux cas auraient produit le même code, un service injecté et un observable.
+
+### 8.4 Les trois domaines
+
+**Hôtels.** Liste paginée par quinze, recherche sur le nom avec un délai de 300 millisecondes avant l'envoi de la requête, fiche avec édition en place, création et suppression. Le formulaire de création n'exige que le nom, la ville et le pays ; le bouton reste inactif tant que les trois ne sont pas saisis, et la route refait le même contrôle avec un 400.
+
+**Réservations.** Liste paginée, filtre par statut, changement de statut depuis la liste sans quitter la page, et fiche détaillée reprenant le séjour, les montants, le client, les services et le paiement. La route de changement de statut vérifie que l'identifiant reçu correspond à un statut existant avant d'écrire.
+
+**Utilisateurs.** Liste paginée, filtre par rôle, changement de rôle, activation et désactivation, fiche reprenant les réservations et les avis du compte.
+
+### 8.5 Les suppressions protégées
+
+Un hôtel qui porte des réservations ne peut pas être supprimé, un compte non plus. Dans les deux cas la route compte d'abord les réservations rattachées et renvoie un 409 nommant ce décompte, plutôt que de laisser la contrainte de clé étrangère produire une erreur serveur.
+
+C'est une différence de nature. La base refuserait de toute façon, puisque les clés étrangères de `reservation` sont en `RESTRICT` ; mais elle refuserait par une exception, avec un message que personne ne peut lire. Compter avant d'écrire transforme une panne en information : « Suppression impossible : 2 réservation(s) liée(s). Désactivez le compte à la place. »
+
+### 8.6 Ce qu'un administrateur ne peut pas se faire à lui-même
+
+Trois refus protègent l'administrateur connecté contre ses propres actions : il ne peut pas supprimer son compte, ni le désactiver, ni se retirer son rôle. Sans ces garde-fous, une seule erreur de manipulation suffirait à fermer définitivement l'accès à l'administration, puisque le rôle ne peut être rendu que depuis cette même interface.
+
+### 8.7 Ce que l'administration ne fait pas
+
+Elle ne crée ni chambres, ni offres, ni équipements. Un hôtel créé depuis le back-office est donc une coquille : il apparaît dans la liste publique mais ne peut pas être réservé, faute de chambre.
+
+Ce périmètre est assumé. Le cahier des charges demande la gestion des services, des réservations et des utilisateurs ; les chambres et les offres relèvent du jeu de données repris du Bloc 2, et les ajouter supposait trois formulaires imbriqués pour une démonstration que la gestion des hôtels établit déjà.
+
+---
+
+## 9. Sécurité
 
 Cette section décrit des failles réelles, présentes dans mon code, trouvées lors d'une relecture ciblée du parcours de paiement, et corrigées. Je la documente parce qu'un projet sans incident est un projet qu'on n'a pas relu.
 
-### 8.1 Réserver au nom de quelqu'un d'autre, au prix de son choix
+### 9.1 Réserver au nom de quelqu'un d'autre, au prix de son choix
 
 La première version de `POST /api/reservations` ne vérifiait pas la session et reprenait trois champs du corps de la requête : `id_user`, `prix_nuit` et `total_price`.
 
@@ -618,13 +673,13 @@ Une réservation créée au nom de l'utilisateur 7, sur une suite à 400 € la 
 
 **Correction.** La session est obligatoire et `id_user` vient du jeton. L'offre est relue en base et son prix fait foi. Le nombre de nuits est recalculé depuis les dates. Le total est recomposé côté serveur, services compris. `id_statut` est forcé à 1 : le client ne peut pas se déclarer confirmé.
 
-### 8.2 Payer la réservation d'un autre
+### 9.2 Payer la réservation d'un autre
 
 `POST /api/create-payment-intent` acceptait n'importe quel `reservationId` sans vérifier ni session ni propriété. Le montant, lui, venait déjà de la base — le risque n'était donc pas tarifaire mais informationnel : la réponse exposait le montant et la devise d'une réservation quelconque, et les métadonnées Stripe divulguaient le nom de l'hôtel et les dates du séjour. Une énumération d'identifiants aurait cartographié l'activité de la plateforme.
 
 **Correction.** Session obligatoire, `reservation.id_user !== user.id_user` répond 403, et une réservation déjà confirmée est refusée.
 
-### 8.3 Un écart de montant seulement journalisé
+### 9.3 Un écart de montant seulement journalisé
 
 Le défaut le plus subtil. La route de confirmation comparait le montant encaissé par Stripe au montant dû, constatait l'écart, l'écrivait dans la console — puis confirmait quand même.
 
@@ -640,7 +695,7 @@ Un contrôle qui n'interrompt rien n'est pas un contrôle. Il donne au relecteur
 
 **Correction.** L'écart de montant répond 400. La devise est vérifiée de la même façon. Le rattachement via `metadata.reservation_id` est vérifié, faute de quoi un PaymentIntent de 50 € légitimement payé pour une réservation pourrait en confirmer une autre à 800 €. Enfin, un contrôle d'unicité sur `paiement.reference_externe` empêche le rejeu du même PaymentIntent.
 
-### 8.4 Ce qui était déjà en place
+### 9.4 Ce qui était déjà en place
 
 - Prisma paramètre toutes les requêtes : l'injection SQL n'a pas de prise.
 - React échappe le texte inséré dans le JSX ; aucun `dangerouslySetInnerHTML` dans le projet.
@@ -650,7 +705,7 @@ Un contrôle qui n'interrompt rien n'est pas un contrôle. Il donne au relecteur
 - Les suppressions en administration sont protégées : un hôtel qui porte des réservations ne peut pas être effacé.
 - Le champ `special_requests` est tronqué à 1 000 caractères avant écriture.
 
-### 8.5 Ce que j'en retiens
+### 9.5 Ce que j'en retiens
 
 Les trois failles partagent une cause. J'ai écrit chaque route en pensant à l'interface qui l'appelle, et l'interface envoyait toujours des données correctes. Le raisonnement juste est l'inverse : une route d'API est une porte publique, et la seule question qui vaille est ce qu'un appel malveillant pourrait en obtenir.
 
@@ -658,9 +713,9 @@ La règle que j'applique depuis : toute valeur qui engage de l'argent ou une ide
 
 ---
 
-## 9. Tests et débogage
+## 10. Tests et débogage
 
-### 9.1 Dispositif
+### 10.1 Dispositif
 
 Jest et React Testing Library, configurés via `next/jest` qui charge automatiquement `next.config.ts`, les variables d'environnement et le transformateur SWC. L'environnement d'exécution est `jsdom`, les alias d'importation sont recopiés depuis `tsconfig.json` pour que les chemins soient identiques dans les tests et dans le code.
 
@@ -680,7 +735,7 @@ Un point de configuration mérite mention : `transpilePackages: ["jose"]` dans `
 | `LoginForm.test.tsx` | validation, états d'erreur |
 | `AuthProvider.test.tsx` | chargement de session, état anonyme |
 
-### 9.2 Tester le rôle, pas la balise
+### 10.2 Tester le rôle, pas la balise
 
 Les tests interrogent l'arbre d'accessibilité plutôt que le balisage :
 
@@ -688,11 +743,11 @@ Les tests interrogent l'arbre d'accessibilité plutôt que le balisage :
 screen.getByRole("heading", { name: "Grand Hôtel Paris" })
 ```
 
-Cette requête demande « un titre nommé Grand Hôtel Paris », sans préciser son niveau. Quand j'ai corrigé la hiérarchie des titres en passant les noms d'hôtels de `h3` à `h2` (section 10), aucun test n'a eu à être modifié : le comportement observable n'avait pas changé, seul le balisage.
+Cette requête demande « un titre nommé Grand Hôtel Paris », sans préciser son niveau. Quand j'ai corrigé la hiérarchie des titres en passant les noms d'hôtels de `h3` à `h2` (section 11), aucun test n'a eu à être modifié : le comportement observable n'avait pas changé, seul le balisage.
 
 Un test écrit sur `container.querySelector("h3")` aurait échoué et m'aurait obligé à le réparer, sans qu'aucun défaut n'ait été détecté. Un test qui casse quand le code s'améliore est un test mal écrit.
 
-### 9.3 Périmètre et lacunes
+### 10.3 Périmètre et lacunes
 
 La couverture est limitée à `src/lib` et `src/modules`. Les mises en page, les écrans de chargement et les pages d'erreur en sont exclus : ils ne portent pas de logique.
 
@@ -702,7 +757,7 @@ Je préfère l'énoncer clairement plutôt que d'annoncer une couverture que le 
 
 C'est la première extension que je réaliserais si le projet devait continuer : les trois routes du parcours de paiement sont celles dont une régression coûterait le plus cher.
 
-### 9.4 Outils de débogage
+### 10.4 Outils de débogage
 
 Les tests automatisés ne détectent qu'une partie des défauts. Les incidents décrits dans ce document ont été diagnostiqués avec les outils suivants, et chacun couvre un moment différent de la chaîne.
 
@@ -712,27 +767,27 @@ Les tests automatisés ne détectent qu'une partie des défauts. Les incidents d
 
 **L'overlay d'erreur de Next.js.** En développement, une exception côté serveur s'affiche dans le navigateur avec sa pile et le fragment de source fautif. C'est l'outil de première intention sur un dysfonctionnement reproductible en local.
 
-**L'inspecteur du navigateur.** Deux usages distincts. L'onglet Réseau, pour lire le code de statut et le corps réel d'une réponse d'API, là où l'interface n'affiche qu'un message générique. Et la lecture de la source HTML envoyée par le serveur, qui a permis de résoudre le défaut de métadonnées décrit en section 10.4 : le `<title>` était bien présent, mais après `</main>`. Aucun outil n'aurait signalé ce problème, seule la comparaison entre ce que le navigateur affiche et ce que le serveur envoie l'a révélé.
+**L'inspecteur du navigateur.** Deux usages distincts. L'onglet Réseau, pour lire le code de statut et le corps réel d'une réponse d'API, là où l'interface n'affiche qu'un message générique. Et la lecture de la source HTML envoyée par le serveur, qui a permis de résoudre le défaut de métadonnées décrit en section 11.4 : le `<title>` était bien présent, mais après `</main>`. Aucun outil n'aurait signalé ce problème, seule la comparaison entre ce que le navigateur affiche et ce que le serveur envoie l'a révélé.
 
 **Les journaux d'exécution Vercel.** Indispensables dès que le défaut ne se reproduit pas en local. L'erreur « chambre non trouvée » n'apparaissait qu'en production : le code appelait une URL de repli `localhost:8000` absente en ligne. Le journal donnait l'échec de la requête, le code donnait la raison. La correction a consisté à supprimer l'appel HTTP interne au profit d'un accès Prisma direct, la page étant déjà rendue côté serveur.
 
 **L'accès SQL direct à la base distante.** Neon expose deux chaînes de connexion : celle en `-pooler`, réservée à l'application, et une connexion directe pour tout le reste. C'est elle que réclament `prisma migrate deploy` et `psql`, et c'est par elle qu'est passé l'import du jeu de données en production. Interroger la base sans passer par l'application, en ligne de commande ou depuis la console SQL de Neon, reste le seul moyen de distinguer une donnée absente d'une donnée mal affichée : c'est ainsi qu'ont été vérifiés la présence des 102 hôtels après l'import et le rôle des comptes de démonstration.
 
-**PageSpeed Insights.** Mesure sur le site déployé, méthode décrite en section 10.1.
+**PageSpeed Insights.** Mesure sur le site déployé, méthode décrite en section 11.1.
 
 Une constante se dégage de ces incidents : les trois défauts les plus longs à résoudre ne se manifestaient pas en développement. Une variable d'environnement tronquée à la copie, une URL de repli valable en local seulement, une portabilité de script SQL entre deux serveurs PostgreSQL. Tester en local ne remplace pas vérifier en ligne, et c'est la raison pour laquelle le parcours complet est rejoué sur le site déployé après chaque déploiement qui touche au paiement ou aux données.
 
 ---
 
-## 10. Performance et accessibilité
+## 11. Performance et accessibilité
 
-### 10.1 Méthode
+### 11.1 Méthode
 
 Mesures effectuées avec Lighthouse via PageSpeed Insights, sur le site déployé. Mesurer en local n'aurait eu aucun sens : le serveur de développement ne minifie pas, ne compresse pas et recompile à la demande.
 
 Les rapports complets sont archivés dans `docs/lighthouse/`, en deux séries : avant et après les corrections du 24 septembre.
 
-### 10.2 Résultats
+### 11.2 Résultats
 
 Ordre des valeurs : performance / accessibilité / bonnes pratiques / référencement.
 
@@ -745,13 +800,13 @@ Ordre des valeurs : performance / accessibilité / bonnes pratiques / référenc
 
 Les écarts d'un point en performance ne signifient rien : le score dérive de mesures de temps, qui fluctuent d'une exécution à l'autre sur une infrastructure mutualisée.
 
-### 10.3 Optimisations de performance
+### 11.3 Optimisations de performance
 
 L'essentiel du gain avait été obtenu plus tôt, sur la page d'accueil, en remplaçant les balises `<img>` par le composant `next/image`. Ce composant sert du WebP quand le navigateur l'accepte, redimensionne selon l'affichage réel et diffère le chargement des images hors écran. Le poids de la page d'accueil est passé de 3,5 Mo à environ 1 Mo et le plus grand élément visible de 2,7 s à 0,6 s.
 
 Deux attributs demandent de l'attention. `sizes` indique au navigateur la largeur que l'image occupera selon la taille d'écran ; sans lui, une vignette de 300 px peut se voir servir une source de 1 200 px. `priority` désactive le chargement différé sur l'image qui constitue le plus grand élément visible — la première diapositive du carrousel — parce que retarder précisément celle-là dégrade la métrique qu'on cherche à améliorer.
 
-### 10.4 Trois défauts corrigés le 24 septembre
+### 11.4 Trois défauts corrigés le 24 septembre
 
 **Hiérarchie des titres.** Les noms d'hôtels des cartes de résultats étaient des `h3` alors que la page passe de son `h1` directement à ce niveau. Un lecteur d'écran qui navigue de titre en titre perd le fil. Correction : `h2`. La taille d'affichage vient de la classe Tailwind `text-lg`, pas de la balise, donc le rendu est inchangé.
 
@@ -780,23 +835,23 @@ Cette option désigne les agents qui doivent recevoir des métadonnées bloquant
 
 Un détail m'a fait corriger mon premier réflexe. J'avais envisagé de viser Lighthouse seul, par un motif du type `/Chrome-Lighthouse/`. La documentation précise que cette option **remplace** la liste par défaut de Next.js au lieu de s'y ajouter : j'aurais gagné le score et perdu le traitement bloquant pour Googlebot, Bingbot et les autres. Le coût du motif universel est de quelques millisecondes sur le premier octet envoyé pour les pages dynamiques, et j'ai préféré cette prévisibilité.
 
-### 10.5 Accessibilité
+### 11.5 Accessibilité
 
 Ce qui est en place : structure de titres cohérente, attributs `alt` sur toutes les images, libellés associés aux champs de formulaire, attributs ARIA sur les éléments interactifs, navigation complète au clavier, lien d'évitement vers le contenu principal en début de page, cibles tactiles d'au moins 48 px, et un bouton qui bascule la police vers une fonte adaptée aux lecteurs dyslexiques.
 
-Un audit reste en échec sur les quatre rapports : le contraste des couleurs. Il fait l'objet de la section 12.2.
+Un audit reste en échec sur les quatre rapports : le contraste des couleurs. Il fait l'objet de la section 13.2.
 
 ---
 
-## 11. Déploiement
+## 12. Déploiement
 
-### 11.1 Hébergement
+### 12.1 Hébergement
 
 L'application est déployée sur Vercel, avec `frontend` comme répertoire racine du projet. Chaque poussée sur la branche `main` déclenche une compilation et une mise en ligne automatiques. Un échec de compilation interrompt le déploiement, et la version précédente reste servie.
 
 La base est hébergée chez Neon, sur la région AWS Europe Central 1 (Francfort). Deux chaînes de connexion coexistent : la variante avec regroupement de connexions pour l'application, et la connexion directe pour les migrations et les accès en ligne de commande. Un environnement sans serveur ouvre et ferme des connexions en permanence ; sans regroupement, la limite de PostgreSQL est atteinte rapidement.
 
-### 11.2 Variables d'environnement
+### 12.2 Variables d'environnement
 
 Sept variables :
 
@@ -814,7 +869,7 @@ La clé de signature diffère entre le développement et la production : un jeto
 
 Une contrainte de Vercel mérite d'être notée, parce qu'elle m'a coûté une soirée : une variable préfixée `NEXT_PUBLIC_` ne peut pas être déclarée de type secret, puisqu'elle est destinée à être intégrée au code envoyé au navigateur. Déclarée ainsi, elle arrive tronquée à la compilation et le paiement échoue avec un message qui ne pointe pas vers la cause.
 
-### 11.3 Migrations et données
+### 12.3 Migrations et données
 
 ```bash
 npx prisma migrate deploy          # applique les 5 migrations
@@ -828,7 +883,7 @@ Il désactive temporairement les déclencheurs utilisateur de la table `avis` pa
 
 Le fichier `seed.ts` est idempotent : il crée les douze destinations si elles n'existent pas, et saute le catalogue de services s'il est déjà peuplé. Le relancer deux fois ne produit pas de doublon.
 
-### 11.4 Installation locale
+### 12.4 Installation locale
 
 ```bash
 git clone https://github.com/yanni-bit/hotel-booking-bloc3.git
@@ -843,7 +898,7 @@ npm run dev          # http://localhost:8000
 
 Les deux fichiers d'environnement coexistent volontairement : l'interface en ligne de commande de Prisma lit `.env`, l'application lit `.env.local`. Maintenir `.env` sur la base locale garantit qu'une commande Prisma lancée par inadvertance ne peut pas atteindre la base de production.
 
-### 11.5 Scripts
+### 12.5 Scripts
 
 | Commande | Effet |
 |---|---|
@@ -858,11 +913,11 @@ Le script `postinstall` exécute `prisma generate`, sans quoi le client Prisma s
 
 ---
 
-## 12. Limites assumées et pistes d'évolution
+## 13. Limites assumées et pistes d'évolution
 
 Cette section recense ce qui n'est pas fait. Chaque entrée indique le choix, sa raison et ce que coûterait sa levée.
 
-### 12.1 Le rôle prestataire est déclaratif
+### 13.1 Le rôle prestataire est déclaratif
 
 Trois rôles existent en base. Deux sont exploités : l'administrateur accède au back-office, le client réserve. Le prestataire — l'hôtelier qui gérerait son propre établissement — existe dans la table mais ne dispose d'aucune interface.
 
@@ -870,7 +925,7 @@ Le construire supposait un troisième espace, avec un filtrage de toutes les req
 
 Le rôle est conservé en base parce que le retirer aurait signifié modifier le schéma et le jeu de données pour supprimer quelque chose qui ne gêne pas.
 
-### 12.2 Le contraste des couleurs
+### 13.2 Le contraste des couleurs
 
 Seul audit d'accessibilité en échec après corrections. Il porte sur la charte, reprise du Bloc 2 pour assurer la continuité visuelle entre les deux rendus.
 
@@ -887,19 +942,19 @@ J'ai choisi de garder la charte. Le gris `#858585` avait déjà été assombri e
 
 C'est la limite que je signalerais en premier à un client réel, avec une proposition de palette conforme.
 
-### 12.3 Pas de filtres sur la liste des hôtels
+### 13.3 Pas de filtres sur la liste des hôtels
 
 La liste est paginée et se restreint par ville ou par recherche textuelle, mais n'offre ni curseur de prix, ni sélection d'équipements, ni tri.
 
 Les paramètres d'URL correspondants sont déjà lus par la page, et la fonction `getHotels` accepte un nombre minimal d'étoiles. L'ajout relèverait de l'interface plus que du modèle. C'est l'évolution la moins coûteuse de cette liste.
 
-### 12.4 Calendrier natif
+### 13.4 Calendrier natif
 
 Les dates de séjour se saisissent avec deux champs `<input type="date">`. Le rendu dépend donc du navigateur et du système, et ne montre pas les périodes indisponibles.
 
 Un calendrier à double panneau avec les dates prises grisées serait plus confortable. Il suppose une bibliothèque supplémentaire ou un composant écrit à la main, et une route qui renvoie les périodes occupées d'une chambre. Le champ natif présente deux avantages qui ont pesé : il est accessible au clavier sans effort et il n'ajoute rien au poids de la page.
 
-### 12.5 Pas de modification de réservation côté client
+### 13.5 Pas de modification de réservation côté client
 
 Le client peut consulter et annuler ses réservations, pas en modifier les dates. La modification est en revanche possible côté administration.
 
@@ -907,7 +962,7 @@ Changer des dates implique de revérifier la disponibilité sur la nouvelle pér
 
 La fonction `chambreDisponible()` accepte d'ailleurs un paramètre `idReservationAIgnorer` prévu pour ce cas : sans lui, une réservation se déclarerait elle-même en conflit avec ses nouvelles dates.
 
-### 12.6 Pas de webhook Stripe
+### 13.6 Pas de webhook Stripe
 
 La confirmation est déclenchée par le navigateur après le paiement. Si l'utilisateur ferme son onglet entre le débit et l'appel de confirmation, la réservation reste au statut 1 alors que le paiement est encaissé.
 
@@ -915,7 +970,7 @@ La solution correcte est un webhook : Stripe appelle le serveur directement, ind
 
 Le contrôle anti-rejeu sur `reference_externe` est déjà en place et fonctionnerait tel quel avec un webhook, puisqu'il empêche qu'un même paiement soit enregistré deux fois quelle que soit sa provenance. C'est l'évolution que je placerais en tête si l'application devait traiter de l'argent réel.
 
-### 12.7 Internationalisation
+### 13.7 Internationalisation
 
 Le segment `[countryCode]` est présent dans toutes les URL et le middleware le valide, mais un seul code est accepté. Les libellés sont écrits en français dans les composants.
 

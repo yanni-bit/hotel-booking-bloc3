@@ -6,7 +6,7 @@ Vérification des fonctionnalités principales de l'application sur l'environnem
 
 **Environnement.** Les scénarios sont rejoués sur `https://hotel-booking-bloc3.vercel.app`, donc sur l'application déployée, avec sa base PostgreSQL hébergée chez Neon et Stripe en mode test : même build de production, mêmes variables d'environnement, même base. Le cahier des charges demande un environnement de production simulé ; c'est l'environnement de livraison lui-même qui est utilisé.
 
-Ce choix répond à un constat consigné en section 9.4 de la documentation technique : les trois défauts les plus longs à diagnostiquer sur ce projet ne se manifestaient pas en développement local. Une vérification passée uniquement en local n'aurait détecté ni la variable d'environnement tronquée à la copie, ni l'URL de repli valable seulement sur le poste de développement.
+Ce choix répond à un constat consigné en section 10.4 de la documentation technique : les trois défauts les plus longs à diagnostiquer sur ce projet ne se manifestaient pas en développement local. Une vérification passée uniquement en local n'aurait détecté ni la variable d'environnement tronquée à la copie, ni l'URL de repli valable seulement sur le poste de développement.
 
 **Comptes et moyen de paiement.** Les deux comptes de démonstration, mot de passe commun `Demo2026!` : `demo.client@bookyourtravel.fr` pour le rôle client, `demo.admin@bookyourtravel.fr` pour le rôle administrateur. Carte de test Stripe `4242 4242 4242 4242`, date d'expiration future, cryptogramme au choix. Aucun flux financier réel n'est engagé.
 
@@ -67,7 +67,7 @@ Mesures relevées sur le site déployé avec Lighthouse, en navigation privée. 
 | P2 | Lighthouse sur `/fr/hotels`, bureau et mobile | Mêmes seuils | OK. Mobile 99 / 96 / 100 / 100, bureau 100 / 96 / 100 / 100. LCP 2,0 s en mobile et 0,6 s en bureau, CLS 0 à 0,002, TBT 0 à 70 ms | 05/10/2026 |
 | P3 | Navigation au clavier sur l'accueil et le tunnel de réservation, puis affichage à 400 pixels de largeur | Éléments interactifs atteignables, focus visible, lien d'évitement fonctionnel, aucun défilement horizontal | OK. Aucun défilement horizontal ni texte tronqué | 05/10/2026 |
 
-Un seul audit d'accessibilité reste en échec sur les quatre passages, `color-contrast`, pour un poids de 7 points. Il correspond exactement à l'arbitrage sur la charte graphique documenté en section 12.2 de la documentation technique. Aucun autre audit n'est en défaut.
+Un seul audit d'accessibilité reste en échec sur les quatre passages, `color-contrast`, pour un poids de 7 points. Il correspond exactement à l'arbitrage sur la charte graphique documenté en section 13.2 de la documentation technique. Aucun autre audit n'est en défaut.
 
 ---
 
