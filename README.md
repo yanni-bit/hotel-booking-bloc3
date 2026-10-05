@@ -98,6 +98,7 @@ La documentation du projet est à la racine du dépôt, dans [`docs/`](docs/) :
 - [`documentation-technique.md`](docs/documentation-technique.md) — architecture, modèle de données, parcours de réservation, sécurité, tests, déploiement
 - [`guide-utilisateur.md`](docs/guide-utilisateur.md) — site public et back-office, comptes de démonstration, carte de test
 - [`diagrammes/`](docs/diagrammes/) — MCD complet, MCD du cœur du domaine, architecture, séquence de réservation
+- [`recette-fonctionnelle.md`](docs/recette-fonctionnelle.md) — scénarios de vérification rejoués sur le site déployé, avec leurs résultats
 - [`lighthouse/`](docs/lighthouse/) — audits Lighthouse avant et après optimisation, analyse des contrastes
 
 ## Installation
